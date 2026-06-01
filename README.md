@@ -30,7 +30,7 @@
 
 ## 📁 目錄結構 (Directory Structure)
 
-```text
+```
 pu-class-schedule/
 ├── frontend/      # 前端網頁程式碼 (UI/UX 介面)
 ├── server/        # 後端 API 服務
@@ -39,7 +39,7 @@ pu-class-schedule/
 ├── nginx.conf     # Nginx 網頁伺服器設定檔
 ├── Dockerfile     # Docker 容器化部署設定檔
 └── README.md      # 專案說明文件
-
+```
 
 ## 🚀 本地開發與運行 (Getting Started)
 若你想在本地環境運行或參與開發本專案，請參考以下步驟：
