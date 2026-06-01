@@ -7,9 +7,20 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PUBLIC_DIR = path.join(__dirname, 'public');
 
 const PORT = process.env.PORT || 8080;
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-const GEMINI_URL =
-  'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent';
+// 支援多組 API KEY，以逗號分隔
+const GEMINI_API_KEYS = (process.env.GEMINI_API_KEY || '')
+  .split(',')
+  .map((k) => k.trim())
+  .filter(Boolean);
+
+// 優先順序模型列表，根據使用者需求加入 Gemini 2.5 Flash
+const MODELS = [
+  'gemini-2.5-flash',
+  'gemini-2.0-flash',
+  'gemini-1.5-flash',
+  'gemini-3.1-flash-lite',
+  'gemini-2.0-flash-exp',
+];
 
 const app = express();
 app.use(compression());
@@ -33,8 +44,8 @@ ${courseList}
 (針對這些特定的課程組合，給個實用的小提醒或心理建設)`;
 
 app.post('/api/ai-review', async (req, res) => {
-  if (!GEMINI_API_KEY) {
-    return res.status(503).json({ error: '伺服器尚未設定 GEMINI_API_KEY 環境變數' });
+  if (GEMINI_API_KEYS.length === 0) {
+    return res.status(503).json({ error: '伺服器尚未設定 GEMINI_API_KEY' });
   }
 
   const courseList = (req.body?.courseList ?? '').toString().slice(0, 4000);
@@ -42,31 +53,41 @@ app.post('/api/ai-review', async (req, res) => {
     return res.status(400).json({ error: '缺少課表內容' });
   }
 
-  try {
-    const r = await fetch(GEMINI_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-goog-api-key': GEMINI_API_KEY,
-      },
-      body: JSON.stringify({ contents: [{ parts: [{ text: buildPrompt(courseList) }] }] }),
-    });
+  const prompt = buildPrompt(courseList);
 
-    if (!r.ok) {
-      const detail = await r.text().catch(() => '');
-      console.error('Gemini API error', r.status, detail.slice(0, 500));
-      throw new Error(`Gemini API ${r.status}`);
+  // 遍歷模型與 API Key 進行嘗試
+  for (const model of MODELS) {
+    for (const key of GEMINI_API_KEYS) {
+      try {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
+        const r = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-goog-api-key': key,
+          },
+          body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }),
+        });
+
+        if (r.ok) {
+          const data = await r.json();
+          const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (text) {
+            console.log(`Success with model: ${model}`);
+            return res.json({ text });
+          }
+        }
+
+        // 如果是 429 (達限) 或其他錯誤，則繼續嘗試下一組組合
+        const errorDetail = await r.text().catch(() => '');
+        console.warn(`Model ${model} failed with status ${r.status}. Detail: ${errorDetail.slice(0, 100)}`);
+      } catch (err) {
+        console.error(`Request to model ${model} failed:`, err.message);
+      }
     }
-
-    const data = await r.json();
-    const text =
-      data?.candidates?.[0]?.content?.parts?.[0]?.text ||
-      '哎呀，分析失敗了，AI 腦袋當機中 🤯';
-    res.json({ text });
-  } catch (err) {
-    console.error('ai-review failed:', err.message);
-    res.status(502).json({ error: 'AI 服務暫時無法連線' });
   }
+
+  res.status(502).json({ error: '目前所有 AI 服務均已達限或暫時無法連線，請稍後再試。' });
 });
 
 // SPA fallback：其餘路徑都交給前端 index.html
@@ -75,5 +96,5 @@ app.get('*', (_req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Server listening on :${PORT} (GEMINI_API_KEY ${GEMINI_API_KEY ? 'set' : 'MISSING'})`);
+  console.log(`Server listening on :${PORT} (Available keys: ${GEMINI_API_KEYS.length})`);
 });
