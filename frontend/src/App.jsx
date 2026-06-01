@@ -143,6 +143,141 @@ const loadStoredTab = () => {
   }
 };
 
+const parseCourseName = (fullName) => {
+  const match = fullName.match(/^(.*?)\s*\((.+?)\)$/);
+  if (match) {
+    return { baseName: match[1].trim(), className: match[2].trim() };
+  }
+  return { baseName: fullName, className: '一般' };
+};
+
+const groupedCoursesList = (() => {
+  const groups = {};
+  ALL_COURSES.forEach(course => {
+    const { baseName, className } = parseCourseName(course.name);
+    const timeStr = JSON.stringify(course.times);
+    const key = `${baseName}|${timeStr}|${course.location}`;
+    
+    if (!groups[key]) {
+      groups[key] = {
+        ...course,
+        name: baseName,
+        sections: []
+      };
+    }
+    groups[key].sections.push({
+      id: course.id,
+      className: className,
+      type: course.type,
+      note: course.note,
+      originalName: course.name,
+    });
+  });
+  return Object.values(groups);
+})();
+
+const CourseCard = ({ group, selectedCourses, onAdd, onDragStart }) => {
+  const [activeTabIndex, setActiveTabIndex] = useState(0);
+  
+  const safeIndex = activeTabIndex < group.sections.length ? activeTabIndex : 0;
+  const activeSection = group.sections[safeIndex];
+  const isSelected = selectedCourses.some(c => c.id === activeSection.id);
+  
+  const isRequired = activeSection.type === '必修';
+  const isBackupReq = activeSection.type === '備用必修';
+  const isGeneral = activeSection.type === '通識';
+  const isMilitary = activeSection.type === '兵役';
+
+  let borderClass = 'border-emerald-200 bg-white hover:border-emerald-400 hover:shadow-md cursor-pointer md:cursor-grab active:cursor-grabbing';
+  if (isSelected) borderClass = 'border-slate-200 bg-slate-100 opacity-50 cursor-not-allowed';
+  else if (isRequired) borderClass = 'border-indigo-200 bg-white hover:border-indigo-400 hover:shadow-md cursor-pointer md:cursor-grab active:cursor-grabbing';
+  else if (isBackupReq) borderClass = 'border-amber-200 bg-white hover:border-amber-400 hover:shadow-md cursor-pointer md:cursor-grab active:cursor-grabbing';
+  else if (isGeneral) borderClass = 'border-purple-200 bg-white hover:border-purple-400 hover:shadow-md cursor-pointer md:cursor-grab active:cursor-grabbing';
+  else if (isMilitary) borderClass = 'border-slate-300 bg-white hover:border-slate-500 hover:shadow-md cursor-pointer md:cursor-grab active:cursor-grabbing';
+
+  let badgeClass = 'bg-emerald-100 text-emerald-700';
+  if (isRequired) badgeClass = 'bg-indigo-100 text-indigo-700';
+  else if (isBackupReq) badgeClass = 'bg-amber-100 text-amber-700';
+  else if (isGeneral) badgeClass = 'bg-purple-100 text-purple-700';
+  else if (isMilitary) badgeClass = 'bg-slate-200 text-slate-700';
+
+  return (
+    <div
+      draggable={!isSelected}
+      onDragStart={(event) => onDragStart(event, activeSection.id)}
+      onClick={() => !isSelected && onAdd(activeSection.id)}
+      className={`relative p-3 rounded-xl border-2 transition-all flex flex-col ${borderClass}`}
+    >
+      {!isSelected && (
+        <div className="absolute left-2 top-1/2 -translate-y-1/2 text-slate-300 hidden md:block">
+          <GripVertical className="w-5 h-5" />
+        </div>
+      )}
+
+      <div className={`md:pl-6 ${isSelected ? 'opacity-70' : ''} flex-1 flex flex-col`}>
+        {group.sections.length > 1 && (
+          <div className="flex flex-wrap gap-1.5 mb-2" onClick={(e) => e.stopPropagation()}>
+            {group.sections.map((sec, idx) => (
+              <button
+                key={sec.id}
+                onClick={() => setActiveTabIndex(idx)}
+                className={`px-2 py-1 rounded-md text-[11px] md:text-xs font-bold transition-colors ${
+                  safeIndex === idx 
+                    ? 'bg-blue-500 text-white shadow-sm' 
+                    : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
+                }`}
+              >
+                {sec.className}
+              </button>
+            ))}
+          </div>
+        )}
+
+        <div className="flex flex-col gap-1.5 mb-1">
+          <div className="flex flex-wrap items-center gap-1.5">
+            <span className={`text-[11px] md:text-xs px-2 py-0.5 rounded-md font-bold ${badgeClass}`}>
+              {activeSection.type}
+            </span>
+
+            <span className="text-[11px] md:text-xs px-2 py-0.5 rounded-md font-bold bg-gray-100 text-gray-600 border border-gray-200">
+              {activeSection.id}
+            </span>
+
+            {activeSection.note === '本系時段' && (
+              <span className="text-[11px] md:text-xs px-2 py-0.5 rounded-md font-bold bg-blue-100 text-blue-700">
+                本系時段
+              </span>
+            )}
+            {activeSection.note === '跨系二階' && (
+              <span className="text-[11px] md:text-xs px-2 py-0.5 rounded-md font-bold bg-orange-100 text-orange-700">
+                跨系時段 (二階)
+              </span>
+            )}
+          </div>
+        </div>
+
+        <div className="flex justify-between items-start">
+          <h3 className="font-bold text-slate-800 leading-tight text-sm md:text-base pr-2">{group.name}</h3>
+          <span className="text-xs text-slate-400 font-bold whitespace-nowrap shrink-0">{group.credits} 學分</span>
+        </div>
+
+        <p className="text-[11px] md:text-xs text-slate-500 mt-1">{group.instructor} • {group.location}</p>
+        <p className="text-[11px] md:text-xs font-medium text-slate-600 mt-1 bg-slate-100 inline-block px-2 py-0.5 rounded w-fit">
+          ⏰ {formatTimes(group.times)}
+        </p>
+      </div>
+
+      {isSelected && (
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <span className="bg-slate-800 text-white text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 shadow-md">
+            <CheckCircle2 className="w-4 h-4" /> 已加入
+          </span>
+        </div>
+      )}
+    </div>
+  );
+};
+
 export default function App() {
   const [selectedCourses, setSelectedCourses] = useState(loadStoredCourses);
   const [activeTab, setActiveTab] = useState(loadStoredTab);
@@ -217,8 +352,8 @@ export default function App() {
     showToast(`✅ 成功加入 ${course.name}`, 'success');
   };
 
-  const handleDragStart = (event, course) => {
-    event.dataTransfer.setData('courseId', course.id);
+  const handleDragStart = (event, courseId) => {
+    event.dataTransfer.setData('courseId', courseId);
   };
 
   const handleDropToSchedule = (event) => {
@@ -376,9 +511,9 @@ export default function App() {
     return { __html: html };
   };
 
-  const filteredCourses = ALL_COURSES.filter(c => {
+  const filteredGroups = groupedCoursesList.filter(group => {
     if (activeTab === '全部') return true;
-    return c.type === activeTab;
+    return group.sections.some(sec => sec.type === activeTab);
   });
 
   const totalCredits = selectedCourses.reduce((sum, c) => sum + c.credits, 0);
@@ -432,88 +567,15 @@ export default function App() {
           </div>
 
           <div className="flex-1 overflow-y-auto p-3 space-y-2.5 bg-slate-50 pb-6">
-            {filteredCourses.map(course => {
-              const isSelected = selectedCourses.some(c => c.id === course.id);
-              const isRequired = course.type === '必修';
-              const isBackupReq = course.type === '備用必修';
-              const isGeneral = course.type === '通識';
-              const isMilitary = course.type === '兵役';
-
-              return (
-                <div
-                  key={course.id}
-                  draggable={!isSelected}
-                  onDragStart={(event) => handleDragStart(event, course)}
-                  onClick={() => !isSelected && tryAddCourse(course.id)}
-                  className={`relative p-3 rounded-xl border-2 transition-all ${
-                    isSelected
-                      ? 'border-slate-200 bg-slate-100 opacity-50 cursor-not-allowed'
-                      : isRequired
-                        ? 'border-indigo-200 bg-white hover:border-indigo-400 hover:shadow-md cursor-pointer md:cursor-grab active:cursor-grabbing'
-                        : isBackupReq
-                          ? 'border-amber-200 bg-white hover:border-amber-400 hover:shadow-md cursor-pointer md:cursor-grab active:cursor-grabbing'
-                          : isGeneral
-                            ? 'border-purple-200 bg-white hover:border-purple-400 hover:shadow-md cursor-pointer md:cursor-grab active:cursor-grabbing'
-                            : isMilitary
-                              ? 'border-slate-300 bg-white hover:border-slate-500 hover:shadow-md cursor-pointer md:cursor-grab active:cursor-grabbing'
-                              : 'border-emerald-200 bg-white hover:border-emerald-400 hover:shadow-md cursor-pointer md:cursor-grab active:cursor-grabbing'
-                  }`}
-                >
-                  {!isSelected && (
-                    <div className="absolute left-2 top-1/2 -translate-y-1/2 text-slate-300 hidden md:block">
-                      <GripVertical className="w-5 h-5" />
-                    </div>
-                  )}
-
-                  <div className={`md:pl-6 ${isSelected ? 'opacity-70' : ''}`}>
-                    <div className="flex flex-col gap-1.5 mb-1">
-                      <div className="flex flex-wrap items-center gap-1.5">
-                        <span className={`text-[11px] md:text-xs px-2 py-0.5 rounded-md font-bold ${
-                          isRequired ? 'bg-indigo-100 text-indigo-700' : isBackupReq ? 'bg-amber-100 text-amber-700' : isGeneral ? 'bg-purple-100 text-purple-700' : isMilitary ? 'bg-slate-200 text-slate-700' : 'bg-emerald-100 text-emerald-700'
-                        }`}>
-                          {course.type}
-                        </span>
-
-                        {/* 顯示代號 */}
-                        <span className="text-[11px] md:text-xs px-2 py-0.5 rounded-md font-bold bg-gray-100 text-gray-600 border border-gray-200">
-                          {course.id}
-                        </span>
-
-                        {/* 通識時段標註 Tag */}
-                        {course.note === '本系時段' && (
-                          <span className="text-[11px] md:text-xs px-2 py-0.5 rounded-md font-bold bg-blue-100 text-blue-700">
-                            本系時段
-                          </span>
-                        )}
-                        {course.note === '跨系二階' && (
-                          <span className="text-[11px] md:text-xs px-2 py-0.5 rounded-md font-bold bg-orange-100 text-orange-700">
-                            跨系時段 (二階)
-                          </span>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="flex justify-between items-start">
-                      <h3 className="font-bold text-slate-800 leading-tight text-sm md:text-base pr-2">{course.name}</h3>
-                      <span className="text-xs text-slate-400 font-bold whitespace-nowrap shrink-0">{course.credits} 學分</span>
-                    </div>
-
-                    <p className="text-[11px] md:text-xs text-slate-500 mt-1">{course.instructor} • {course.location}</p>
-                    <p className="text-[11px] md:text-xs font-medium text-slate-600 mt-1 bg-slate-100 inline-block px-2 py-0.5 rounded">
-                      ⏰ {formatTimes(course.times)}
-                    </p>
-                  </div>
-
-                  {isSelected && (
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="bg-slate-800 text-white text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 shadow-md">
-                        <CheckCircle2 className="w-4 h-4" /> 已加入
-                      </span>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+            {filteredGroups.map(group => (
+              <CourseCard
+                key={group.sections[0].id}
+                group={group}
+                selectedCourses={selectedCourses}
+                onAdd={tryAddCourse}
+                onDragStart={handleDragStart}
+              />
+            ))}
           </div>
         </div>
 
