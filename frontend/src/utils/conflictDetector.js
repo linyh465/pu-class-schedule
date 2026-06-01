@@ -29,3 +29,20 @@ export function detectConflict(courseA, courseB) {
 export function getAllConflicts(candidate, selectedCourses) {
   return selectedCourses.filter((sc) => detectConflict(candidate, sc));
 }
+
+/**
+ * Get all conflicts within a single array of selected courses.
+ * @param {Array} selectedCourses
+ * @returns {Array} Array of unique conflict pairs
+ */
+export function getOverallConflicts(selectedCourses) {
+  const conflicts = [];
+  for (let i = 0; i < selectedCourses.length; i++) {
+    for (let j = i + 1; j < selectedCourses.length; j++) {
+      if (detectConflict(selectedCourses[i], selectedCourses[j])) {
+        conflicts.push({ a: selectedCourses[i], b: selectedCourses[j] });
+      }
+    }
+  }
+  return conflicts;
+}

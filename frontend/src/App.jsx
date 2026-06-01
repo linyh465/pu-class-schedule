@@ -3,7 +3,7 @@ import FilterPanel from './components/FilterPanel';
 import CourseList from './components/CourseList';
 import ScheduleGrid from './components/ScheduleGrid';
 import CreditSummary from './components/CreditSummary';
-import { detectConflict, getAllConflicts } from './utils/conflictDetector';
+import { detectConflict, getAllConflicts, getOverallConflicts } from './utils/conflictDetector';
 import { getGenEdTag } from './hooks/useGenEdTag';
 import DepartmentNotes from './components/DepartmentNotes';
 import './App.css';
@@ -116,7 +116,7 @@ function App() {
   );
 
   const conflicts = useMemo(
-    () => getAllConflicts(selectedCourses),
+    () => getOverallConflicts(selectedCourses),
     [selectedCourses]
   );
 
@@ -198,20 +198,10 @@ function App() {
 
       /* Conflict check */
       const currentSelected = courses.filter(c => prev.has(c.id));
-      const conflict = detectConflict(course, currentSelected);
-      if (conflict.conflict) {
-        showToast(`❌ 衝堂！與「${conflict.with.name}」時間衝突`, 'error');
+      const conflictingCourses = getAllConflicts(course, currentSelected);
+      if (conflictingCourses.length > 0) {
+        showToast(`❌ 衝堂！與「${conflictingCourses[0].name}」時間衝突`, 'error');
         return prev;
-      }
-
-      /* Cross-dept gen-ed warning */
-      if (myDepts.length > 0 && course.gen_ed_group) {
-        // Just checking against the primary dept (first one selected) for gen ed warning
-        const primaryDept = myDepts[0];
-        const tag = getGenEdTag(course.gen_ed_group, primaryDept);
-        if (tag === '跨系二階') {
-          showToast(`⚠️ 此為跨系時段 (${course.gen_ed_group})，需等選課第二階段才能選喔！`, 'warning');
-        }
       }
 
       next.add(courseId);
@@ -243,8 +233,8 @@ function App() {
 
       for (const course of required) {
         if (next.has(course.id)) continue;
-        const conflict = detectConflict(course, currentSelected);
-        if (conflict.conflict) {
+        const conflictingCourses = getAllConflicts(course, currentSelected);
+        if (conflictingCourses.length > 0) {
           skippedConflict++;
           continue;
         }

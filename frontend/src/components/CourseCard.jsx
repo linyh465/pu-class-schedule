@@ -24,7 +24,7 @@ function formatTimes(times) {
     .join('、');
 }
 
-export default function CourseCard({ course, isSelected, onToggle, genEdTag }) {
+export default function CourseCard({ course, isSelected, onToggle }) {
   const [showPrecautions, setShowPrecautions] = useState(false);
   const precautionsRef = useRef(null);
   const color = getTypeColor(course.type);
@@ -112,14 +112,8 @@ export default function CourseCard({ course, isSelected, onToggle, genEdTag }) {
         )}
       </div>
 
-      {/* Tags row: genEdTag, dimension, gen_ed_group */}
+      {/* Tags row: dimension, gen_ed_group */}
       <div className="course-card__tags">
-        {genEdTag === '本系時段' && (
-          <span className="course-card__tag course-card__tag--dept">本系時段</span>
-        )}
-        {genEdTag === '跨系二階' && (
-          <span className="course-card__tag course-card__tag--cross">跨系二階</span>
-        )}
         {course.dimension && (
           <span className="course-card__tag course-card__tag--dimension">
             {course.dimension}

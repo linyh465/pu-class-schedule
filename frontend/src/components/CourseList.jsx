@@ -1,5 +1,4 @@
 import CourseCard from './CourseCard';
-import { getGenEdTag } from '../hooks/useGenEdTag';
 import './CourseList.css';
 
 /* 分組順序 */
@@ -67,15 +66,12 @@ export default function CourseList({ courses, selected, onToggle, myDepts }) {
                 ? selected.has(course.id)
                 : Array.isArray(selected) && selected.includes(course.id);
               
-              const genEdTag = getGenEdTag(course);
-
               return (
                 <CourseCard
                   key={course.id}
                   course={course}
                   isSelected={isSelected}
                   onToggle={onToggle}
-                  genEdTag={genEdTag}
                 />
               );
             })}
