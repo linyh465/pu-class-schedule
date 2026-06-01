@@ -1,4 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
 import {
   GripVertical,
   Trash2,
@@ -272,8 +274,7 @@ export default function App() {
     }
   };
 
-  // 匯出 PDF 核心功能
-  const handleExportPDF = () => {
+  const handleExportPDF = async () => {
     if (selectedCourses.length === 0) {
       showToast('⚠️ 課表目前是空的，請先加入課程再匯出喔！', 'error');
       return;
@@ -282,36 +283,48 @@ export default function App() {
     setIsExporting(true);
     showToast('⏳ 正在產生 PDF，這可能需要幾秒鐘...', 'success');
 
-    const generatePDF = () => {
-      const element = pdfRef.current;
-      const opt = {
-        margin: 10,
-        filename: '我的專屬課表.pdf',
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true, logging: false },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+    const element = pdfRef.current;
+    const originalClassName = element.className;
+    
+    // 暫時將元素移入可見區域的最底層進行截圖
+    element.className = 'absolute top-0 left-0 w-[950px] font-sans z-[-1]';
+
+    try {
+      const page1 = document.getElementById('pdf-page-1');
+      const page2 = document.getElementById('pdf-page-2');
+
+      const opt = { 
+        scale: 2, 
+        useCORS: true, 
+        logging: false, 
+        windowWidth: 950 
       };
 
-      window.html2pdf().set(opt).from(element).save().then(() => {
-        setIsExporting(false);
-        showToast('✅ PDF 匯出成功！', 'success');
-      }).catch(() => {
-        setIsExporting(false);
-        showToast('❌ PDF 匯出失敗，請稍後再試。', 'error');
-      });
-    };
+      const canvas1 = await html2canvas(page1, opt);
+      const imgData1 = canvas1.toDataURL('image/jpeg', 0.98);
 
-    if (window.html2pdf) {
-      generatePDF();
-    } else {
-      const script = document.createElement('script');
-      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
-      script.onload = generatePDF;
-      script.onerror = () => {
-        setIsExporting(false);
-        showToast('❌ 無法載入 PDF 套件，請檢查網路連線', 'error');
-      };
-      document.head.appendChild(script);
+      const canvas2 = await html2canvas(page2, opt);
+      const imgData2 = canvas2.toDataURL('image/jpeg', 0.98);
+
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      
+      const pdfHeight1 = (canvas1.height * pdfWidth) / canvas1.width;
+      pdf.addImage(imgData1, 'JPEG', 0, 0, pdfWidth, pdfHeight1);
+
+      pdf.addPage();
+      const pdfHeight2 = (canvas2.height * pdfWidth) / canvas2.width;
+      pdf.addImage(imgData2, 'JPEG', 0, 0, pdfWidth, pdfHeight2);
+
+      pdf.save('我的專屬課表.pdf');
+      
+      showToast('✅ PDF 匯出成功！', 'success');
+    } catch (err) {
+      console.error('PDF Export Error:', err);
+      showToast('❌ PDF 匯出失敗，請稍後再試。', 'error');
+    } finally {
+      element.className = originalClassName;
+      setIsExporting(false);
     }
   };
 
@@ -683,10 +696,10 @@ export default function App() {
       {/* 隱藏的 PDF 渲染版面 */}
       <div
         ref={pdfRef}
-        className="fixed left-[-9999px] top-[-9999px] w-[950px] bg-white text-black p-8 font-sans z-[-1]"
+        className="fixed left-[-9999px] top-[-9999px] w-[950px] font-sans z-[-1]"
       >
         {/* 第 1 頁：課表 */}
-        <div className="w-full pb-4">
+        <div id="pdf-page-1" className="w-full pb-4 bg-white p-8">
           <h1 className="text-3xl font-black text-center mb-6 text-slate-800 tracking-wider">我的專屬課表</h1>
 
           <div
@@ -762,11 +775,8 @@ export default function App() {
           </div>
         </div>
 
-        {/* 換頁標記 (html2pdf 自動識別) */}
-        <div className="html2pdf__page-break"></div>
-
         {/* 第 2 頁：詳細資訊清單 */}
-        <div className="w-full mt-10">
+        <div id="pdf-page-2" className="w-full bg-white p-8 pt-4">
           <h1 className="text-3xl font-black text-center mb-6 text-slate-800 tracking-wider">各課程詳細資訊</h1>
           <table className="w-full border-collapse border-2 border-slate-800 text-[15px]">
             <thead>
