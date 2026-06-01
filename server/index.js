@@ -19,7 +19,6 @@ const GEMINI_API_KEYS = (process.env.GEMINI_API_KEY || '')
 
 // 優先順序模型列表，根據使用者需求加入 Gemini 2.5 Flash
 const MODELS = [
-  'gemini-2.5-flash',
   'gemini-2.0-flash',
   'gemini-1.5-flash',
   'gemini-3.1-flash-lite',
@@ -31,25 +30,36 @@ app.use(compression());
 app.use(express.json({ limit: '256kb' }));
 app.use(express.static(PUBLIC_DIR));
 
-const buildPrompt = (courseList) => `你現在是一位幽默且經驗豐富的大學教授/學長姐。請幫我分析以下這名學生的課表，並給予「課表健檢」建議。
-請用繁體中文回答，語氣要輕鬆活潑、帶點幽默，並適當使用 emoji。排版請使用 Markdown 格式。
+// 簡單的內存速率限制
+const rateLimitMap = new Map();
+const LIMIT_WINDOW = 5 * 60 * 1000; // 5 分鐘
+const MAX_REQUESTS = 2;
 
-學生的課表包含以下課程：
+const buildPrompt = (courseList) => `你是幽默的學長姐，請為這份課表進行「極簡健檢」。
+繁體中文、輕鬆幽默、多用 emoji、Markdown 格式。
+請控制在 150 字以內。
+
+課程：
 ${courseList}
 
-請務必提供以下三段內容：
-### ✨ 課表專屬稱號
-(根據這些課程的屬性，為這個課表組合取個好笑、中二或帥氣的名字，例如：通識達人、爆肝工程師、極致的時間管理大師)
-
-### 📊 總體戰力分析
-(分析這學期會很閒還是會爆肝？有什麼優缺點？例如：某一天課太密集了要注意體力、選了很有趣的跨域課程等)
-
-### 💡 學長姐的生存建議
-(針對這些特定的課程組合，給個實用的小提醒或心理建設)`;
+請包含：
+1. **✨ 稱號**：一句話中二稱號。
+2. **📊 分析**：兩句話精闢分析。
+3. **💡 建議**：一個實用提醒。`;
 
 app.post('/api/ai-review', async (req, res) => {
   if (GEMINI_API_KEYS.length === 0) {
     return res.status(503).json({ error: '伺服器尚未設定 GEMINI_API_KEY' });
+  }
+
+  // 檢查速率限制 (以 IP 為主)
+  const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+  const now = Date.now();
+  const userRequests = rateLimitMap.get(ip) || [];
+  const validRequests = userRequests.filter((t) => now - t < LIMIT_WINDOW);
+
+  if (validRequests.length >= MAX_REQUESTS) {
+    return res.status(429).json({ error: '你分析得太快啦！學長姐口渴了，請等 5 分鐘後再試。' });
   }
 
   const courseList = (req.body?.courseList ?? '').toString().slice(0, 4000);
@@ -77,7 +87,10 @@ app.post('/api/ai-review', async (req, res) => {
           const data = await r.json();
           const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
           if (text) {
-            console.log(`Success with model: ${model}`);
+            console.log(`Success with model: ${model} for IP: ${ip}`);
+            // 成功後才記錄次數
+            validRequests.push(now);
+            rateLimitMap.set(ip, validRequests);
             return res.json({ text });
           }
         }
