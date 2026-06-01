@@ -329,8 +329,14 @@ export default function App() {
     setAiLoading(true);
     setAiResult('');
 
-    const apiKey = '';
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+    const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+    if (!apiKey) {
+      showToast('⚠️ 尚未設定 AI API 金鑰，請先設定環境變數', 'error');
+      setAiLoading(false);
+      return;
+    }
+
+    const url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent';
 
     const courseList = selectedCourses.map(c => `- [${c.id}] ${c.name} (${c.type}, ${c.credits}學分, 星期${c.times[0].day} 第${c.times[0].periods.join(',')}節)`).join('\n');
 
@@ -356,7 +362,10 @@ export default function App() {
       try {
         const res = await fetch(url, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'X-goog-api-key': apiKey,
+          },
           body: JSON.stringify(payload),
         });
         if (!res.ok) throw new Error('API Error');
