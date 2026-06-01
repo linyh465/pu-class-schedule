@@ -7,22 +7,22 @@ RUN npm ci
 
 COPY frontend/ .
 COPY data/courses_output.json public/data/courses_output.json
-
-# Vite 在 build 階段把 VITE_ 變數寫死進輸出 JS，必須在此宣告才讀得到
-ARG VITE_GEMINI_API_KEY
-ENV VITE_GEMINI_API_KEY=$VITE_GEMINI_API_KEY
 RUN npm run build
 
-# ── Stage 2: Serve with nginx ────────────────────────────
-FROM nginx:alpine
+# ── Stage 2: Node server (靜態檔 + Gemini 代理) ───────────
+FROM node:20-alpine
+WORKDIR /app
 
-# Copy built React app
-COPY --from=builder /app/dist /usr/share/nginx/html
+# 後端依賴
+COPY server/package.json ./
+RUN npm install --omit=dev
 
-# Copy nginx config template
-COPY nginx.conf /etc/nginx/nginx.conf.template
+# 後端程式 + 前端 build 產物
+COPY server/ .
+COPY --from=builder /app/dist ./public
 
-EXPOSE 80
+ENV PORT=8080
+EXPOSE 8080
 
-# Substitute $PORT at runtime, leaving nginx variables untouched
-CMD ["/bin/sh", "-c", "envsubst '${PORT}' < /etc/nginx/nginx.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"]
+# GEMINI_API_KEY 由 Railway runtime 環境變數注入，不進前端 bundle
+CMD ["node", "index.js"]
