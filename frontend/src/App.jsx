@@ -58,8 +58,6 @@ const ALL_COURSES = [
   // 新增：人工智慧三四選修
   { id: '1807', name: '擴增實境互動開發', type: '選修', credits: 3, instructor: '溫建豪', times: [{ day: 1, periods: [5, 6, 7] }], location: '主顧305' },
   { id: '1809', name: '資料庫系統實作', type: '選修', credits: 3, instructor: '許慈芳', times: [{ day: 4, periods: [2, 3, 4] }], location: '主顧320' },
-  { id: '1810', name: '企業實習(二)', type: '選修', credits: 9, instructor: '林建華', times: [], location: '未提供' },
-  { id: '1811', name: '企業實習(一)', type: '選修', credits: 3, instructor: '馬宏諭', times: [], location: '未提供' },
   { id: '1812', name: '智慧互動設計實務', type: '選修', credits: 3, instructor: '馬宏諭', times: [{ day: 3, periods: [8, 9, 10] }], location: '主顧316' },
   { id: '1813', name: '高效網站開發實務(合授課程)', type: '選修', credits: 3, instructor: '陳智賢 / 陳文敬', times: [{ day: 2, periods: [8, 9, 10] }], location: '主顧316' },
   { id: '1814', name: '科技創新與創業', type: '選修', credits: 3, instructor: '張甫丞', times: [{ day: 1, periods: [5, 6, 7] }], location: '主顧301' },
