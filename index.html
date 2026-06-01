@@ -645,4 +645,618 @@ select.styled:disabled { opacity: 0.4; cursor: not-allowed; }
 
 <script>
 // =============================================
-// Doub
+// Double Major Data (資工系雙主修)
+// =============================================
+const DOUBLE_COURSES = [
+  // 大一
+  { name:'線性代數',       credit:3, year:1, overlap:false },
+  { name:'離散數學',       credit:3, year:1, overlap:true  },
+  { name:'計算機概論(一)', credit:2, year:1, overlap:true  },
+  { name:'計算機概論(二)', credit:2, year:1, overlap:true  },
+  { name:'程式設計',       credit:3, year:1, overlap:true  },
+  { name:'進階程式設計',   credit:3, year:1, overlap:true  },
+  { name:'物件導向程式設計', credit:2, year:1, overlap:false },
+  { name:'資訊數學(一)',   credit:2, year:1, overlap:true  },
+  { name:'資訊數學(二)',   credit:2, year:1, overlap:true  },
+  // 大二
+  { name:'工程數學',       credit:3, year:2, overlap:false },
+  { name:'資料結構',       credit:3, year:2, overlap:false },
+  { name:'機率與統計',     credit:3, year:2, overlap:true  },
+  { name:'邏輯設計',       credit:3, year:2, overlap:false },
+  { name:'網路通訊概論',   credit:3, year:2, overlap:true  },
+  { name:'組合語言與系統程式', credit:3, year:2, overlap:false },
+  { name:'生涯規劃及職場倫理講座', credit:1, year:2, overlap:false },
+  // 大三
+  { name:'作業系統',       credit:3, year:3, overlap:false },
+  { name:'計算機組織學',   credit:3, year:3, overlap:false },
+  { name:'專案實作(一)',   credit:2, year:3, overlap:false },
+  { name:'演算法概論',     credit:3, year:3, overlap:true  },
+  // 大四
+  { name:'專案實作(二)',   credit:2, year:4, overlap:false },
+];
+const DOUBLE_TOTAL = 53;
+
+// Map double course name -> key for tracking completion
+function doubleKey(name) { return 'dbl:' + name; }
+
+// =============================================
+// State
+// =============================================
+let RAW = {};          // classCode -> { meta, courses[] }
+let GEN_ED = [];       // general_ed.json
+let UNITS = [];        // units.json
+
+let selClass = null;
+let curTab = 'required';
+let selKeys = new Set();    // "no|time" or "dbl:name"
+let selCourses = [];
+let searchQ = '';
+let doubleEnabled = false;
+
+// =============================================
+// Double Major handlers
+// =============================================
+function onDoubleToggle() {
+  doubleEnabled = document.getElementById('toggle-double').checked;
+  document.getElementById('double-stats-section').style.display = doubleEnabled ? '' : 'none';
+  document.getElementById('tab-double').style.display = doubleEnabled ? '' : 'none';
+  if (!doubleEnabled && curTab === 'double') switchTab('required');
+  renderAll();
+}
+
+function toggleDouble(name) {
+  const k = doubleKey(name);
+  const course = DOUBLE_COURSES.find(c => c.name === name);
+  if (!course) return;
+  if (selKeys.has(k)) {
+    selKeys.delete(k);
+    selCourses = selCourses.filter(c => c._dblKey !== k);
+    toast(`已移除雙主修：${name}`);
+  } else {
+    selKeys.add(k);
+    selCourses.push({ no: k, selectno:'', name: course.name, credit: course.credit,
+      teacher:'', time:'', type:'雙主修', _req: false, _dblKey: k,
+      overlap: course.overlap });
+    toast(`已加入雙主修：${name}`);
+  }
+  renderAll();
+}
+
+// =============================================
+// Tags helper
+// =============================================
+function getTags(course, tab) {
+  const name = course.name || '';
+  const tags = [];
+
+  // English
+  if (/英文|閱讀與書寫|英語/.test(name)) {
+    tags.push({ cls: 'tag-english', text: '🔤 英文' });
+  }
+  // PE
+  if (/體育|運動健康|運動技能|基礎體育|專項/.test(name)) {
+    tags.push({ cls: 'tag-pe', text: '🏃 體育' });
+  }
+  // Military
+  if (/國防|軍訓|全民國防/.test(name)) {
+    tags.push({ cls: 'tag-military', text: '🪖 軍訓' });
+  }
+  // General ed categories
+  if (tab === 'general') {
+    const catMatch = name.match(/\(([^)]+)\)/);
+    if (catMatch) {
+      tags.push({ cls: 'tag-gen-cat', text: catMatch[1] });
+    }
+    if (course.type === '通必') {
+      tags.push({ cls: 'tag-tongbi', text: '通識必修' });
+    }
+    // slot type from note field (if present in future data)
+    if (course.note === '本系時段') {
+      tags.push({ cls: 'tag-home-slot', text: '本系時段' });
+    } else if (course.note && course.note.includes('跨系')) {
+      tags.push({ cls: 'tag-cross-slot', text: '跨系時段' });
+    }
+  }
+  return tags;
+}
+
+// =============================================
+// Init
+// =============================================
+async function init() {
+  try {
+    const [r1, r2, r3] = await Promise.all([
+      fetch('./data/all_courses_raw.json'),
+      fetch('./data/general_ed.json'),
+      fetch('./data/units.json'),
+    ]);
+    RAW = await r1.json();
+    GEN_ED = await r2.json();
+    UNITS = await r3.json();
+    buildSelectors();
+    buildGrid();
+    document.getElementById('loading-overlay').style.display = 'none';
+    renderAll();
+  } catch(e) {
+    document.getElementById('loading-overlay').innerHTML =
+      `<p style="color:var(--conflict)">載入失敗：${e.message}<br>請在 HTTP 伺服器下開啟（非直接開啟檔案）</p>`;
+    console.error(e);
+  }
+}
+
+// =============================================
+// Selectors
+// =============================================
+function buildSelectors() {
+  // College map from units
+  const collegeMap = {};
+  for (const u of UNITS) {
+    if (!collegeMap[u.college_cn]) collegeMap[u.college_cn] = [];
+    collegeMap[u.college_cn].push(u);
+  }
+
+  const sc = document.getElementById('sel-college');
+  for (const col of Object.keys(collegeMap)) {
+    const o = document.createElement('option'); o.value = col; o.textContent = col; sc.appendChild(o);
+  }
+
+  sc.addEventListener('change', () => {
+    const col = sc.value;
+    const sd = document.getElementById('sel-dept');
+    sd.innerHTML = '<option value="">請選擇系所</option>';
+    sd.disabled = !col;
+    if (col) {
+      for (const u of (collegeMap[col] || [])) {
+        const o = document.createElement('option'); o.value = u.dep1; o.textContent = u.offerUnitName; sd.appendChild(o);
+      }
+    }
+    resetFrom('dept');
+  });
+
+  document.getElementById('sel-dept').addEventListener('change', () => {
+    const dep1 = document.getElementById('sel-dept').value;
+    const sy = document.getElementById('sel-year');
+    sy.innerHTML = '<option value="">請選擇年級</option>';
+    sy.disabled = !dep1;
+    if (dep1) {
+      const years = new Set();
+      for (const v of Object.values(RAW)) {
+        if (v.meta.dep1 === dep1) years.add(v.meta.year);
+      }
+      const yn = {1:'大一', 2:'大二', 3:'大三', 4:'大四'};
+      for (const y of [...years].sort()) {
+        const o = document.createElement('option'); o.value = y; o.textContent = yn[y]||`${y}年級`; sy.appendChild(o);
+      }
+    }
+    resetFrom('year');
+  });
+
+  document.getElementById('sel-year').addEventListener('change', () => {
+    const dep1 = document.getElementById('sel-dept').value;
+    const year = parseInt(document.getElementById('sel-year').value);
+    const scl = document.getElementById('sel-class');
+    scl.innerHTML = '<option value="">請選擇班別</option>';
+    scl.disabled = !(dep1 && year);
+    if (dep1 && year) {
+      for (const [code, v] of Object.entries(RAW)) {
+        if (v.meta.dep1 === dep1 && v.meta.year === year) {
+          const o = document.createElement('option'); o.value = code; o.textContent = v.meta.cla_cn; scl.appendChild(o);
+        }
+      }
+    }
+    resetFrom('class');
+  });
+
+  document.getElementById('sel-class').addEventListener('change', () => {
+    const code = document.getElementById('sel-class').value;
+    selClass = code || null;
+    selKeys = new Set(); selCourses = [];
+    if (code) autoRequired();
+    renderAll();
+  });
+}
+
+function resetFrom(level) {
+  if (level === 'dept') {
+    const y = document.getElementById('sel-year');
+    y.innerHTML = '<option value="">請先選擇系所</option>'; y.disabled = true;
+  }
+  if (level === 'dept' || level === 'year') {
+    const c = document.getElementById('sel-class');
+    c.innerHTML = '<option value="">請先選擇年級</option>'; c.disabled = true;
+  }
+  selClass = null; selKeys = new Set(); selCourses = [];
+  renderAll();
+}
+
+// =============================================
+// Get courses for selected class
+// =============================================
+function getCoursesForClass() {
+  if (!selClass) return { required: [], elective: [], general: [] };
+  const data = RAW[selClass];
+  if (!data) return { required: [], elective: [], general: [] };
+
+  // Deduplicate by cus_num + placeTime + tea_num
+  const seen = new Set();
+  const required = [], elective = [];
+
+  for (const c of data.courses) {
+    const key = `${c.cus_num}|${c.placeTime}|${c.tea_num}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    const entry = {
+      no: c.cus_num, selectno: c.selectno,
+      name: c.courseName,
+      credit: parseInt(c.credit) || 0,
+      teacher: c.tea_name,
+      time: c.placeTime || '',
+      type: c.cus_select_cn,
+    };
+    if (c.cus_select_cn === '必修') required.push(entry);
+    else if (c.cus_select_cn === '選修') elective.push(entry);
+  }
+
+  const general = GEN_ED.map(g => ({
+    no: g.no, selectno: g.selectno,
+    name: g.name, credit: g.credit,
+    teacher: g.teacher, time: g.time || '',
+    type: g.type || '通識',
+    note: g.note || '',
+  }));
+
+  return { required, elective, general };
+}
+
+// =============================================
+// Auto-load required courses
+// =============================================
+function autoRequired() {
+  const { required } = getCoursesForClass();
+  for (const c of required) {
+    const k = `${c.no}|${c.time}`;
+    if (!selKeys.has(k)) {
+      selKeys.add(k);
+      selCourses.push({ ...c, _req: true });
+    }
+  }
+}
+
+// =============================================
+// Time parsing
+// =============================================
+const DAY = {'一':1,'二':2,'三':3,'四':4,'五':5,'六':6,'日':7};
+
+function parseTime(s) {
+  if (!s) return [];
+  const clean = s.replace(/<br\s*\/?>/gi, '\n').replace(/<[^>]+>/g, '');
+  const segs = [];
+  for (const part of clean.split(/[\n;]/)) {
+    const m = part.match(/([一二三四五六日])\s+([\d、\s]+)：/);
+    if (!m) continue;
+    const day = DAY[m[1]];
+    if (!day || day > 5) continue;
+    const periods = m[2].replace(/、/g,' ').trim().split(/\s+/).map(Number).filter(n=>n>0&&n<=13);
+    const loc = part.split('：')[1]?.replace(/<[^>]+>/g,'').trim() || '';
+    if (periods.length) segs.push({ day, periods, loc });
+  }
+  return segs;
+}
+
+function conflictWith(c) {
+  const newSegs = parseTime(c.time);
+  if (!newSegs.length) return null;
+  for (const ex of selCourses) {
+    if (ex._dblKey) continue; // double major courses have no time
+    if (ex.no === c.no && ex.time === c.time) continue;
+    for (const ns of newSegs) {
+      for (const es of parseTime(ex.time)) {
+        if (ns.day === es.day && ns.periods.some(p => es.periods.includes(p)))
+          return ex.name;
+      }
+    }
+  }
+  return null;
+}
+
+// =============================================
+// Toggle
+// =============================================
+function toggle(no, time, tab) {
+  const { required, elective, general } = getCoursesForClass();
+  const list = tab==='required' ? required : tab==='elective' ? elective : general;
+  const course = list.find(c => c.no===no && c.time===time);
+  if (!course) return;
+
+  const k = `${no}|${time}`;
+  if (selKeys.has(k)) {
+    selKeys.delete(k);
+    selCourses = selCourses.filter(c => !(c.no===no && c.time===time));
+    toast(`已移除：${course.name}`);
+  } else {
+    const cf = conflictWith(course);
+    if (cf) { toast(`⚠ 衝堂！與「${cf}」時間重疊`, true); return; }
+    selKeys.add(k);
+    selCourses.push({ ...course, _req: tab==='required' });
+    toast(`已加入：${course.name}`);
+  }
+  renderAll();
+}
+
+function remove(no, time) {
+  selKeys.delete(`${no}|${time}`);
+  selCourses = selCourses.filter(c => !(c.no===no && c.time===time));
+  renderAll();
+}
+
+// =============================================
+// Toast
+// =============================================
+let _tt;
+function toast(msg, isConflict=false) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = `toast show${isConflict ? ' conflict-toast' : ''}`;
+  clearTimeout(_tt);
+  _tt = setTimeout(() => el.className='toast', 2600);
+}
+
+// =============================================
+// Schedule Grid
+// =============================================
+function buildGrid() {
+  const g = document.getElementById('schedule-grid');
+  const days = ['','一','二','三','四','五'];
+  let h = days.map(d=>`<div class="sg-head">${d}</div>`).join('');
+  for (let p=1; p<=13; p++) {
+    h += `<div class="sg-period">${p}</div>`;
+    for (let d=1; d<=5; d++) h += `<div class="sg-cell" id="c${d}-${p}"></div>`;
+  }
+  g.innerHTML = h;
+}
+
+function renderGrid() {
+  for (let d=1;d<=5;d++) for(let p=1;p<=13;p++) {
+    const el = document.getElementById(`c${d}-${p}`);
+    if (el) el.innerHTML='';
+  }
+  const occ = {};
+  for (const c of selCourses) {
+    if (c._dblKey) continue; // no time to render
+    for (const seg of parseTime(c.time)) {
+      for (const p of seg.periods) {
+        const k = `${seg.day}-${p}`;
+        if (occ[k]) { occ[k].conflict = true; }
+        else occ[k] = { course: c, conflict: false };
+      }
+    }
+  }
+  for (const [k, {course, conflict}] of Object.entries(occ)) {
+    const [d,p] = k.split('-').map(Number);
+    const cell = document.getElementById(`c${d}-${p}`);
+    if (!cell) continue;
+    const cls = conflict ? 'sg-conflict' : course._req ? 'sg-req' : course.type==='選修' ? 'sg-elec' : 'sg-gen';
+    const b = document.createElement('div');
+    b.className = `sg-block ${cls}`;
+    b.title = `${course.name}\n${course.teacher}`;
+    b.innerHTML = `<span class="sg-block-name">${escH(course.name)}</span>`;
+    b.onclick = () => { if (!course._req) remove(course.no, course.time); };
+    cell.appendChild(b);
+  }
+}
+
+// =============================================
+// Tab
+// =============================================
+function switchTab(tab) {
+  curTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab===tab));
+  renderCourseList();
+}
+
+// =============================================
+// Course List
+// =============================================
+function renderCourseList() {
+  const { required, elective, general } = getCoursesForClass();
+  document.getElementById('tc-required').textContent = required.length;
+  document.getElementById('tc-elective').textContent = elective.length;
+  document.getElementById('tc-general').textContent = general.length;
+  document.getElementById('tc-double').textContent = DOUBLE_COURSES.length;
+
+  // Double major tab rendering
+  if (curTab === 'double') {
+    renderDoubleCourseList();
+    return;
+  }
+
+  let list = curTab==='required' ? required : curTab==='elective' ? elective : general;
+  if (searchQ) {
+    const q = searchQ.toLowerCase();
+    list = list.filter(c => c.name.toLowerCase().includes(q) || (c.teacher||'').toLowerCase().includes(q));
+  }
+
+  const container = document.getElementById('course-list');
+  if (!selClass && curTab !== 'general') {
+    container.innerHTML = `<div class="empty-state"><div style="font-size:2rem">📚</div>請先選擇班別<p>依序選擇學院 → 系所 → 年級 → 班別</p></div>`;
+    return;
+  }
+  if (!list.length) {
+    container.innerHTML = `<div class="empty-state"><div style="font-size:2rem">${searchQ?'🔍':'📂'}</div>${searchQ?'無符合課程':'此班別無課程資料'}</div>`;
+    return;
+  }
+
+  const barCls = curTab==='required'?'bar-req': curTab==='elective'?'bar-elec':'bar-gen';
+  container.innerHTML = list.map(c => {
+    const k = `${c.no}|${c.time}`;
+    const isSel = selKeys.has(k);
+    const isReq = curTab==='required';
+    const segs = parseTime(c.time);
+    const timeStr = segs.map(s=>`${['','一','二','三','四','五','六','日'][s.day]} ${s.periods.join('、')}`).join('；');
+    const rawTime = c.time.replace(/<[^>]+>/g,'').replace(/\n/g,' ');
+    const tags = getTags(c, curTab);
+    const tagsHtml = tags.length ? `<div class="course-tags">${tags.map(t=>`<span class="tag ${t.cls}">${t.text}</span>`).join('')}</div>` : '';
+
+    return `<div class="course-card ${isSel?'selected':''} ${isReq?'req-card':''}" ${isReq?'':'onclick="toggle(\''+escA(c.no)+'\',\''+escA(c.time)+'\',\''+curTab+'\')"'}>
+      <div class="type-bar ${barCls}"></div>
+      <div class="course-info">
+        <div class="course-name">${escH(c.name)}</div>
+        ${tagsHtml}
+        <div class="course-meta">
+          <span>${c.credit} 學分</span>
+          ${c.teacher ? `<span>╱ ${escH(c.teacher)}</span>` : ''}
+        </div>
+        ${timeStr ? `<div class="course-time">⏱ ${timeStr}</div>` :
+          (rawTime ? `<div class="course-time" style="color:var(--muted);font-size:0.68rem">${escH(rawTime)}</div>` : '')}
+      </div>
+      <div class="course-credit-badge">${c.credit}<small>學分</small></div>
+      ${isReq ? '' : `<button class="add-btn" onclick="event.stopPropagation();toggle('${escA(c.no)}','${escA(c.time)}','${curTab}')">${isSel?'✕':'+'}</button>`}
+    </div>`;
+  }).join('');
+}
+
+// =============================================
+// Selected List
+// =============================================
+function renderSelList() {
+  const render = (id, countId) => {
+    const el = document.getElementById(id);
+    const cnt = document.getElementById(countId);
+    if (!selCourses.length) {
+      el.innerHTML = '<div style="font-size:0.78rem;text-align:center;padding:1rem 0;color:var(--muted)">尚未選課</div>';
+      cnt.textContent = '0 門'; return;
+    }
+    cnt.textContent = `${selCourses.length} 門`;
+    el.innerHTML = selCourses.map(c => {
+      const dot = c._dblKey ? 'var(--double-color)' : c._req ? 'var(--required-color)' : c.type==='選修' ? 'var(--elective-color)' : 'var(--general-color)';
+      return `<div class="sel-item">
+        <div class="sel-dot" style="background:${dot}"></div>
+        <div class="sel-name">${escH(c.name)}</div>
+        <div class="sel-cr">${c.credit}學分</div>
+        ${c._req ? '' : `<button class="sel-rm" onclick="remove('${escA(c.no)}','${escA(c.time)}')">✕</button>`}
+      </div>`;
+    }).join('');
+  };
+  render('sel-list', 'sel-count');
+  render('sel-list2', 'sel-count2');
+}
+
+// =============================================
+// Credits
+// =============================================
+function renderCredits() {
+  let req=0, elec=0, gen=0, en=0, pe=0, dbl=0;
+  for (const c of selCourses) {
+    if (c._dblKey) { dbl += c.credit; continue; } // double major only
+    if (c._req) req += c.credit; else if (c.type==='選修') elec += c.credit; else gen += c.credit;
+    if (/英文|閱讀與書寫|英語/.test(c.name)) en += c.credit;
+    if (/體育|運動健康|運動技能|基礎體育|專項/.test(c.name)) pe += c.credit;
+  }
+  const total = req+elec+gen;
+  const remain = Math.max(0, 128-total);
+
+  // Double major stats
+  const dblRemain = Math.max(0, DOUBLE_TOTAL - dbl);
+  document.getElementById('s-double').textContent = `${dbl} / ${DOUBLE_TOTAL}`;
+  document.getElementById('s-double-remain').textContent = dblRemain;
+  document.getElementById('b-double').style.width = Math.min(100, (dbl/DOUBLE_TOTAL)*100)+'%';
+
+  const pct = (v,max) => Math.min(100, (v/max)*100)+'%';
+  document.getElementById('s-req').textContent = `${req} / 59+`;
+  document.getElementById('s-elec').textContent = `${elec} 學分`;
+  document.getElementById('s-gen').textContent = `${gen} / 16`;
+  document.getElementById('s-en').textContent  = `${en} / 4`;
+  document.getElementById('s-pe').textContent  = `${pe} / 2`;
+  document.getElementById('s-total').textContent = `${total} 學分`;
+  document.getElementById('s-remain').textContent = remain;
+
+  document.getElementById('b-req').style.width  = pct(req, 59);
+  document.getElementById('b-elec').style.width = pct(elec, 30);
+  document.getElementById('b-gen').style.width  = pct(gen, 16);
+  document.getElementById('b-en').style.width   = pct(en, 4);
+  document.getElementById('b-pe').style.width   = pct(pe, 2);
+
+  document.getElementById('h-total').textContent = `已選 ${total} 學分`;
+  document.getElementById('h-req').textContent   = `必修 ${req}`;
+  document.getElementById('h-elec').textContent  = `選修 ${elec}`;
+  document.getElementById('h-gen').textContent   = `通識 ${gen}`;
+  document.getElementById('h-pe').textContent    = `🏃 ${pe}`;
+  document.getElementById('h-en').textContent    = `🔤 ${en}`;
+}
+
+// =============================================
+// Double Major Course List
+// =============================================
+function renderDoubleCourseList() {
+  const container = document.getElementById('course-list');
+  const yearLabels = {1:'大一',2:'大二',3:'大三',4:'大四'};
+  let html = '';
+  let lastYear = null;
+  for (const c of DOUBLE_COURSES) {
+    if (c.year !== lastYear) {
+      if (lastYear) html += '</div>';
+      html += `<div style="font-size:0.72rem;color:var(--muted);letter-spacing:0.06em;padding:4px 2px 2px;font-family:var(--serif)">${yearLabels[c.year]}</div><div style="display:flex;flex-direction:column;gap:4px">`;
+      lastYear = c.year;
+    }
+    const k = doubleKey(c.name);
+    const isSel = selKeys.has(k);
+    const overlapHtml = c.overlap ? `<span class="tag tag-overlap">⚡ 可能與主修重疊/抵免</span>` : '';
+    html += `<div class="course-card double-card ${isSel?'selected':''}" onclick="toggleDouble('${escA(c.name)}')">
+      <div class="type-bar bar-dbl"></div>
+      <div class="course-info">
+        <div class="course-name">${escH(c.name)}</div>
+        <div class="course-tags">
+          <span class="tag tag-double">📘 雙主修必修</span>
+          ${overlapHtml}
+        </div>
+        <div class="course-meta"><span>${c.credit} 學分</span></div>
+      </div>
+      <div class="course-credit-badge">${c.credit}<small>學分</small></div>
+      <button class="add-btn" onclick="event.stopPropagation();toggleDouble('${escA(c.name)}')">${isSel?'✕':'+'}</button>
+    </div>`;
+  }
+  if (lastYear) html += '</div>';
+  container.innerHTML = html;
+}
+
+// =============================================
+// Master Render
+// =============================================
+function renderAll() {
+  renderCourseList();
+  renderGrid();
+  renderSelList();
+  renderCredits();
+}
+
+// =============================================
+// Mobile
+// =============================================
+function setMobileView(v) {
+  document.body.className = `view-${v}`;
+  ['select','courses','schedule'].forEach(n => {
+    document.getElementById(`mt-${n}`).classList.toggle('active', n===v);
+  });
+}
+
+// =============================================
+// Search
+// =============================================
+document.getElementById('search-input').addEventListener('input', e => {
+  searchQ = e.target.value.trim();
+  renderCourseList();
+});
+
+// =============================================
+// Escape helpers
+// =============================================
+function escH(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function escA(s) { return String(s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\n/g,'\\n'); }
+
+// =============================================
+// Start
+// =============================================
+init();
+</script>
+</body>
+</html>
