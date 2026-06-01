@@ -5,6 +5,7 @@ import ScheduleGrid from './components/ScheduleGrid';
 import CreditSummary from './components/CreditSummary';
 import { detectConflict, getAllConflicts } from './utils/conflictDetector';
 import { getGenEdTag } from './hooks/useGenEdTag';
+import DepartmentNotes from './components/DepartmentNotes';
 import './App.css';
 
 /* ── Toast icons per type ── */
@@ -200,6 +201,7 @@ function App() {
             <span className="header-title-main">靜宜大學</span>
             <span className="header-title-sub">排課模擬系統 115-1</span>
           </div>
+          <DepartmentNotes />
         </div>
         <div className="header-stats">
           <div className="header-stat">

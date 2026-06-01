@@ -333,7 +333,15 @@ def merge_courses(courses: List[Dict]) -> List[Dict]:
 
     bucket: Dict[tuple, List[Dict]] = defaultdict(list)
     for c in courses:
-        key = (c["name"], c["teacher"], c["time"])
+        # ⚠ 強制正規化：去除隱藏空格差異，確保 AB 班能正確合併
+        norm_name = str(c.get("name", "")).strip()
+        norm_teacher = str(c.get("teacher", "")).strip()
+        norm_time = (str(c.get("time", ""))
+                     .replace(" ", "")    # 半形空格
+                     .replace("\u3000", "")  # 全形空格
+                     .replace("\t", "")    # Tab
+                     .strip())
+        key = (norm_name, norm_teacher, norm_time)
         bucket[key].append(c)
 
     merged: List[Dict] = []

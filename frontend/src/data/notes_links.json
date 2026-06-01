@@ -1,0 +1,232 @@
+{
+  "通用與共同課程": [
+    {
+      "name": "[教學發展中心]數位及磨課師課程",
+      "path": "/notes/1151-01_course.pdf"
+    },
+    {
+      "name": "[通識教育中心]通識課程",
+      "path": "/notes/1151-02_course.pdf"
+    },
+    {
+      "name": "[通識教育中心]教學發展中心-微學分課程",
+      "path": "/notes/1151-02-1_course.pdf"
+    },
+    {
+      "name": "[通識教育中心]服務學習發展中心-設計思考與社會實踐課程",
+      "path": "/notes/1151-02-2_course.pdf"
+    },
+    {
+      "name": "[體育室]體育課程",
+      "path": "/notes/1151-03_course.pdf"
+    },
+    {
+      "name": "[校安中心]全民國防教育軍事訓練課程",
+      "path": "/notes/1151-04_course.pdf"
+    },
+    {
+      "name": "[師資培育中心]教育學程",
+      "path": "/notes/1151-05_course.pdf"
+    },
+    {
+      "name": "[閱讀書寫中心]閱讀與書寫課程",
+      "path": "/notes/1151-06_course.pdf"
+    },
+    {
+      "name": "[外語教學中心]非英文系之大一英文課程",
+      "path": "/notes/1151-07-1_course.pdf"
+    },
+    {
+      "name": "[外語教學中心]選修英語課程",
+      "path": "/notes/1151-07-2_course.pdf"
+    },
+    {
+      "name": "[資訊學院]資訊能力課程-人工智慧應用及邏輯思維概論",
+      "path": "/notes/1151-08_course.pdf"
+    }
+  ],
+  "外語學院": [
+    {
+      "name": "英國語文學系",
+      "path": "/notes/1151-10_course.pdf"
+    },
+    {
+      "name": "西班牙語文學系",
+      "path": "/notes/1151-11_course.pdf"
+    },
+    {
+      "name": "日本語文學系",
+      "path": "/notes/1151-12_course.pdf"
+    }
+  ],
+  "人文暨社會科學院": [
+    {
+      "name": "中國文學系",
+      "path": "/notes/1151-14_course.pdf"
+    },
+    {
+      "name": "社會工作與兒童少年福利學系",
+      "path": "/notes/1151-15_course.pdf"
+    },
+    {
+      "name": "台灣文學系",
+      "path": "/notes/1151-16_course.pdf"
+    },
+    {
+      "name": "法律學系",
+      "path": "/notes/1151-17_course.pdf"
+    },
+    {
+      "name": "生態人文學系",
+      "path": "/notes/1151-18_course.pdf"
+    },
+    {
+      "name": "大眾傳播學系",
+      "path": "/notes/1151-19_course.pdf"
+    },
+    {
+      "name": "教育研究所",
+      "path": "/notes/1151-20_course.pdf"
+    },
+    {
+      "name": "犯罪防治碩士學位學程",
+      "path": "/notes/1151-21_course.pdf"
+    },
+    {
+      "name": "社會企業與社會福利碩士學位學程",
+      "path": "/notes/1151-22_course.pdf"
+    },
+    {
+      "name": "原住民族文化碩士學位學程",
+      "path": "/notes/1151-23_course.pdf"
+    },
+    {
+      "name": "原住民族健康與社會福利博士學位學程",
+      "path": "/notes/1151-24_course.pdf"
+    },
+    {
+      "name": "犯罪防治學士學位學程原住民專班",
+      "path": "/notes/1151-25_course.pdf"
+    },
+    {
+      "name": "法律學士學位學程原住民專班",
+      "path": "/notes/1151-26_course.pdf"
+    },
+    {
+      "name": "健康照顧社會工作學士學位學程原住民專班",
+      "path": "/notes/1151-27_course.pdf"
+    },
+    {
+      "name": "藝術跨域創作學士學位學程",
+      "path": "/notes/1151-28_course.pdf"
+    }
+  ],
+  "理學院": [
+    {
+      "name": "財務工程學系",
+      "path": "/notes/1151-29_course.pdf"
+    },
+    {
+      "name": "應用化學系",
+      "path": "/notes/1151-30_course.pdf"
+    },
+    {
+      "name": "食品營養學系",
+      "path": "/notes/1151-31_course.pdf"
+    },
+    {
+      "name": "化粧品科學系",
+      "path": "/notes/1151-32_course.pdf"
+    },
+    {
+      "name": "永續環境與智慧科技學士學位學程",
+      "path": "/notes/1151-33_course.pdf"
+    }
+  ],
+  "管理學院": [
+    {
+      "name": "行銷與數位經營管理學系",
+      "path": "/notes/1151-34_course.pdf"
+    },
+    {
+      "name": "國際企業學系",
+      "path": "/notes/1151-35_course.pdf"
+    },
+    {
+      "name": "會計學系",
+      "path": "/notes/1151-36_course.pdf"
+    },
+    {
+      "name": "觀光事業學系",
+      "path": "/notes/1151-37_course.pdf"
+    },
+    {
+      "name": "財務金融學系",
+      "path": "/notes/1151-38_course.pdf"
+    },
+    {
+      "name": "管理碩士在職專班",
+      "path": "/notes/1151-39_course.pdf"
+    },
+    {
+      "name": "創新與創業管理碩士學位學程",
+      "path": "/notes/1151-40_course.pdf"
+    },
+    {
+      "name": "經營管理進修學士班",
+      "path": "/notes/1151-41_course.pdf"
+    }
+  ],
+  "資訊學院": [
+    {
+      "name": "資訊管理學系",
+      "path": "/notes/1151-43_course.pdf"
+    },
+    {
+      "name": "資訊工程學系",
+      "path": "/notes/1151-44_course.pdf"
+    },
+    {
+      "name": "人工智慧應用學系",
+      "path": "/notes/1151-45_course.pdf"
+    },
+    {
+      "name": "資料科學暨大數據分析與應用學系",
+      "path": "/notes/1151-46_course.pdf"
+    },
+    {
+      "name": "資訊應用與科技管理碩士在職專班",
+      "path": "/notes/1151-47_course.pdf"
+    },
+    {
+      "name": "國際資訊學士學位學程",
+      "path": "/notes/1151-48_course.pdf"
+    },
+    {
+      "name": "晶片設計學士學位學程",
+      "path": "/notes/1151-49_course.pdf"
+    }
+  ],
+  "國際學院": [
+    {
+      "name": "寰宇管理碩士學位學程",
+      "path": "/notes/1151-51_course.pdf"
+    },
+    {
+      "name": "寰宇管理學士學位學程",
+      "path": "/notes/1151-52_course.pdf"
+    },
+    {
+      "name": "寰宇外語教育學士學位學程",
+      "path": "/notes/1151-53_course.pdf"
+    },
+    {
+      "name": "智慧媒體與創新科技應用學士學位學程",
+      "path": "/notes/1151-54_course.pdf"
+    },
+    {
+      "name": "城市創新行銷碩士在職學位學程",
+      "path": "/notes/1151-55_course.pdf"
+    }
+  ]
+}
