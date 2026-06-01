@@ -3,920 +3,646 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>靜宜大學選課系統</title>
+<title>靜宜大學 115-1 選課系統</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;500;600&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-/* ===== CSS Variables ===== */
+/* ===== Variables ===== */
 :root {
-  --primary: #8B1A1A;
-  --primary-light: #b5292929;
-  --primary-dark: #6a1414;
-  --accent: #c0392b;
-  --bg: #f8f5f2;
-  --card-bg: #ffffff;
-  --border: #e0d6cc;
-  --text: #2c2c2c;
-  --text-muted: #7a7a7a;
-  --required: #c0392b;
-  --elective: #2980b9;
-  --general: #27ae60;
-  --shadow: 0 2px 8px rgba(0,0,0,0.08);
-  --radius: 10px;
+  --bg: #FAFAF8;
+  --bg2: #F4F3F0;
+  --card: #FFFFFF;
+  --border: #E2DDD8;
+  --border2: #CCC8C2;
+  --text: #1a1a1a;
+  --muted: #7a7570;
+  --accent: #5B7FA6;
+  --accent-light: #EBF0F6;
+  --highlight: #E8956D;
+  --highlight-light: #FDF1EB;
+  --required-color: #4A7BB5;
+  --elective-color: #5A9B6E;
+  --general-color: #C4803A;
+  --conflict: #C44A4A;
+  --english-color: #B5600A;
+  --pe-color: #3A8F68;
+  --military-color: #5D6E3A;
+  --double-color: #6B4EA8;
+  --double-light: #F0ECF9;
+  --serif: 'Noto Serif TC', 'Georgia', serif;
+  --sans: 'Noto Sans TC', system-ui, sans-serif;
+  --radius: 6px;
+  --radius-lg: 10px;
+  --shadow: 0 1px 4px rgba(0,0,0,0.08);
+  --shadow-md: 0 2px 10px rgba(0,0,0,0.10);
 }
 
-/* ===== Reset & Base ===== */
+/* ===== Reset ===== */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans TC', sans-serif;
+  font-family: var(--sans);
   background: var(--bg);
   color: var(--text);
-  font-size: 15px;
-  line-height: 1.6;
+  font-size: 14px;
+  line-height: 1.65;
+  min-height: 100vh;
 }
-a { color: var(--primary); text-decoration: none; }
+button { cursor: pointer; font-family: inherit; }
+select { font-family: inherit; }
+
+/* ===== Loading Overlay ===== */
+#loading-overlay {
+  position: fixed; inset: 0;
+  background: var(--bg);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  z-index: 9999; gap: 16px;
+}
+.spinner {
+  width: 36px; height: 36px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+#loading-overlay p { font-family: var(--serif); color: var(--muted); font-size: 0.9rem; }
 
 /* ===== Header ===== */
 header {
-  background: var(--primary);
-  color: white;
-  padding: 0 1rem;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 100;
+  box-shadow: var(--shadow);
 }
 .header-inner {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 56px;
-  gap: 0.75rem;
+  max-width: 1440px; margin: 0 auto;
+  padding: 0 1.25rem; height: 52px;
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
 }
-.logo { font-size: 1.1rem; font-weight: 700; white-space: nowrap; }
-.logo span { font-size: 0.85rem; font-weight: 400; opacity: 0.85; margin-left: 0.4rem; }
-.header-stats {
-  display: flex;
-  gap: 0.75rem;
-  font-size: 0.82rem;
+.logo {
+  font-family: var(--serif);
+  font-size: 1rem; font-weight: 600;
+  color: var(--text); white-space: nowrap;
+  display: flex; align-items: center; gap: 8px;
 }
-.stat-chip {
-  background: rgba(255,255,255,0.18);
-  border-radius: 20px;
-  padding: 2px 10px;
-  white-space: nowrap;
+.logo-dot { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; flex-shrink: 0; }
+.logo small { font-size: 0.75rem; font-weight: 300; color: var(--muted); font-family: var(--sans); }
+.header-credits { display: flex; gap: 0.4rem; align-items: center; flex-wrap: wrap; }
+.credit-chip {
+  font-size: 0.72rem; padding: 2px 8px;
+  border-radius: 20px; border: 1px solid var(--border);
+  color: var(--muted); white-space: nowrap;
 }
+.credit-chip.accent { background: var(--accent-light); border-color: var(--accent); color: var(--accent); font-weight: 500; }
 
-/* ===== Layout ===== */
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 1rem;
+/* ===== Main Layout ===== */
+.layout {
+  max-width: 1440px; margin: 0 auto;
+  padding: 1rem 1.25rem;
   display: grid;
-  grid-template-columns: 300px 1fr;
-  gap: 1rem;
-  align-items: start;
+  grid-template-columns: 268px 1fr 340px;
+  gap: 1rem; align-items: start;
 }
-@media (max-width: 768px) {
-  .container { grid-template-columns: 1fr; }
-  .logo span { display: none; }
-  .header-stats .stat-chip:nth-child(n+3) { display: none; }
+@media (max-width: 1120px) {
+  .layout { grid-template-columns: 248px 1fr; }
+  .schedule-panel { display: none; }
+}
+@media (max-width: 720px) {
+  .layout { grid-template-columns: 1fr; padding-bottom: 80px; }
+  .sidebar { display: none; }
 }
 
 /* ===== Sidebar ===== */
 .sidebar {
-  position: sticky;
-  top: 68px;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
+  position: sticky; top: 64px;
+  display: flex; flex-direction: column; gap: 0.75rem;
+  max-height: calc(100vh - 80px); overflow-y: auto;
 }
-@media (max-width: 768px) {
-  .sidebar { position: static; }
-}
+.sidebar::-webkit-scrollbar { width: 0; }
 
-/* ===== Cards ===== */
+/* ===== Card ===== */
 .card {
-  background: var(--card-bg);
-  border-radius: var(--radius);
-  padding: 1rem;
-  box-shadow: var(--shadow);
-  border: 1px solid var(--border);
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); box-shadow: var(--shadow); overflow: hidden;
 }
-.card-title {
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: var(--primary);
-  margin-bottom: 0.75rem;
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
+.card-header {
+  padding: 10px 14px 8px; border-bottom: 1px solid var(--border);
+  font-family: var(--serif); font-size: 0.82rem; font-weight: 500;
+  color: var(--muted); letter-spacing: 0.04em;
+  display: flex; align-items: center; justify-content: space-between;
 }
-.card-title::before {
-  content: '';
-  display: inline-block;
-  width: 4px;
-  height: 16px;
-  background: var(--primary);
-  border-radius: 2px;
-}
+.card-body { padding: 12px 14px; }
 
-/* ===== Form Controls ===== */
-select, input[type="text"] {
-  width: 100%;
-  padding: 0.5rem 0.75rem;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  font-size: 0.9rem;
-  color: var(--text);
-  background: white;
+/* ===== Selectors ===== */
+.selector-group { display: flex; flex-direction: column; gap: 7px; }
+.selector-label {
+  font-size: 0.7rem; color: var(--muted); font-weight: 400;
+  letter-spacing: 0.06em; padding-left: 2px; margin-top: 4px;
+}
+select.styled {
+  width: 100%; padding: 7px 28px 7px 10px;
+  border: 1px solid var(--border); border-radius: var(--radius);
+  background: var(--bg); color: var(--text); font-size: 0.84rem;
   appearance: none;
-  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237a7570' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 10px center;
+  cursor: pointer; transition: border-color 0.15s;
 }
-select:focus, input:focus { outline: 2px solid var(--primary); border-color: var(--primary); }
-.select-wrapper { position: relative; }
-.select-wrapper::after {
-  content: '▾';
-  position: absolute;
-  right: 0.75rem;
-  top: 50%;
-  transform: translateY(-50%);
-  pointer-events: none;
-  color: var(--text-muted);
-}
-label { display: block; font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.3rem; font-weight: 500; }
+select.styled:focus { outline: none; border-color: var(--accent); }
+select.styled:disabled { opacity: 0.4; cursor: not-allowed; }
 
-/* ===== Filters Stack ===== */
-.filter-group { margin-bottom: 0.75rem; }
-.filter-group:last-child { margin-bottom: 0; }
-
-/* ===== Identity Options ===== */
-.identity-options { display: flex; flex-direction: column; gap: 0.4rem; }
-.identity-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.4rem 0.5rem;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.15s;
+/* ===== Credit Stats ===== */
+.credit-stat-row {
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 0.8rem; margin-bottom: 3px;
 }
-.identity-item:hover { background: var(--bg); }
-.identity-item input[type="checkbox"] { accent-color: var(--primary); width: 16px; height: 16px; }
-.identity-item label { margin: 0; cursor: pointer; font-size: 0.88rem; color: var(--text); }
-
-/* ===== Credit Panel ===== */
-.credit-panel { display: flex; flex-direction: column; gap: 0.5rem; }
-.credit-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 0.85rem;
-}
-.credit-row .label { display: flex; align-items: center; gap: 0.35rem; }
-.credit-row .val { font-weight: 700; font-size: 1rem; }
-.badge {
-  display: inline-block;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-}
-.badge.required { background: var(--required); }
-.badge.elective { background: var(--elective); }
-.badge.general { background: var(--general); }
-.badge.extra { background: #e67e22; }
-.progress-bar {
-  width: 100%;
-  height: 8px;
-  background: #e8e0d8;
-  border-radius: 4px;
-  overflow: hidden;
-  margin: 0.3rem 0;
-}
-.progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--primary), var(--accent));
-  border-radius: 4px;
-  transition: width 0.3s;
-}
-.credit-total {
-  border-top: 1px solid var(--border);
-  padding-top: 0.5rem;
-  margin-top: 0.25rem;
-  font-weight: 700;
-}
-.graduation-status {
+.credit-stat-row .lbl { color: var(--muted); }
+.credit-stat-row .val { font-weight: 500; font-variant-numeric: tabular-nums; }
+.credit-bar { height: 5px; background: var(--bg2); border-radius: 3px; overflow: hidden; margin-bottom: 8px; }
+.credit-bar-fill { height: 100%; border-radius: 3px; transition: width 0.4s ease; }
+.grad-box {
+  background: var(--accent-light); border: 1px solid var(--accent);
+  border-radius: var(--radius); padding: 9px 12px; margin-top: 8px;
   text-align: center;
-  padding: 0.5rem;
-  border-radius: 6px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  margin-top: 0.25rem;
 }
-.graduation-status.ok { background: #d4efdf; color: #1a7a40; }
-.graduation-status.warn { background: #fde8d8; color: #9a4a00; }
+.grad-box .remain { font-family: var(--serif); font-size: 1.5rem; font-weight: 600; color: var(--accent); line-height: 1; }
+.grad-box .remain-label { font-size: 0.72rem; color: var(--accent); margin-top: 2px; }
+.info-box {
+  background: var(--bg2); border-radius: var(--radius); padding: 8px 10px;
+  margin-top: 8px; font-size: 0.72rem; color: var(--muted); line-height: 1.6;
+}
+.info-box strong { color: var(--text); }
 
-/* ===== Main Content ===== */
-.main-content { display: flex; flex-direction: column; gap: 1rem; }
-
-/* ===== Tab Bar ===== */
-.tab-bar {
-  display: flex;
-  gap: 0.4rem;
-  background: var(--card-bg);
-  border-radius: var(--radius);
-  padding: 0.4rem;
-  box-shadow: var(--shadow);
-  border: 1px solid var(--border);
-  overflow-x: auto;
+/* ===== Course Panel ===== */
+.course-panel { display: flex; flex-direction: column; gap: 0.75rem; }
+.tabs {
+  display: flex; background: var(--card);
+  border: 1px solid var(--border); border-radius: var(--radius-lg);
+  overflow: hidden; box-shadow: var(--shadow);
 }
 .tab-btn {
-  flex: 1;
-  min-width: 80px;
-  padding: 0.45rem 0.75rem;
-  border: none;
-  border-radius: 7px;
-  background: transparent;
-  cursor: pointer;
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  font-weight: 600;
-  transition: all 0.15s;
-  white-space: nowrap;
+  flex: 1; padding: 9px 4px; border: none; background: transparent;
+  font-size: 0.82rem; color: var(--muted); font-family: var(--serif);
+  cursor: pointer; transition: all 0.15s;
+  border-right: 1px solid var(--border);
 }
-.tab-btn.active {
-  background: var(--primary);
-  color: white;
+.tab-btn:last-child { border-right: none; }
+.tab-btn.active { background: var(--accent); color: white; font-weight: 500; }
+.tab-count {
+  display: inline-block; background: rgba(0,0,0,0.09);
+  border-radius: 10px; padding: 0 5px; font-size: 0.68rem;
+  margin-left: 3px; font-family: var(--sans);
 }
-.tab-btn:hover:not(.active) { background: var(--bg); color: var(--text); }
+.tab-btn.active .tab-count { background: rgba(255,255,255,0.25); }
 
-/* ===== Course Section ===== */
-.section-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 0.75rem;
-  flex-wrap: wrap;
-  gap: 0.5rem;
+.course-list { display: flex; flex-direction: column; gap: 0.45rem; }
+.empty-state {
+  text-align: center; padding: 3rem 1rem;
+  color: var(--muted); font-family: var(--serif); font-size: 0.9rem;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
 }
-.section-title {
-  font-size: 1rem;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-}
-.type-badge {
-  font-size: 0.72rem;
-  padding: 2px 8px;
-  border-radius: 12px;
-  font-weight: 600;
-}
-.type-badge.required { background: #fde8e8; color: var(--required); }
-.type-badge.elective { background: #d6eaf8; color: var(--elective); }
-.type-badge.general  { background: #d5f5e3; color: #1a7a40; }
-.type-badge.extra    { background: #fef0e0; color: #9a5a00; }
-
-/* ===== Course Grid ===== */
-.course-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 0.6rem;
-}
-@media (max-width: 480px) {
-  .course-grid { grid-template-columns: 1fr; }
-}
+.empty-state p { margin-top: 8px; font-size: 0.78rem; font-family: var(--sans); }
 
 /* ===== Course Card ===== */
 .course-card {
-  background: white;
-  border: 1.5px solid var(--border);
-  border-radius: 8px;
-  padding: 0.7rem 0.85rem;
-  cursor: pointer;
-  transition: all 0.15s;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 10px 13px;
+  display: flex; align-items: flex-start; gap: 10px;
+  cursor: pointer; transition: border-color 0.15s, box-shadow 0.15s;
   position: relative;
 }
-.course-card:hover { border-color: var(--primary); box-shadow: 0 2px 8px rgba(139,26,26,0.1); }
-.course-card.selected {
-  border-color: var(--primary);
-  background: #fdf6f6;
+.course-card:hover { border-color: var(--border2); box-shadow: var(--shadow-md); }
+.course-card.selected { border-color: var(--accent); background: var(--accent-light); }
+.course-card.selected.req-card { border-color: var(--required-color); background: #EBF2FB; }
+.course-card.req-card { cursor: default; }
+.course-card.req-card:hover { border-color: var(--border); box-shadow: none; }
+
+.type-bar { width: 3px; flex-shrink: 0; border-radius: 2px; align-self: stretch; min-height: 34px; }
+.bar-req { background: var(--required-color); }
+.bar-elec { background: var(--elective-color); }
+.bar-gen { background: var(--general-color); }
+
+.course-info { flex: 1; min-width: 0; }
+.course-name { font-family: var(--serif); font-size: 0.88rem; font-weight: 500; line-height: 1.4; }
+.course-tags { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 4px; }
+.tag {
+  font-size: 0.65rem; padding: 1px 6px; border-radius: 10px;
+  font-family: var(--sans); white-space: nowrap; font-weight: 400;
 }
-.course-card.selected::after {
-  content: '✓';
-  position: absolute;
-  top: 6px;
-  right: 8px;
-  color: var(--primary);
-  font-weight: 700;
-  font-size: 0.9rem;
-}
-.course-card.required-card {
-  border-left: 3px solid var(--required);
-}
-.course-card.elective-card {
-  border-left: 3px solid var(--elective);
-}
-.course-card.general-card {
-  border-left: 3px solid var(--general);
-}
-.course-name {
-  font-weight: 600;
-  font-size: 0.9rem;
-  margin-bottom: 0.25rem;
-  line-height: 1.4;
-  padding-right: 1.2rem;
-}
+.tag-english { background: #FEF0E7; color: var(--english-color); border: 1px solid #F5C89A; }
+.tag-pe      { background: #E8F5EE; color: var(--pe-color);      border: 1px solid #A8D9BC; }
+.tag-military{ background: #EFF1E8; color: var(--military-color); border: 1px solid #C3CB9F; }
+.tag-gen-cat { background: var(--bg2); color: var(--muted); border: 1px solid var(--border); }
+.tag-home-slot { background: var(--accent-light); color: var(--accent); border: 1px solid #BDD0E8; }
+.tag-cross-slot { background: var(--highlight-light); color: var(--highlight); border: 1px solid #F5C8A8; }
+.tag-tongbi  { background: #EEE8F8; color: #6048A0; border: 1px solid #C4B0E8; }
+
 .course-meta {
-  display: flex;
-  gap: 0.4rem;
-  flex-wrap: wrap;
-  font-size: 0.75rem;
-  color: var(--text-muted);
+  font-size: 0.73rem; color: var(--muted); margin-top: 3px;
+  display: flex; flex-wrap: wrap; gap: 3px 8px;
 }
-.course-meta span { display: flex; align-items: center; gap: 0.2rem; }
-.credit-tag {
-  background: var(--bg);
-  padding: 1px 6px;
-  border-radius: 4px;
-  font-weight: 600;
-  color: var(--text);
-  font-size: 0.75rem;
+.course-time { font-size: 0.7rem; color: var(--accent); margin-top: 2px; }
+.course-credit-badge {
+  flex-shrink: 0; font-family: var(--serif);
+  font-size: 1.05rem; font-weight: 600; color: var(--muted);
+  padding-top: 1px; text-align: center;
 }
+.course-credit-badge small { font-size: 0.6rem; font-weight: 400; display: block; text-align: center; }
 
-/* ===== Empty State ===== */
-.empty-state {
-  text-align: center;
-  padding: 3rem 1rem;
-  color: var(--text-muted);
+.add-btn {
+  flex-shrink: 0; width: 24px; height: 24px;
+  border-radius: 50%; border: 1.5px solid var(--border2);
+  background: transparent; display: flex; align-items: center; justify-content: center;
+  font-size: 14px; color: var(--muted); transition: all 0.15s; align-self: center;
 }
-.empty-state .icon { font-size: 3rem; margin-bottom: 0.75rem; }
-.empty-state p { font-size: 0.9rem; }
+.course-card:hover .add-btn { border-color: var(--accent); color: var(--accent); }
+.course-card.selected .add-btn { background: var(--accent); border-color: var(--accent); color: white; transform: rotate(45deg); }
 
-/* ===== Search ===== */
-.search-bar {
-  position: relative;
-  margin-bottom: 0.75rem;
+/* ===== Schedule Panel ===== */
+.schedule-panel {
+  position: sticky; top: 64px;
+  display: flex; flex-direction: column; gap: 0.75rem;
+  max-height: calc(100vh - 80px); overflow-y: auto;
 }
-.search-bar input {
-  padding-left: 2.2rem;
-  background: var(--bg);
-  border: 1px solid var(--border);
-}
-.search-bar::before {
-  content: '🔍';
-  position: absolute;
-  left: 0.65rem;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 0.85rem;
-}
+.schedule-panel::-webkit-scrollbar { width: 3px; }
+.schedule-panel::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
-/* ===== Loading ===== */
-.loading {
-  text-align: center;
-  padding: 2rem;
-  color: var(--text-muted);
-  font-size: 0.9rem;
+.schedule-grid {
+  display: grid;
+  grid-template-columns: 24px repeat(5, 1fr);
+  border-left: 1px solid var(--border);
+  border-top: 1px solid var(--border);
+  font-size: 0.65rem;
 }
+.sg-head {
+  background: var(--bg2); padding: 5px 2px; text-align: center;
+  font-weight: 500; color: var(--muted);
+  border-right: 1px solid var(--border); border-bottom: 1px solid var(--border);
+}
+.sg-period {
+  background: var(--bg2); padding: 3px 2px; text-align: center;
+  color: var(--muted); border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border); font-size: 0.62rem;
+  display: flex; align-items: center; justify-content: center; min-height: 26px;
+}
+.sg-cell {
+  min-height: 26px; border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border); position: relative;
+}
+.sg-block {
+  position: absolute; inset: 1px; border-radius: 3px;
+  padding: 1px 3px; font-size: 0.6rem; line-height: 1.25;
+  display: flex; align-items: center; cursor: pointer;
+  overflow: hidden; transition: opacity 0.15s;
+}
+.sg-block:hover { opacity: 0.75; }
+.sg-req  { background: #D6E6F7; color: #2a5a8a; border-left: 2px solid var(--required-color); }
+.sg-elec { background: #D6EDD9; color: #2a6a3a; border-left: 2px solid var(--elective-color); }
+.sg-gen  { background: #FAECDA; color: #7a4a1a; border-left: 2px solid var(--general-color); }
+.sg-conflict { background: #FFE0E0; color: #9a2020; border-left: 2px solid var(--conflict); }
+.sg-block-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 500; }
+
+/* ===== Selected List ===== */
+.selected-list { display: flex; flex-direction: column; gap: 3px; }
+.sel-item {
+  display: flex; align-items: center; gap: 7px;
+  padding: 5px 9px; border-radius: var(--radius);
+  font-size: 0.76rem; background: var(--bg); border: 1px solid var(--border);
+}
+.sel-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.sel-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sel-cr { color: var(--muted); flex-shrink: 0; font-size: 0.7rem; }
+.sel-rm {
+  background: none; border: none; color: var(--muted); font-size: 13px;
+  padding: 0; line-height: 1; opacity: 0.4; transition: opacity 0.15s; flex-shrink: 0;
+}
+.sel-rm:hover { opacity: 1; color: var(--conflict); }
 
 /* ===== Toast ===== */
 .toast {
-  position: fixed;
-  bottom: 1.5rem;
-  left: 50%;
-  transform: translateX(-50%) translateY(100px);
-  background: #2c2c2c;
-  color: white;
-  padding: 0.6rem 1.2rem;
-  border-radius: 24px;
-  font-size: 0.85rem;
-  z-index: 999;
-  transition: transform 0.3s;
-  white-space: nowrap;
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
+  background: var(--text); color: white; padding: 9px 18px; border-radius: 20px;
+  font-size: 0.82rem; z-index: 9000; opacity: 0; transition: all 0.25s;
+  pointer-events: none; white-space: nowrap; box-shadow: 0 4px 16px rgba(0,0,0,0.2);
 }
-.toast.show { transform: translateX(-50%) translateY(0); }
+.toast.conflict-toast { background: var(--conflict); }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-/* ===== Mobile FAB ===== */
-.fab {
-  display: none;
-  position: fixed;
-  bottom: 1.5rem;
-  right: 1.5rem;
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  background: var(--primary);
-  color: white;
-  border: none;
-  font-size: 1.4rem;
-  cursor: pointer;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.25);
-  z-index: 90;
+/* ===== Search ===== */
+.search-wrap { position: relative; }
+.search-wrap input {
+  width: 100%; padding: 7px 10px 7px 30px;
+  border: 1px solid var(--border); border-radius: var(--radius);
+  background: var(--card); font-size: 0.82rem; font-family: var(--sans); color: var(--text);
+  transition: border-color 0.15s;
 }
-@media (max-width: 768px) {
-  .fab { display: flex; align-items: center; justify-content: center; }
+.search-wrap input:focus { outline: none; border-color: var(--accent); }
+.search-wrap svg {
+  position: absolute; left: 9px; top: 50%; transform: translateY(-50%);
+  color: var(--muted); pointer-events: none;
 }
 
-/* ===== Mobile Drawer ===== */
-.drawer-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.5);
-  z-index: 200;
+/* ===== Mobile ===== */
+.mobile-nav {
+  display: none; position: fixed; bottom: 0; left: 0; right: 0;
+  background: var(--card); border-top: 1px solid var(--border);
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.08); z-index: 200;
 }
-.drawer-overlay.open { display: block; }
-.drawer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: white;
-  border-radius: 16px 16px 0 0;
-  padding: 1rem;
-  z-index: 210;
-  max-height: 85vh;
-  overflow-y: auto;
-  transform: translateY(100%);
-  transition: transform 0.3s;
+.mobile-nav-inner { display: flex; max-width: 500px; margin: 0 auto; }
+.mob-tab {
+  flex: 1; padding: 10px 4px 8px; border: none; background: transparent;
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  font-size: 0.68rem; color: var(--muted); font-family: var(--sans); transition: color 0.15s;
 }
-.drawer.open { transform: translateY(0); }
-.drawer-handle {
-  width: 40px;
-  height: 4px;
-  background: #ccc;
-  border-radius: 2px;
-  margin: 0 auto 1rem;
+.mob-tab.active { color: var(--accent); }
+.mob-tab svg { width: 20px; height: 20px; }
+
+@media (max-width: 720px) {
+  .mobile-nav { display: block; }
+  .sidebar { display: none; }
+  .course-panel { display: none; }
+  .schedule-panel { display: none; position: static; max-height: none; overflow: visible; }
+  body.view-select .sidebar { display: flex !important; }
+  body.view-courses .course-panel { display: flex !important; }
+  body.view-schedule .schedule-panel { display: flex !important; }
 }
 
-/* ===== No selection prompt ===== */
-.prompt-card {
-  background: linear-gradient(135deg, #fff5f5, #fff);
-  border: 1.5px dashed var(--border);
-  border-radius: var(--radius);
-  padding: 2rem;
-  text-align: center;
-}
-.prompt-card h3 { color: var(--primary); margin-bottom: 0.5rem; }
-.prompt-card p { color: var(--text-muted); font-size: 0.9rem; }
+/* ===== Divider ===== */
+.divider { height: 1px; background: var(--border); margin: 8px 0; }
 
-/* ===== Minor/Double Major badge ===== */
-.minor-note {
-  background: #fef0e0;
-  border: 1px solid #f0c070;
-  border-radius: 6px;
-  padding: 0.5rem 0.75rem;
-  font-size: 0.82rem;
-  color: #8a5000;
-  display: none;
+/* ===== Double Major ===== */
+.double-toggle {
+  display: flex; align-items: center; gap: 10px; cursor: pointer;
+  padding: 10px 14px;
+  user-select: none;
 }
-.minor-note.visible { display: block; }
+.toggle-switch {
+  position: relative; width: 38px; height: 22px; flex-shrink: 0;
+}
+.toggle-switch input { opacity: 0; width: 0; height: 0; position: absolute; }
+.toggle-track {
+  position: absolute; inset: 0; background: var(--border2);
+  border-radius: 11px; transition: background 0.2s;
+}
+.toggle-switch input:checked + .toggle-track { background: var(--double-color); }
+.toggle-thumb {
+  position: absolute; top: 3px; left: 3px;
+  width: 16px; height: 16px; background: white;
+  border-radius: 50%; transition: left 0.2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+.toggle-switch input:checked ~ .toggle-thumb { left: 19px; }
+.toggle-label { font-size: 0.82rem; font-weight: 500; color: var(--text); }
+.toggle-sublabel { font-size: 0.7rem; color: var(--muted); margin-top: 1px; }
+
+.double-credit-box {
+  background: var(--double-light); border: 1px solid #C9B8E8;
+  border-radius: var(--radius); padding: 9px 12px; margin-top: 8px;
+}
+.double-credit-box .remain { font-family: var(--serif); font-size: 1.3rem; font-weight: 600; color: var(--double-color); line-height: 1; }
+.double-credit-box .remain-label { font-size: 0.72rem; color: var(--double-color); margin-top: 2px; }
+
+.tag-double   { background: var(--double-light); color: var(--double-color); border: 1px solid #C9B8E8; }
+.tag-overlap  { background: #FFF3CD; color: #8B6914; border: 1px solid #F0C060; }
+
+.bar-double { background: var(--double-color); }
+
+.course-card.double-card { cursor: default; }
+.course-card.double-card:hover { border-color: var(--border); box-shadow: none; }
+.course-card.selected.double-card { border-color: var(--double-color); background: var(--double-light); }
+.bar-dbl { background: var(--double-color); }
 </style>
 </head>
-<body>
+<body class="view-courses">
+
+<!-- Loading -->
+<div id="loading-overlay">
+  <div class="spinner"></div>
+  <p>載入課程資料中⋯ (共 3.8MB)</p>
+</div>
 
 <!-- Header -->
 <header>
   <div class="header-inner">
-    <div class="logo">靜宜大學 <span>選課輔助系統 115-1</span></div>
-    <div class="header-stats" id="headerStats">
-      <span class="stat-chip">已選 <strong id="hTotal">0</strong> 學分</span>
-      <span class="stat-chip">必修 <strong id="hReq">0</strong></span>
-      <span class="stat-chip">選修 <strong id="hElec">0</strong></span>
+    <div class="logo">
+      <div class="logo-dot"></div>
+      靜宜大學選課系統
+      <small>115-1 學期</small>
+    </div>
+    <div class="header-credits">
+      <span class="credit-chip accent" id="h-total">已選 0 學分</span>
+      <span class="credit-chip" id="h-req">必修 0</span>
+      <span class="credit-chip" id="h-elec">選修 0</span>
+      <span class="credit-chip" id="h-gen">通識 0</span>
+      <span class="credit-chip" id="h-pe" title="體育">🏃 0</span>
+      <span class="credit-chip" id="h-en" title="英文">🔤 0</span>
     </div>
   </div>
 </header>
 
-<!-- Toast -->
-<div class="toast" id="toast"></div>
-
-<!-- Mobile Drawer Overlay -->
-<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()">
-  <div class="drawer" id="drawer" onclick="event.stopPropagation()">
-    <div class="drawer-handle"></div>
-    <div id="drawerContent"></div>
-  </div>
-</div>
-
-<!-- Mobile FAB -->
-<button class="fab" onclick="openDrawer()" title="篩選與統計">☰</button>
-
-<!-- Main Layout -->
-<div class="container">
+<!-- Layout -->
+<main class="layout">
 
   <!-- Sidebar -->
-  <aside class="sidebar" id="sidebar">
+  <aside class="sidebar">
 
-    <!-- Department selector -->
+    <!-- Double Major Toggle -->
     <div class="card">
-      <div class="card-title">選擇系所與年級</div>
-      <div class="filter-group">
-        <label>學院</label>
-        <div class="select-wrapper">
-          <select id="collegeSelect" onchange="onCollegeChange()">
-            <option value="">— 請選擇學院 —</option>
-          </select>
+      <label class="double-toggle" for="toggle-double">
+        <div class="toggle-switch">
+          <input type="checkbox" id="toggle-double" onchange="onDoubleToggle()">
+          <div class="toggle-track"></div>
+          <div class="toggle-thumb"></div>
         </div>
-      </div>
-      <div class="filter-group">
-        <label>系所</label>
-        <div class="select-wrapper">
-          <select id="deptSelect" onchange="onDeptChange()" disabled>
-            <option value="">— 請先選學院 —</option>
-          </select>
+        <div>
+          <div class="toggle-label">📘 資工系雙主修</div>
+          <div class="toggle-sublabel">顯示雙主修必修課程與學分進度</div>
         </div>
-      </div>
-      <div class="filter-group">
-        <label>年級</label>
-        <div class="select-wrapper">
-          <select id="yearSelect" onchange="onYearChange()" disabled>
-            <option value="">— 請先選系所 —</option>
-          </select>
+      </label>
+    </div>
+
+    <!-- Class Selector -->
+    <div class="card">
+      <div class="card-header">選擇班別</div>
+      <div class="card-body">
+        <div class="selector-group">
+          <div class="selector-label">學院</div>
+          <select class="styled" id="sel-college"><option value="">請選擇學院</option></select>
+          <div class="selector-label">系所</div>
+          <select class="styled" id="sel-dept" disabled><option value="">請先選擇學院</option></select>
+          <div class="selector-label">年級</div>
+          <select class="styled" id="sel-year" disabled><option value="">請先選擇系所</option></select>
+          <div class="selector-label">班別</div>
+          <select class="styled" id="sel-class" disabled><option value="">請先選擇年級</option></select>
         </div>
       </div>
     </div>
 
-    <!-- Identity -->
+    <!-- Credit Stats -->
     <div class="card">
-      <div class="card-title">修課身份</div>
-      <div class="identity-options">
-        <div class="identity-item">
-          <input type="checkbox" id="chkMinor" onchange="updateMinorDisplay()">
-          <label for="chkMinor">修輔系（另需 18+ 學分）</label>
+      <div class="card-header">學分統計</div>
+      <div class="card-body">
+        <div class="credit-stat-row">
+          <span class="lbl">必修</span>
+          <span class="val" id="s-req" style="color:var(--required-color)">0 / 59+</span>
         </div>
-        <div class="identity-item">
-          <input type="checkbox" id="chkDouble" onchange="updateMinorDisplay()">
-          <label for="chkDouble">雙主修（另需 40+ 學分）</label>
+        <div class="credit-bar"><div class="credit-bar-fill" id="b-req" style="background:var(--required-color);width:0%"></div></div>
+
+        <div class="credit-stat-row">
+          <span class="lbl">選修</span>
+          <span class="val" id="s-elec" style="color:var(--elective-color)">0 學分</span>
+        </div>
+        <div class="credit-bar"><div class="credit-bar-fill" id="b-elec" style="background:var(--elective-color);width:0%"></div></div>
+
+        <div class="credit-stat-row">
+          <span class="lbl">通識</span>
+          <span class="val" id="s-gen" style="color:var(--general-color)">0 / 16</span>
+        </div>
+        <div class="credit-bar"><div class="credit-bar-fill" id="b-gen" style="background:var(--general-color);width:0%"></div></div>
+
+        <div class="credit-stat-row">
+          <span class="lbl">🔤 英文</span>
+          <span class="val" id="s-en" style="color:var(--english-color)">0 / 4</span>
+        </div>
+        <div class="credit-bar"><div class="credit-bar-fill" id="b-en" style="background:var(--english-color);width:0%"></div></div>
+
+        <div class="credit-stat-row">
+          <span class="lbl">🏃 體育</span>
+          <span class="val" id="s-pe" style="color:var(--pe-color)">0 / 2</span>
+        </div>
+        <div class="credit-bar"><div class="credit-bar-fill" id="b-pe" style="background:var(--pe-color);width:0%"></div></div>
+
+        <div class="divider"></div>
+        <div class="credit-stat-row">
+          <span class="lbl">本學期合計</span>
+          <span class="val" id="s-total" style="font-size:0.92rem">0 學分</span>
+        </div>
+        <div class="grad-box">
+          <div class="remain" id="s-remain">128</div>
+          <div class="remain-label">距畢業 128 學分還差</div>
+        </div>
+        <!-- Double major stats (shown only when enabled) -->
+        <div id="double-stats-section" style="display:none">
+          <div class="divider"></div>
+          <div class="credit-stat-row">
+            <span class="lbl" style="color:var(--double-color)">📘 雙主修（資工）</span>
+            <span class="val" id="s-double" style="color:var(--double-color)">0 / 53</span>
+          </div>
+          <div class="credit-bar"><div class="credit-bar-fill" id="b-double" style="background:var(--double-color);width:0%"></div></div>
+          <div class="double-credit-box">
+            <div class="remain" id="s-double-remain">53</div>
+            <div class="remain-label">雙主修還差學分數</div>
+          </div>
+          <div class="info-box" style="margin-top:6px;border-left:3px solid var(--double-color);">
+            <strong>⚠ 雙主修注意</strong><br>
+            • 需另繳學分費<br>
+            • 主修已修相同科目不得重覆<br>
+            • 可能抵免：離散數學、計算機概論、程式設計、進階程式設計、資訊數學、網路通訊概論、機率與統計、演算法概論
+          </div>
+        </div>
+
+        <div class="info-box">
+          <strong>每學期學分上限</strong><br>
+          大一～大三：15–25 學分<br>
+          大四：9–25 學分<br>
+          前學期成績 80↑ → 最高 30 學分
         </div>
       </div>
-      <div class="minor-note" id="minorNote"></div>
     </div>
 
-    <!-- Credit Counter -->
+    <!-- Selected Courses -->
     <div class="card">
-      <div class="card-title">學分統計</div>
-      <div class="credit-panel">
-        <div class="credit-row">
-          <span class="label"><span class="badge required"></span> 必修</span>
-          <span class="val" id="cReq">0</span>
-        </div>
-        <div class="credit-row">
-          <span class="label"><span class="badge elective"></span> 選修</span>
-          <span class="val" id="cElec">0</span>
-        </div>
-        <div class="credit-row">
-          <span class="label"><span class="badge general"></span> 通識</span>
-          <span class="val" id="cGen">0</span>
-        </div>
-        <div class="credit-row" id="extraRow" style="display:none">
-          <span class="label"><span class="badge extra"></span> 輔/雙修</span>
-          <span class="val" id="cExtra">0</span>
-        </div>
-        <div class="progress-bar">
-          <div class="progress-fill" id="progressFill" style="width:0%"></div>
-        </div>
-        <div class="credit-row credit-total">
-          <span>已選總計</span>
-          <span class="val" id="cTotal">0</span>
-        </div>
-        <div class="credit-row">
-          <span style="color:var(--text-muted);font-size:0.82rem">畢業需 128 學分</span>
-          <span id="cRemain" style="font-size:0.82rem;color:var(--text-muted)">還差 128</span>
-        </div>
-        <div class="graduation-status warn" id="gradStatus">尚未達到畢業學分</div>
+      <div class="card-header">
+        <span>已選課程</span>
+        <span id="sel-count" style="font-size:0.75rem;color:var(--muted)">0 門</span>
       </div>
-    </div>
-
-    <!-- Legend -->
-    <div class="card">
-      <div class="card-title">圖示說明</div>
-      <div style="display:flex;flex-direction:column;gap:0.4rem;font-size:0.82rem">
-        <span><span style="color:var(--required);font-weight:700">■</span> 必修 — 系上規定必修</span>
-        <span><span style="color:var(--elective);font-weight:700">■</span> 選修 — 系所選修課程</span>
-        <span><span style="color:var(--general);font-weight:700">■</span> 通識 — 全校通識課程</span>
-        <span>✓ 點擊課程卡片可加入/移除</span>
+      <div class="card-body" style="padding:8px;">
+        <div class="selected-list" id="sel-list">
+          <div style="font-size:0.78rem;text-align:center;padding:1rem 0;color:var(--muted)">尚未選課</div>
+        </div>
       </div>
     </div>
 
   </aside>
 
-  <!-- Main Content -->
-  <main class="main-content" id="mainContent">
-    <div class="prompt-card" id="promptCard">
-      <div style="font-size:3rem;margin-bottom:0.75rem">📚</div>
-      <h3>歡迎使用靜宜大學選課輔助系統</h3>
-      <p style="margin-top:0.5rem">請從左側選擇學院、系所與年級，系統將自動帶入對應課程。</p>
-      <p style="margin-top:0.5rem;font-size:0.8rem;color:#aaa">資料來源：靜宜大學課綱查詢系統 115-1 學期</p>
+  <!-- Course Panel -->
+  <section class="course-panel">
+    <div class="search-wrap">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="search-input" placeholder="搜尋課程名稱或教師⋯">
     </div>
-  </main>
 
-</div>
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="required" onclick="switchTab('required')">
+        必修 <span class="tab-count" id="tc-required">0</span>
+      </button>
+      <button class="tab-btn" data-tab="elective" onclick="switchTab('elective')">
+        選修 <span class="tab-count" id="tc-elective">0</span>
+      </button>
+      <button class="tab-btn" data-tab="general" onclick="switchTab('general')">
+        通識 <span class="tab-count" id="tc-general">0</span>
+      </button>
+      <button class="tab-btn" data-tab="double" id="tab-double" onclick="switchTab('double')" style="display:none">
+        📘雙修 <span class="tab-count" id="tc-double">0</span>
+      </button>
+    </div>
+
+    <div class="course-list" id="course-list">
+      <div class="empty-state">
+        <div style="font-size:2rem">📚</div>
+        請先選擇班別
+        <p>依序選擇學院 → 系所 → 年級 → 班別</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Schedule Panel -->
+  <section class="schedule-panel">
+    <div class="card">
+      <div class="card-header">週課表</div>
+      <div class="card-body" style="padding:8px;overflow-x:auto;">
+        <div class="schedule-grid" id="schedule-grid"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <span>已選課程清單</span>
+        <span id="sel-count2" style="font-size:0.75rem;color:var(--muted)">0 門</span>
+      </div>
+      <div class="card-body" style="padding:8px;">
+        <div class="selected-list" id="sel-list2">
+          <div style="font-size:0.78rem;text-align:center;padding:1rem 0;color:var(--muted)">尚未選課</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- Mobile Nav -->
+<nav class="mobile-nav">
+  <div class="mobile-nav-inner">
+    <button class="mob-tab" onclick="setMobileView('select')" id="mt-select">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h7"/></svg>
+      選擇
+    </button>
+    <button class="mob-tab active" onclick="setMobileView('courses')" id="mt-courses">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+      課程
+    </button>
+    <button class="mob-tab" onclick="setMobileView('schedule')" id="mt-schedule">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      課表
+    </button>
+  </div>
+</nav>
+
+<div class="toast" id="toast"></div>
 
 <script>
-// ===== Data Loading =====
-let COURSES_DATA = {};
-let GENERAL_DATA = [];
-let selectedCourses = {}; // no -> {name, credit, type}
-
-async function loadData() {
-  try {
-    const [cRes, gRes] = await Promise.all([
-      fetch('data/courses.json'),
-      fetch('data/general_ed.json')
-    ]);
-    COURSES_DATA = await cRes.json();
-    GENERAL_DATA = await gRes.json();
-    initUI();
-  } catch(e) {
-    document.getElementById('mainContent').innerHTML =
-      '<div class="empty-state"><div class="icon">⚠️</div><p>無法載入課程資料，請確認 data/ 目錄存在。</p></div>';
-  }
-}
-
-// ===== UI Initialization =====
-function initUI() {
-  const colleges = [...new Set(Object.values(COURSES_DATA).map(d => d.college))].sort();
-  const sel = document.getElementById('collegeSelect');
-  colleges.forEach(c => {
-    const opt = document.createElement('option');
-    opt.value = c; opt.textContent = c;
-    sel.appendChild(opt);
-  });
-}
-
-function onCollegeChange() {
-  const college = document.getElementById('collegeSelect').value;
-  const deptSel = document.getElementById('deptSelect');
-  const yearSel = document.getElementById('yearSelect');
-  deptSel.innerHTML = '<option value="">— 請選擇系所 —</option>';
-  yearSel.innerHTML = '<option value="">— 請先選系所 —</option>';
-  yearSel.disabled = true;
-
-  if (!college) { deptSel.disabled = true; return; }
-  deptSel.disabled = false;
-
-  const depts = Object.values(COURSES_DATA).filter(d => d.college === college);
-  depts.sort((a,b) => a.name.localeCompare(b.name));
-  depts.forEach(d => {
-    const opt = document.createElement('option');
-    opt.value = d.dep1; opt.textContent = d.name;
-    deptSel.appendChild(opt);
-  });
-}
-
-function onDeptChange() {
-  const dep1 = document.getElementById('deptSelect').value;
-  const yearSel = document.getElementById('yearSelect');
-  yearSel.innerHTML = '<option value="">— 請選擇年級 —</option>';
-
-  if (!dep1) { yearSel.disabled = true; return; }
-  yearSel.disabled = false;
-
-  const dept = COURSES_DATA[dep1];
-  if (!dept) return;
-  const years = Object.keys(dept.years).sort();
-  const labels = { '1':'大一', '2':'大二', '3':'大三', '4':'大四' };
-  years.forEach(y => {
-    const opt = document.createElement('option');
-    opt.value = y; opt.textContent = labels[y] || `第${y}年`;
-    yearSel.appendChild(opt);
-  });
-}
-
-function onYearChange() { renderCourses(); }
-
-// ===== Render Courses =====
-function renderCourses() {
-  const dep1 = document.getElementById('deptSelect').value;
-  const year = document.getElementById('yearSelect').value;
-  const main = document.getElementById('mainContent');
-  const prompt = document.getElementById('promptCard');
-
-  if (prompt) prompt.style.display = 'none';
-
-  if (!dep1 || !year) { return; }
-
-  const dept = COURSES_DATA[dep1];
-  if (!dept || !dept.years[year]) {
-    main.innerHTML = '<div class="empty-state"><div class="icon">🔍</div><p>找不到該系所年級的課程資料</p></div>';
-    return;
-  }
-
-  const yrData = dept.years[year];
-
-  main.innerHTML = `
-    <div class="card" id="reqSection">
-      <div class="section-header">
-        <div class="section-title"><span class="type-badge required">必修</span>${dept.name} ${['','大一','大二','大三','大四'][year]} 必修課程</div>
-        <small style="color:var(--text-muted)">${yrData.required.length} 門</small>
-      </div>
-      <div class="course-grid" id="reqGrid"></div>
-      ${yrData.required.length===0?'<div class="empty-state" style="padding:1.5rem"><p>無必修課程資料</p></div>':''}
-    </div>
-
-    <div class="card" id="elecSection">
-      <div class="section-header">
-        <div class="section-title"><span class="type-badge elective">選修</span>系所選修</div>
-        <div style="display:flex;align-items:center;gap:0.5rem">
-          <div class="search-bar" style="margin:0;width:160px">
-            <input type="text" placeholder="搜尋課程…" oninput="filterElective(this.value)" id="elecSearch">
-          </div>
-          <small style="color:var(--text-muted)">${yrData.elective.length} 門</small>
-        </div>
-      </div>
-      <div class="course-grid" id="elecGrid"></div>
-      ${yrData.elective.length===0?'<div class="empty-state" style="padding:1.5rem"><p>無選修課程資料</p></div>':''}
-    </div>
-
-    <div class="card" id="genSection">
-      <div class="section-header">
-        <div class="section-title"><span class="type-badge general">通識</span>通識課程</div>
-        <div style="display:flex;align-items:center;gap:0.5rem">
-          <div class="search-bar" style="margin:0;width:160px">
-            <input type="text" placeholder="搜尋通識…" oninput="filterGeneral(this.value)" id="genSearch">
-          </div>
-          <small style="color:var(--text-muted)">${GENERAL_DATA.length} 門</small>
-        </div>
-      </div>
-      <div class="course-grid" id="genGrid"></div>
-    </div>
-  `;
-
-  // Render required (always all shown, auto-selected)
-  const reqGrid = document.getElementById('reqGrid');
-  yrData.required.forEach(c => {
-    reqGrid.appendChild(makeCourseCard(c, 'required', true));
-  });
-
-  // Auto-select required courses
-  yrData.required.forEach(c => {
-    if (!selectedCourses[c.no]) {
-      selectedCourses[c.no] = { name: c.name, credit: c.credit, type: 'required' };
-    }
-  });
-
-  // Render elective
-  renderElective(yrData.elective);
-  // Render general
-  renderGeneral(GENERAL_DATA);
-
-  updateCredits();
-}
-
-function makeCourseCard(c, type, autoSelected) {
-  const card = document.createElement('div');
-  card.className = `course-card ${type}-card ${(autoSelected || selectedCourses[c.no]) ? 'selected' : ''}`;
-  card.dataset.no = c.no;
-  card.dataset.type = type;
-
-  card.innerHTML = `
-    <div class="course-name">${c.name}</div>
-    <div class="course-meta">
-      <span class="credit-tag">${c.credit} 學分</span>
-      ${c.teacher ? `<span>👨‍🏫 ${c.teacher}</span>` : ''}
-      ${c.time ? `<span>⏰ ${c.time.replace(/\s+/g,' ').trim()}</span>` : ''}
-    </div>
-  `;
-
-  if (type !== 'required') {
-    card.onclick = () => toggleCourse(card, c, type);
-  } else {
-    card.style.cursor = 'default';
-    card.title = '必修課程（已自動選取）';
-  }
-
-  return card;
-}
-
-function renderElective(courses) {
-  const grid = document.getElementById('elecGrid');
-  if (!grid) return;
-  grid.innerHTML = '';
-  courses.forEach(c => grid.appendChild(makeCourseCard(c, 'elective', false)));
-}
-
-function renderGeneral(courses) {
-  const grid = document.getElementById('genGrid');
-  if (!grid) return;
-  grid.innerHTML = '';
-  courses.slice(0, 60).forEach(c => grid.appendChild(makeCourseCard(c, 'general', false)));
-}
-
-function filterElective(q) {
-  const dep1 = document.getElementById('deptSelect').value;
-  const year = document.getElementById('yearSelect').value;
-  if (!dep1 || !year) return;
-  const courses = COURSES_DATA[dep1]?.years[year]?.elective || [];
-  const filtered = q ? courses.filter(c => c.name.includes(q) || (c.teacher||'').includes(q)) : courses;
-  renderElective(filtered);
-}
-
-function filterGeneral(q) {
-  const filtered = q ? GENERAL_DATA.filter(c => c.name.includes(q) || (c.teacher||'').includes(q)) : GENERAL_DATA;
-  const grid = document.getElementById('genGrid');
-  if (!grid) return;
-  grid.innerHTML = '';
-  filtered.slice(0, 60).forEach(c => grid.appendChild(makeCourseCard(c, 'general', false)));
-}
-
-// ===== Course Toggle =====
-function toggleCourse(card, course, type) {
-  if (selectedCourses[course.no]) {
-    delete selectedCourses[course.no];
-    card.classList.remove('selected');
-    showToast(`已移除：${course.name}`);
-  } else {
-    selectedCourses[course.no] = { name: course.name, credit: course.credit, type };
-    card.classList.add('selected');
-    showToast(`已加入：${course.name}（${course.credit} 學分）`);
-  }
-  updateCredits();
-}
-
-// ===== Credit Update =====
-function updateCredits() {
-  let req=0, elec=0, gen=0, extra=0;
-  for (const c of Object.values(selectedCourses)) {
-    if (c.type === 'required') req += c.credit;
-    else if (c.type === 'elective') elec += c.credit;
-    else if (c.type === 'general') gen += c.credit;
-    else if (c.type === 'extra') extra += c.credit;
-  }
-  const total = req + elec + gen + extra;
-  const GRAD = 128;
-  const remain = Math.max(0, GRAD - total);
-  const pct = Math.min(100, (total/GRAD)*100);
-
-  document.getElementById('cReq').textContent = req;
-  document.getElementById('cElec').textContent = elec;
-  document.getElementById('cGen').textContent = gen;
-  document.getElementById('cTotal').textContent = total;
-  document.getElementById('cRemain').textContent = remain > 0 ? `還差 ${remain}` : '已達標 🎉';
-  document.getElementById('progressFill').style.width = pct + '%';
-  document.getElementById('hTotal').textContent = total;
-  document.getElementById('hReq').textContent = req;
-  document.getElementById('hElec').textContent = elec + gen;
-
-  if (extra > 0) {
-    document.getElementById('cExtra').textContent = extra;
-    document.getElementById('extraRow').style.display = 'flex';
-  }
-
-  const status = document.getElementById('gradStatus');
-  if (total >= GRAD) {
-    status.className = 'graduation-status ok';
-    status.textContent = '🎓 已達畢業學分要求！';
-  } else {
-    status.className = 'graduation-status warn';
-    status.textContent = `還需修 ${remain} 學分才能畢業`;
-  }
-}
-
-// ===== Minor / Double Major =====
-function updateMinorDisplay() {
-  const minor = document.getElementById('chkMinor').checked;
-  const double = document.getElementById('chkDouble').checked;
-  const note = document.getElementById('minorNote');
-  const row = document.getElementById('extraRow');
-
-  if (minor || double) {
-    note.className = 'minor-note visible';
-    row.style.display = 'flex';
-    let msg = '';
-    if (minor) msg += '輔系需額外修習至少 18 學分（依各系規定）。';
-    if (double) msg += (msg?' ':'') + '雙主修需額外修習至少 40 學分（依各系規定）。';
-    msg += '<br>請從右側「選修」或「通識」區勾選相關課程，並在此追蹤額外學分。';
-    note.innerHTML = msg;
-  } else {
-    note.className = 'minor-note';
-    if (![...Object.values(selectedCourses)].some(c=>c.type==='extra')) row.style.display='none';
-  }
-}
-
-// ===== Mobile Drawer =====
-function openDrawer() {
-  document.getElementById('drawerContent').innerHTML = document.getElementById('sidebar').innerHTML;
-  document.getElementById('drawerOverlay').classList.add('open');
-  document.getElementById('drawer').classList.add('open');
-}
-function closeDrawer() {
-  document.getElementById('drawerOverlay').classList.remove('open');
-  document.getElementById('drawer').classList.remove('open');
-}
-
-// ===== Toast =====
-let toastTimer;
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove('show'), 2000);
-}
-
-// ===== Boot =====
-loadData();
-</script>
-</body>
-</html>
+// =============================================
+// Doub
