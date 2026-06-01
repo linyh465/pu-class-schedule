@@ -7,6 +7,10 @@ RUN npm ci
 
 COPY frontend/ .
 COPY data/courses_output.json public/data/courses_output.json
+
+# Vite 在 build 階段把 VITE_ 變數寫死進輸出 JS，必須在此宣告才讀得到
+ARG VITE_GEMINI_API_KEY
+ENV VITE_GEMINI_API_KEY=$VITE_GEMINI_API_KEY
 RUN npm run build
 
 # ── Stage 2: Serve with nginx ────────────────────────────
