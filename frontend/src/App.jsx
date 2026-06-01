@@ -55,6 +55,19 @@ const ALL_COURSES = [
   { id: '1799/1806', name: '進階3D電腦動畫 (三AB)', type: '大三大四選修', credits: 3, instructor: '林康琦', times: [{ day: 2, periods: [7, 8, 9] }], location: '主顧320' },
   { id: '1800', name: '擴增實境互動開發 (三A)', type: '大三大四選修', credits: 3, instructor: '溫建豪', times: [{ day: 1, periods: [5, 6, 7] }], location: '主顧305' },
 
+  // 新增：人工智慧三四選修
+  { id: '1807', name: '擴增實境互動開發', type: '選修', credits: 3, instructor: '溫建豪', times: [{ day: 1, periods: [5, 6, 7] }], location: '主顧305' },
+  { id: '1809', name: '資料庫系統實作', type: '選修', credits: 3, instructor: '許慈芳', times: [{ day: 4, periods: [2, 3, 4] }], location: '主顧320' },
+  { id: '1810', name: '企業實習(二)', type: '選修', credits: 9, instructor: '林建華', times: [], location: '未提供' },
+  { id: '1811', name: '企業實習(一)', type: '選修', credits: 3, instructor: '馬宏諭', times: [], location: '未提供' },
+  { id: '1812', name: '智慧互動設計實務', type: '選修', credits: 3, instructor: '馬宏諭', times: [{ day: 3, periods: [8, 9, 10] }], location: '主顧316' },
+  { id: '1813', name: '高效網站開發實務(合授課程)', type: '選修', credits: 3, instructor: '陳智賢 / 陳文敬', times: [{ day: 2, periods: [8, 9, 10] }], location: '主顧316' },
+  { id: '1814', name: '科技創新與創業', type: '選修', credits: 3, instructor: '張甫丞', times: [{ day: 1, periods: [5, 6, 7] }], location: '主顧301' },
+  { id: '1815', name: '專案系統開發實務', type: '選修', credits: 3, instructor: '胡學誠', times: [{ day: 1, periods: [8, 9, 10] }], location: '主顧316' },
+  { id: '1816', name: '資訊安全技術應用實務', type: '選修', credits: 3, instructor: '林全財', times: [{ day: 5, periods: [5, 6, 7] }], location: '主顧316' },
+  { id: '1819', name: '智慧互動設計實務', type: '選修', credits: 3, instructor: '馬宏諭', times: [{ day: 3, periods: [8, 9, 10] }], location: '主顧316' },
+  { id: '1820', name: '科技創新與創業', type: '選修', credits: 3, instructor: '張甫丞', times: [{ day: 1, periods: [5, 6, 7] }], location: '主顧301' },
+
   // 新增：兵役
   { id: '2464', name: '全民國防教育軍事訓練(一)國際情勢', type: '兵役', credits: 0, instructor: '盧諝程', times: [{ day: 1, periods: [3, 4] }], location: '任垣203' },
   { id: '2465', name: '全民國防教育軍事訓練(二)國防政策', type: '兵役', credits: 0, instructor: '李曉菁', times: [{ day: 5, periods: [3, 4] }], location: '任垣203' },
