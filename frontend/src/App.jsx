@@ -5,17 +5,43 @@ import ScheduleGrid from './components/ScheduleGrid';
 import CreditSummary from './components/CreditSummary';
 import { detectConflict, getAllConflicts } from './utils/conflictDetector';
 import { getGenEdTag } from './hooks/useGenEdTag';
+import DepartmentNotes from './components/DepartmentNotes';
 import './App.css';
 
 const TOAST_ICONS = { success: '✅', warning: '⚠️', error: '❌', info: 'ℹ️' };
 
 function App() {
-  /* ── Core state ── */
+  /* ── Core state from localStorage ── */
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selected, setSelected] = useState(new Set());
-  const [myDept, setMyDept] = useState('');
-  const [enrollYear, setEnrollYear] = useState(115);
+  
+  const [selected, setSelected] = useState(() => {
+    try {
+      const saved = localStorage.getItem('selectedCourses');
+      return saved ? new Set(JSON.parse(saved)) : new Set();
+    } catch {
+      return new Set();
+    }
+  });
+
+  const [myDepts, setMyDepts] = useState(() => {
+    try {
+      const saved = localStorage.getItem('myDepts');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  const [enrollYear, setEnrollYear] = useState(() => {
+    const saved = localStorage.getItem('enrollYear');
+    return saved ? parseInt(saved, 10) : 115;
+  });
+
+  const [theme, setTheme] = useState(() => {
+    return localStorage.getItem('theme') || 'light';
+  });
+
   const [filters, setFilters] = useState({
     year: null, type: null, search: '', dimensions: [],
   });
@@ -33,6 +59,28 @@ function App() {
 
   /* ── Mobile tab ── */
   const [mobileTab, setMobileTab] = useState('courses');
+
+  /* ── Effects: Persistence & Theme ── */
+  useEffect(() => {
+    localStorage.setItem('selectedCourses', JSON.stringify(Array.from(selected)));
+  }, [selected]);
+
+  useEffect(() => {
+    localStorage.setItem('myDepts', JSON.stringify(myDepts));
+  }, [myDepts]);
+
+  useEffect(() => {
+    localStorage.setItem('enrollYear', enrollYear.toString());
+  }, [enrollYear]);
+
+  useEffect(() => {
+    localStorage.setItem('theme', theme);
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'light' ? 'dark' : 'light');
+  };
 
   /* ── Load courses ── */
   useEffect(() => {
@@ -73,11 +121,11 @@ function App() {
   );
 
   /* ══════════════════════════════════════════════════════════
-     FIX #3: 嚴格課程過濾邏輯
+     FIX #3: 嚴格課程過濾邏輯 (Updated for multiple depts)
      ══════════════════════════════════════════════════════════ */
   const filteredCourses = useMemo(() => {
     return courses.filter(course => {
-      /* ── 系所過濾 (核心修正) ── */
+      /* ── 系所過濾 (支援多系所) ── */
       const isGenEdOrCommon = ['通識', '通必'].includes(course.type)
         || ['教必', '教選'].includes(course.type)
         || ['體選', '共同選', '初教', '中教'].includes(course.dept)
@@ -86,7 +134,7 @@ function App() {
         || course.note === '共同選修'
         || course.note === '師培課程';
 
-      if (myDept && !isGenEdOrCommon && course.dept !== myDept) {
+      if (myDepts.length > 0 && !isGenEdOrCommon && !myDepts.includes(course.dept)) {
         return false;
       }
 
@@ -133,7 +181,7 @@ function App() {
 
       return true;
     });
-  }, [courses, filters, myDept]);
+  }, [courses, filters, myDepts]);
 
   /* ── Toggle course ── */
   const toggleCourse = useCallback((courseId) => {
@@ -157,8 +205,10 @@ function App() {
       }
 
       /* Cross-dept gen-ed warning */
-      if (myDept && course.gen_ed_group) {
-        const tag = getGenEdTag(course.gen_ed_group, myDept);
+      if (myDepts.length > 0 && course.gen_ed_group) {
+        // Just checking against the primary dept (first one selected) for gen ed warning
+        const primaryDept = myDepts[0];
+        const tag = getGenEdTag(course.gen_ed_group, primaryDept);
         if (tag === '跨系二階') {
           showToast(`⚠️ 此為跨系時段 (${course.gen_ed_group})，需等選課第二階段才能選喔！`, 'warning');
         }
@@ -168,20 +218,20 @@ function App() {
       showToast(`已加選「${course.name}」(${course.credits}學分)`, 'success');
       return next;
     });
-  }, [courses, myDept, showToast]);
+  }, [courses, myDepts, showToast]);
 
   /* ══════════════════════════════════════════════════════════
-     FIX #4: 一鍵帶入必修
+     FIX #4: 一鍵帶入必修 (針對所有選取的系所)
      ══════════════════════════════════════════════════════════ */
   const handleAddRequired = useCallback(() => {
-    if (!myDept) {
+    if (myDepts.length === 0) {
       showToast('請先選擇您的系所！', 'error');
       return;
     }
 
-    const required = courses.filter(c => c.dept === myDept && c.type === '必修');
+    const required = courses.filter(c => myDepts.includes(c.dept) && c.type === '必修');
     if (required.length === 0) {
-      showToast('找不到該系所的必修課程', 'warning');
+      showToast('找不到所選系所的必修課程', 'warning');
       return;
     }
 
@@ -216,7 +266,7 @@ function App() {
 
       return next;
     });
-  }, [courses, myDept, showToast]);
+  }, [courses, myDepts, showToast]);
 
   /* ── Loading ── */
   if (loading) {
@@ -238,6 +288,10 @@ function App() {
             <span className="header-title-main">靜宜大學</span>
             <span className="header-title-sub">排課模擬系統 115-1</span>
           </div>
+          <DepartmentNotes />
+          <button className="theme-toggle-btn" onClick={toggleTheme} title="切換主題">
+            {theme === 'light' ? '🌙' : '🌞'}
+          </button>
         </div>
         <div className="header-stats">
           <div className="header-stat">
@@ -267,14 +321,11 @@ function App() {
         ))}
       </div>
 
-      {/* ══════════════════════════════════════════════════════
-          FIX #2: 三欄佈局 — 左(固定) - 中(固定) - 右(彈性)
-          ══════════════════════════════════════════════════════ */}
       <div className="app-content">
         {/* ── 左側 Sidebar: FilterPanel + CreditSummary ── */}
         <aside className={`app-sidebar ${mobileTab === 'filter' ? 'mobile-active' : ''}`}>
           <FilterPanel
-            myDept={myDept} setMyDept={setMyDept}
+            myDepts={myDepts} setMyDepts={setMyDepts}
             enrollYear={enrollYear} setEnrollYear={setEnrollYear}
             filters={filters} setFilters={setFilters}
             deptList={deptList}
@@ -300,7 +351,7 @@ function App() {
             courses={filteredCourses}
             selected={selected}
             onToggle={toggleCourse}
-            myDept={myDept}
+            myDepts={myDepts}
           />
         </div>
 

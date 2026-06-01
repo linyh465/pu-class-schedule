@@ -3,11 +3,11 @@ import './FilterPanel.css';
 
 /* All 8 gen-ed dimensions with colors */
 const ALL_DIMENSIONS = [
-  { key: '生命智慧', color: '#e74c3c' },
-  { key: '人文美學', color: '#9b59b6' },
-  { key: '社會洞察', color: '#3498db' },
-  { key: '自然科學', color: '#27ae60' },
-  { key: '宗教與思維', color: '#e67e22' },
+  { key: '生命智慧', color: 'var(--danger)' },
+  { key: '人文美學', color: 'var(--teaching)' },
+  { key: '社會洞察', color: 'var(--info)' },
+  { key: '自然科學', color: 'var(--success)' },
+  { key: '宗教與思維', color: 'var(--common)' },
   { key: '永續與在地', color: '#2ecc71' },
   { key: '跨域與設計', color: '#1abc9c' },
   { key: '科技與服務', color: '#f39c12' },
@@ -33,16 +33,11 @@ const TYPE_OPTIONS = [
   { value: '體育', label: '體育/共同', chipClass: 'chip-common' },
 ];
 
-function FilterPanel({ myDept, setMyDept, enrollYear, setEnrollYear, filters, setFilters, deptList }) {
+function FilterPanel({ myDepts, setMyDepts, enrollYear, setEnrollYear, filters, setFilters, deptList }) {
   /* ── Searchable dropdown state ── */
-  const [deptQuery, setDeptQuery] = useState(myDept);
+  const [deptQuery, setDeptQuery] = useState('');
   const [deptOpen, setDeptOpen] = useState(false);
   const dropdownRef = useRef(null);
-
-  /* Sync external myDept changes */
-  useEffect(() => {
-    setDeptQuery(myDept);
-  }, [myDept]);
 
   /* Close dropdown on outside click */
   useEffect(() => {
@@ -56,18 +51,19 @@ function FilterPanel({ myDept, setMyDept, enrollYear, setEnrollYear, filters, se
   }, []);
 
   const filteredDepts = deptList.filter((d) =>
-    d.toLowerCase().includes(deptQuery.toLowerCase())
+    d.toLowerCase().includes(deptQuery.toLowerCase()) && !myDepts.includes(d)
   );
 
   const handleDeptSelect = (dept) => {
-    setMyDept(dept);
-    setDeptQuery(dept);
+    if (!myDepts.includes(dept)) {
+      setMyDepts([...myDepts, dept]);
+    }
+    setDeptQuery('');
     setDeptOpen(false);
   };
 
-  const handleDeptClear = () => {
-    setMyDept('');
-    setDeptQuery('');
+  const handleDeptRemove = (deptToRemove) => {
+    setMyDepts(myDepts.filter(d => d !== deptToRemove));
   };
 
   /* ── Filter update helpers ── */
@@ -99,17 +95,30 @@ function FilterPanel({ myDept, setMyDept, enrollYear, setEnrollYear, filters, se
 
   return (
     <div className="filter-panel">
-      {/* ── 1. 我的系所 ── */}
+      {/* ── 1. 我的系所 (多選) ── */}
       <div className="filter-card">
         <div className="filter-section-title">
           <span className="filter-section-icon">🏫</span>
-          我的系所
+          選擇系所 <span style={{fontSize: '11px', color: 'var(--text-muted)', marginLeft: '6px'}}>(可多選：支援雙主修/輔系)</span>
         </div>
+        
+        {/* Selected Departments Chips */}
+        {myDepts.length > 0 && (
+          <div className="filter-selected-depts">
+            {myDepts.map(dept => (
+              <span key={dept} className="filter-dept-chip">
+                {dept}
+                <button className="filter-dept-remove" onClick={() => handleDeptRemove(dept)}>×</button>
+              </span>
+            ))}
+          </div>
+        )}
+
         <div className="filter-dropdown-wrapper" ref={dropdownRef}>
           <input
             className="filter-dropdown-input"
             type="text"
-            placeholder="搜尋並選擇系所..."
+            placeholder="搜尋並加入系所..."
             value={deptQuery}
             onChange={(e) => {
               setDeptQuery(e.target.value);
@@ -117,25 +126,22 @@ function FilterPanel({ myDept, setMyDept, enrollYear, setEnrollYear, filters, se
             }}
             onFocus={() => setDeptOpen(true)}
           />
-          {myDept && (
-            <span className="filter-dropdown-clear" onClick={handleDeptClear}>
-              ✕
-            </span>
-          )}
           {deptOpen && (
             <div className="filter-dropdown-list">
               {filteredDepts.length > 0 ? (
                 filteredDepts.map((dept) => (
                   <div
                     key={dept}
-                    className={`filter-dropdown-item ${dept === myDept ? 'active' : ''}`}
+                    className="filter-dropdown-item"
                     onClick={() => handleDeptSelect(dept)}
                   >
                     {dept}
                   </div>
                 ))
               ) : (
-                <div className="filter-dropdown-empty">找不到相符的系所</div>
+                <div className="filter-dropdown-empty">
+                  {deptQuery ? '找不到相符的系所' : '已無其他系所可選'}
+                </div>
               )}
             </div>
           )}

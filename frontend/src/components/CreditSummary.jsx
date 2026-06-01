@@ -9,11 +9,11 @@ import './CreditSummary.css';
 
 /* Dimension colors for progress fills */
 const DIM_COLORS = {
-  '生命智慧': '#e74c3c',
-  '人文美學': '#9b59b6',
-  '社會洞察': '#3498db',
-  '自然科學': '#27ae60',
-  '宗教與思維': '#e67e22',
+  '生命智慧': 'var(--danger)',
+  '人文美學': 'var(--teaching)',
+  '社會洞察': 'var(--info)',
+  '自然科學': 'var(--success)',
+  '宗教與思維': 'var(--common)',
   '永續與在地': '#2ecc71',
   '跨域與設計': '#1abc9c',
   '科技與服務': '#f39c12',
@@ -21,12 +21,12 @@ const DIM_COLORS = {
 
 /* Type colors for breakdown */
 const TYPE_COLORS = {
-  '必修': '#c0392b',
-  '選修': '#2980b9',
-  '通識': '#27ae60',
-  '通必': '#27ae60',
-  '教必': '#8e44ad',
-  '教選': '#8e44ad',
+  '必修': 'var(--required)',
+  '選修': 'var(--elective)',
+  '通識': 'var(--general)',
+  '通必': 'var(--general)',
+  '教必': 'var(--teaching)',
+  '教選': 'var(--teaching)',
 };
 
 function CreditSummary({ selectedCourses, enrollYear }) {
@@ -77,7 +77,9 @@ function CreditSummary({ selectedCourses, enrollYear }) {
   const circumference = 2 * Math.PI * circleRadius;
   const progressRatio = Math.min(genEdTotal / GEN_ED_TOTAL, 1);
   const dashOffset = circumference * (1 - progressRatio);
-  const circleColor = genEdMet ? '#27ae60' : genEdTotal > 0 ? '#f39c12' : 'rgba(255,255,255,0.15)';
+  // We'll use CSS classes instead of inline style for circleColor if possible, or just raw colors since svg stroke requires it.
+  // Unfortunately, SVG stroke can take CSS variables!
+  const circleColor = genEdMet ? 'var(--success)' : genEdTotal > 0 ? 'var(--warning)' : 'var(--border)';
 
   return (
     <div className="credit-summary">
@@ -87,7 +89,7 @@ function CreditSummary({ selectedCourses, enrollYear }) {
       <div className="credit-circular-wrap">
         <div className="credit-circle">
           <svg viewBox="0 0 80 80">
-            <circle className="credit-circle-bg" cx="40" cy="40" r={circleRadius} />
+            <circle className="credit-circle-bg" cx="40" cy="40" r={circleRadius} stroke="var(--border)" />
             <circle
               className="credit-circle-fill"
               cx="40"
@@ -127,10 +129,10 @@ function CreditSummary({ selectedCourses, enrollYear }) {
               className="credit-breakdown-dot"
               style={{
                 background:
-                  label === '必修' ? '#c0392b'
-                  : label === '選修' ? '#2980b9'
-                  : label === '通識' ? '#27ae60'
-                  : '#6b6b80',
+                  label === '必修' ? 'var(--required)'
+                  : label === '選修' ? 'var(--elective)'
+                  : label === '通識' ? 'var(--general)'
+                  : 'var(--text-muted)',
               }}
             />
             {label}
@@ -156,7 +158,7 @@ function CreditSummary({ selectedCourses, enrollYear }) {
             const isMet = current >= req.min;
             const isOver = current > req.max;
             const fillPct = Math.min((current / req.max) * 100, 100);
-            const color = DIM_COLORS[req.key] || '#a0a0b0';
+            const color = DIM_COLORS[req.key] || 'var(--text-muted)';
 
             return (
               <div className="credit-dim-row" key={req.key}>
@@ -169,10 +171,10 @@ function CreditSummary({ selectedCourses, enrollYear }) {
                     {current}
                     <span className="req"> / ≥{req.min}</span>
                     {isMet && !isOver && (
-                      <span className="credit-dim-status" style={{ color: '#27ae60' }}>✓</span>
+                      <span className="credit-dim-status" style={{ color: 'var(--success)' }}>✓</span>
                     )}
                     {isOver && (
-                      <span className="credit-dim-status" style={{ color: '#f39c12' }}>⚠</span>
+                      <span className="credit-dim-status" style={{ color: 'var(--warning)' }}>⚠</span>
                     )}
                   </span>
                 </div>
@@ -181,7 +183,7 @@ function CreditSummary({ selectedCourses, enrollYear }) {
                     className="credit-progress-fill"
                     style={{
                       width: `${fillPct}%`,
-                      background: `linear-gradient(90deg, ${color}, ${color}bb)`,
+                      background: color,
                     }}
                   />
                 </div>

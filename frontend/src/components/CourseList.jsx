@@ -37,7 +37,7 @@ function groupCourses(courses) {
   return groups.filter(g => g.courses.length > 0);
 }
 
-export default function CourseList({ courses, selected, onToggle, myDept }) {
+export default function CourseList({ courses, selected, onToggle, myDepts }) {
   const groups = groupCourses(courses);
 
   if (courses.length === 0) {
@@ -66,9 +66,8 @@ export default function CourseList({ courses, selected, onToggle, myDept }) {
               const isSelected = selected instanceof Set
                 ? selected.has(course.id)
                 : Array.isArray(selected) && selected.includes(course.id);
-              const genEdTag = course.gen_ed_group
-                ? getGenEdTag(course.gen_ed_group, myDept)
-                : null;
+              
+              const genEdTag = getGenEdTag(course);
 
               return (
                 <CourseCard

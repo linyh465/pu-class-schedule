@@ -4,8 +4,7 @@
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 16px;
-  backdrop-filter: var(--blur);
-  -webkit-backdrop-filter: var(--blur);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .schedule-grid-title {
@@ -26,10 +25,10 @@
   left: 0;
   top: 50%;
   transform: translateY(-50%);
-  width: 3px;
-  height: 18px;
+  width: 4px;
+  height: 16px;
   border-radius: 2px;
-  background: linear-gradient(180deg, var(--accent), var(--accent-light));
+  background: var(--accent);
 }
 
 /* ── Table ── */
@@ -67,12 +66,12 @@
   padding: 2px;
   vertical-align: top;
   height: 36px;
-  border: 1px solid rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
   position: relative;
 }
 
 .schedule-cell:hover {
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--bg-card-hover);
 }
 
 /* ── Course block in cell ── */
@@ -90,12 +89,13 @@
   justify-content: center;
   cursor: default;
   transition: transform 0.15s, box-shadow 0.15s;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid transparent;
+  color: #ffffff;
 }
 
 .schedule-block:hover {
-  transform: scale(1.04);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  transform: scale(1.05);
+  box-shadow: var(--shadow);
   z-index: 2;
   position: relative;
 }
@@ -105,33 +105,31 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: #fff;
 }
 
 .schedule-block-loc {
   font-size: 8px;
-  opacity: 0.8;
+  opacity: 0.9;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: rgba(255, 255, 255, 0.7);
 }
 
-/* Type-based background colors */
+/* Type-based background colors using standard vars */
 .schedule-block.block-required {
-  background: rgba(192, 57, 43, 0.55);
+  background-color: var(--required);
 }
 .schedule-block.block-elective {
-  background: rgba(41, 128, 185, 0.55);
+  background-color: var(--elective);
 }
 .schedule-block.block-general {
-  background: rgba(39, 174, 96, 0.55);
+  background-color: var(--general);
 }
 .schedule-block.block-teaching {
-  background: rgba(142, 68, 173, 0.55);
+  background-color: var(--teaching);
 }
 .schedule-block.block-common {
-  background: rgba(230, 126, 34, 0.55);
+  background-color: var(--common);
 }
 
 /* ── Empty state ── */
@@ -154,14 +152,14 @@
   bottom: calc(100% + 6px);
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(20, 20, 35, 0.97);
-  border: 1px solid var(--border-hover);
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   padding: 8px 12px;
   font-size: 11px;
   color: var(--text-primary);
   white-space: nowrap;
   z-index: 100;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  box-shadow: var(--shadow-lg);
   pointer-events: none;
 }

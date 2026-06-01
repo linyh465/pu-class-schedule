@@ -1,88 +1,79 @@
-/* ============================================
-   CourseList – Group-based list with headers
-   ============================================ */
-
 .course-list {
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
-  flex: 1;
-  padding: 0 12px 16px;
+  height: 100%;
 }
 
-/* ── Empty State ── */
 .course-list-empty {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 60px 20px;
+  height: 100%;
+  padding: 40px 20px;
   text-align: center;
-  gap: 8px;
 }
 
 .course-list-empty-icon {
   font-size: 48px;
-  opacity: 0.5;
-  animation: float 3s ease-in-out infinite;
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
+  margin-bottom: 16px;
+  opacity: 0.8;
 }
 
 .course-list-empty-text {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
-  color: var(--text-secondary);
+  color: var(--text-primary);
+  margin-bottom: 8px;
 }
 
 .course-list-empty-hint {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text-muted);
 }
 
-/* ── Group ── */
 .course-list-group {
-  margin-bottom: 4px;
+  margin-bottom: 24px;
 }
 
 .course-list-group-header {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 4px 6px;
+  padding: 12px 16px;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+  border-top: 1px solid var(--border);
   position: sticky;
-  top: 0;
+  top: 61px; /* Just below the toolbar */
   z-index: 5;
-  background: rgba(15, 15, 26, 0.85);
-  backdrop-filter: blur(8px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
 }
 
 .course-list-group-icon {
+  margin-right: 8px;
   font-size: 14px;
 }
 
 .course-list-group-label {
-  font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--text-primary);
-  letter-spacing: 0.5px;
+  font-size: 14px;
 }
 
 .course-list-group-count {
-  font-size: 11px;
+  margin-left: auto;
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
   font-weight: 600;
-  padding: 1px 8px;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.06);
-  color: var(--text-muted);
+  border: 1px solid var(--border);
 }
 
-/* ── Items ── */
 .course-list-group-items {
+  padding: 12px 16px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
 }

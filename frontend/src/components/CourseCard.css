@@ -1,5 +1,5 @@
 /* ============================================
-   CourseCard – Premium Dark-Theme Styles
+   CourseCard Modern Styles (Light/Dark Support)
    ============================================ */
 
 .course-card {
@@ -8,52 +8,48 @@
   flex-direction: column;
   gap: 8px;
   padding: 14px 16px 14px 18px;
-  border-radius: 12px;
-  background: rgba(40, 40, 55, 0.7);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-left: 4px solid var(--type-color, #e67e22);
+  border-radius: var(--radius);
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--type-color, var(--info));
   cursor: pointer;
   user-select: none;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  font-family: 'Noto Sans TC', system-ui, -apple-system, sans-serif;
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--text-primary);
   overflow: visible;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .course-card:hover {
-  background: rgba(50, 50, 68, 0.85);
-  border-color: rgba(255, 255, 255, 0.12);
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
+  background: var(--bg-card-hover);
+  border-color: var(--border-hover);
+  box-shadow: var(--shadow);
   transform: translateY(-1px);
 }
 
 .course-card:active {
   transform: translateY(0);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .course-card:focus-visible {
-  outline: 2px solid var(--type-color, #e67e22);
+  outline: 2px solid var(--type-color, var(--info));
   outline-offset: 2px;
 }
 
 /* ---- Selected state ---- */
 .course-card--selected {
-  background: rgba(50, 50, 68, 0.9);
-  border-color: var(--type-color, #e67e22);
+  background: var(--bg-card);
+  border-color: var(--type-color, var(--info));
   box-shadow:
-    0 0 0 1px var(--type-color, #e67e22),
-    0 4px 20px rgba(0, 0, 0, 0.25),
-    inset 0 0 30px color-mix(in srgb, var(--type-color) 6%, transparent);
+    0 0 0 1px var(--type-color, var(--info)),
+    var(--shadow);
 }
 
 .course-card--selected:hover {
   box-shadow:
-    0 0 0 1px var(--type-color, #e67e22),
-    0 8px 28px rgba(0, 0, 0, 0.35),
-    inset 0 0 30px color-mix(in srgb, var(--type-color) 8%, transparent);
+    0 0 0 1px var(--type-color, var(--info)),
+    var(--shadow-lg);
 }
 
 /* ---- Checkmark ---- */
@@ -82,7 +78,7 @@
   font-size: 15px;
   font-weight: 700;
   line-height: 1.4;
-  color: rgba(255, 255, 255, 0.95);
+  color: var(--text-primary);
   flex: 1;
 }
 
@@ -94,6 +90,8 @@
   font-weight: 600;
   white-space: nowrap;
   letter-spacing: 0.3px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
 }
 
 /* ---- Meta row ---- */
@@ -113,7 +111,7 @@
 
 .course-card__instructor {
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--text-secondary);
 }
 
 /* FIX #5: Section badge */
@@ -122,9 +120,9 @@
   border-radius: 4px;
   font-size: 11px;
   font-weight: 500;
-  background: rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.55);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
   white-space: nowrap;
 }
 
@@ -141,7 +139,7 @@
   align-items: center;
   gap: 4px;
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--text-muted);
 }
 
 .course-card__icon {
@@ -172,34 +170,34 @@
 }
 
 .course-card__tag--dept {
-  background: rgba(39, 174, 96, 0.15);
-  color: #2ecc71;
-  border: 1px solid rgba(39, 174, 96, 0.25);
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--success);
+  border: 1px solid rgba(16, 185, 129, 0.2);
 }
 
 .course-card__tag--cross {
-  background: rgba(230, 126, 34, 0.15);
-  color: #e67e22;
-  border: 1px solid rgba(230, 126, 34, 0.25);
+  background: rgba(245, 158, 11, 0.1);
+  color: var(--common);
+  border: 1px solid rgba(245, 158, 11, 0.2);
 }
 
 .course-card__tag--dimension {
-  background: rgba(52, 152, 219, 0.12);
-  color: rgba(52, 152, 219, 0.9);
-  border: 1px solid rgba(52, 152, 219, 0.2);
+  background: rgba(14, 165, 233, 0.1);
+  color: var(--info);
+  border: 1px solid rgba(14, 165, 233, 0.2);
 }
 
 .course-card__tag--group {
-  background: rgba(155, 89, 182, 0.12);
-  color: rgba(155, 89, 182, 0.9);
-  border: 1px solid rgba(155, 89, 182, 0.2);
+  background: rgba(139, 92, 246, 0.1);
+  color: var(--teaching);
+  border: 1px solid rgba(139, 92, 246, 0.2);
 }
 
 /* ---- Note ---- */
 .course-card__note {
   margin: 0;
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--text-muted);
   line-height: 1.5;
   font-style: italic;
 }
@@ -220,7 +218,7 @@
 
 .course-card__warning-text {
   font-size: 11px;
-  color: rgba(241, 196, 15, 0.8);
+  color: var(--warning);
   font-weight: 500;
 }
 
@@ -231,12 +229,10 @@
   min-width: 220px;
   max-width: 320px;
   padding: 12px 14px;
-  background: rgba(30, 30, 42, 0.98);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(241, 196, 15, 0.2);
-  border-radius: 10px;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-lg);
   z-index: 100;
   animation: tooltip-fade-in 0.2s ease;
 }
@@ -254,7 +250,7 @@
 
 .course-card__precautions-tooltip li {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.75);
+  color: var(--text-secondary);
   line-height: 1.6;
   padding: 3px 0;
   padding-left: 14px;
@@ -265,7 +261,7 @@
   content: '•';
   position: absolute;
   left: 0;
-  color: rgba(241, 196, 15, 0.6);
+  color: var(--warning);
 }
 
 /* ---- Responsive ---- */
