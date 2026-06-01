@@ -74,11 +74,19 @@ export default function CourseCard({ course, isSelected, onToggle, genEdTag }) {
         </span>
       </div>
 
-      {/* Meta row: type badge + instructor */}
+      {/* Meta row: type badge + sections badge + instructor */}
       <div className="course-card__meta">
         <span className="course-card__type-badge" style={{ background: `${color}20`, color }}>
           {course.type}
         </span>
+        {/* FIX #5: 顯示班別標籤 */}
+        {course.sections && course.sections.length > 0 && (
+          <span className="course-card__section-badge">
+            {course.sections.length > 1
+              ? `${course.sections.join('')}班共同`
+              : `${course.sections[0]}班`}
+          </span>
+        )}
         <span className="course-card__instructor">
           {course.instructor}
         </span>

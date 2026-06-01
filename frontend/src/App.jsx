@@ -5,16 +5,9 @@ import ScheduleGrid from './components/ScheduleGrid';
 import CreditSummary from './components/CreditSummary';
 import { detectConflict, getAllConflicts } from './utils/conflictDetector';
 import { getGenEdTag } from './hooks/useGenEdTag';
-import DepartmentNotes from './components/DepartmentNotes';
 import './App.css';
 
-/* ── Toast icons per type ── */
-const TOAST_ICONS = {
-  success: '✅',
-  warning: '⚠️',
-  error: '❌',
-  info: 'ℹ️',
-};
+const TOAST_ICONS = { success: '✅', warning: '⚠️', error: '❌', info: 'ℹ️' };
 
 function App() {
   /* ── Core state ── */
@@ -24,164 +17,208 @@ function App() {
   const [myDept, setMyDept] = useState('');
   const [enrollYear, setEnrollYear] = useState(115);
   const [filters, setFilters] = useState({
-    year: null,
-    type: null,
-    search: '',
-    dimensions: [],
+    year: null, type: null, search: '', dimensions: [],
   });
 
-  /* ── Toast state ── */
+  /* ── Toast ── */
   const [toast, setToast] = useState({ show: false, message: '', type: 'info' });
   const toastTimer = useRef(null);
-
   const showToast = useCallback((message, type = 'info') => {
     if (toastTimer.current) clearTimeout(toastTimer.current);
     setToast({ show: true, message, type });
     toastTimer.current = setTimeout(() => {
-      setToast((prev) => ({ ...prev, show: false }));
+      setToast(prev => ({ ...prev, show: false }));
     }, 3000);
   }, []);
 
-  /* ── Mobile tab state ── */
+  /* ── Mobile tab ── */
   const [mobileTab, setMobileTab] = useState('courses');
 
   /* ── Load courses ── */
   useEffect(() => {
     fetch('/data/courses_output.json')
-      .then((res) => {
-        if (!res.ok) throw new Error('Failed to load courses');
-        return res.json();
-      })
-      .then((data) => {
-        setCourses(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error('Error loading courses:', err);
+      .then(res => { if (!res.ok) throw new Error('Failed'); return res.json(); })
+      .then(data => { setCourses(data); setLoading(false); })
+      .catch(err => {
+        console.error(err);
         setLoading(false);
         showToast('課程資料載入失敗', 'error');
       });
   }, [showToast]);
 
-  /* ── Derived: unique department list ── */
+  /* ── Dept list ── */
   const deptList = useMemo(() => {
-    const depts = [...new Set(courses.map((c) => c.dept))].filter(Boolean).sort();
-    return depts;
+    const exclude = new Set(['通識', '通識必修', '體選', '共同選', '初教', '中教',
+      '資訊能力', '英語檢定', '多元文化', '職場英語', '資訊學院',
+      '外語學院', '理學院', '人社院']);
+    return [...new Set(courses.map(c => c.dept))]
+      .filter(d => d && !exclude.has(d))
+      .sort();
   }, [courses]);
 
-  /* ── Derived: selected course objects ── */
-  const selectedCourses = useMemo(() => {
-    return courses.filter((c) => selected.has(c.id));
-  }, [courses, selected]);
+  /* ── Selected course objects ── */
+  const selectedCourses = useMemo(
+    () => courses.filter(c => selected.has(c.id)),
+    [courses, selected]
+  );
 
-  /* ── Derived: total selected credits ── */
-  const totalCredits = useMemo(() => {
-    return selectedCourses.reduce((sum, c) => sum + (c.credits || 0), 0);
-  }, [selectedCourses]);
+  const totalCredits = useMemo(
+    () => selectedCourses.reduce((s, c) => s + (c.credits || 0), 0),
+    [selectedCourses]
+  );
 
-  /* ── Filter courses ── */
+  const conflicts = useMemo(
+    () => getAllConflicts(selectedCourses),
+    [selectedCourses]
+  );
+
+  /* ══════════════════════════════════════════════════════════
+     FIX #3: 嚴格課程過濾邏輯
+     ══════════════════════════════════════════════════════════ */
   const filteredCourses = useMemo(() => {
-    return courses.filter((course) => {
-      /* Year filter */
+    return courses.filter(course => {
+      /* ── 系所過濾 (核心修正) ── */
+      const isGenEdOrCommon = ['通識', '通必'].includes(course.type)
+        || ['教必', '教選'].includes(course.type)
+        || ['體選', '共同選', '初教', '中教'].includes(course.dept)
+        || course.note === '共同課程'
+        || course.note === '體育選修'
+        || course.note === '共同選修'
+        || course.note === '師培課程';
+
+      if (myDept && !isGenEdOrCommon && course.dept !== myDept) {
+        return false;
+      }
+
+      /* ── 年級過濾 ── */
       if (filters.year !== null) {
         if (filters.year === 0) {
-          /* 共同 = year is null */
           if (course.year !== null) return false;
         } else {
-          if (course.year !== filters.year) return false;
+          if (!isGenEdOrCommon && course.year !== null && course.year !== filters.year) return false;
         }
       }
 
-      /* Type filter */
+      /* ── 類型過濾 ── */
       if (filters.type) {
         switch (filters.type) {
-          case '必修':
-            if (course.type !== '必修') return false;
+          case '必修': if (course.type !== '必修') return false; break;
+          case '選修': if (course.type !== '選修') return false; break;
+          case '通識': if (course.type !== '通識' && course.type !== '通必') return false; break;
+          case '師培': if (course.type !== '教必' && course.type !== '教選') return false; break;
+          case '體育': {
+            const isPE = course.dept === '體選' || course.dept === '共同選'
+              || course.note === '體育選修' || course.note === '共同選修'
+              || course.note === '共同課程';
+            if (!isPE) return false;
             break;
-          case '選修':
-            if (course.type !== '選修') return false;
-            break;
-          case '通識':
-            if (course.type !== '通識' && course.type !== '通必') return false;
-            break;
-          case '師培':
-            if (course.type !== '教必' && course.type !== '教選') return false;
-            break;
-          case '體育':
-            /* courses with dept containing 體育 or type containing 共同 or common depts */
-            if (
-              course.type !== '必修' ||
-              !course.name.includes('體育')
-            ) {
-              /* Broaden: check dept or name */
-              const isPhysEd = course.name.includes('體育') || course.dept === '共同選';
-              if (!isPhysEd) return false;
-            }
-            break;
-          default:
-            break;
+          }
+          default: break;
         }
       }
 
-      /* Dimension filter (only for 通識) */
+      /* ── 向度過濾 ── */
       if (filters.dimensions.length > 0) {
-        if (!course.dimension || !filters.dimensions.includes(course.dimension)) {
-          return false;
-        }
+        if (!course.dimension || !filters.dimensions.includes(course.dimension)) return false;
       }
 
-      /* Search filter */
+      /* ── 搜尋 ── */
       if (filters.search) {
         const q = filters.search.toLowerCase();
-        const nameMatch = course.name.toLowerCase().includes(q);
-        const instrMatch = course.instructor && course.instructor.toLowerCase().includes(q);
-        const idMatch = course.id.includes(q);
-        if (!nameMatch && !instrMatch && !idMatch) return false;
+        const match = course.name.toLowerCase().includes(q)
+          || (course.instructor && course.instructor.toLowerCase().includes(q))
+          || course.id.includes(q);
+        if (!match) return false;
       }
 
       return true;
     });
-  }, [courses, filters]);
+  }, [courses, filters, myDept]);
 
-  /* ── Toggle course selection ── */
-  const toggleCourse = useCallback(
-    (courseId) => {
-      setSelected((prev) => {
-        const next = new Set(prev);
-        if (next.has(courseId)) {
-          /* Deselect */
-          next.delete(courseId);
-          showToast('已取消選課', 'info');
-          return next;
-        }
-
-        /* Find course object */
-        const course = courses.find((c) => c.id === courseId);
-        if (!course) return prev;
-
-        /* Conflict detection */
-        const currentSelected = courses.filter((c) => prev.has(c.id));
-        const conflicts = getAllConflicts(course, currentSelected);
-        if (conflicts.length > 0) {
-          const conflictNames = conflicts.map((c) => c.name).join('、');
-          showToast(`衝堂！與 ${conflictNames} 時間衝突`, 'error');
-          return prev;
-        }
-
-        /* Cross-department warning */
-        if (myDept && course.dept && course.dept !== myDept && course.type !== '通識' && course.type !== '通必') {
-          showToast(`注意：此為跨系課程（${course.dept}）`, 'warning');
-        }
-
-        next.add(courseId);
-        showToast(`已加選「${course.name}」(${course.credits}學分)`, 'success');
+  /* ── Toggle course ── */
+  const toggleCourse = useCallback((courseId) => {
+    setSelected(prev => {
+      const next = new Set(prev);
+      if (next.has(courseId)) {
+        next.delete(courseId);
+        showToast('已取消選課', 'info');
         return next;
-      });
-    },
-    [courses, myDept, showToast]
-  );
+      }
 
-  /* ── Loading screen ── */
+      const course = courses.find(c => c.id === courseId);
+      if (!course) return prev;
+
+      /* Conflict check */
+      const currentSelected = courses.filter(c => prev.has(c.id));
+      const conflict = detectConflict(course, currentSelected);
+      if (conflict.conflict) {
+        showToast(`❌ 衝堂！與「${conflict.with.name}」時間衝突`, 'error');
+        return prev;
+      }
+
+      /* Cross-dept gen-ed warning */
+      if (myDept && course.gen_ed_group) {
+        const tag = getGenEdTag(course.gen_ed_group, myDept);
+        if (tag === '跨系二階') {
+          showToast(`⚠️ 此為跨系時段 (${course.gen_ed_group})，需等選課第二階段才能選喔！`, 'warning');
+        }
+      }
+
+      next.add(courseId);
+      showToast(`已加選「${course.name}」(${course.credits}學分)`, 'success');
+      return next;
+    });
+  }, [courses, myDept, showToast]);
+
+  /* ══════════════════════════════════════════════════════════
+     FIX #4: 一鍵帶入必修
+     ══════════════════════════════════════════════════════════ */
+  const handleAddRequired = useCallback(() => {
+    if (!myDept) {
+      showToast('請先選擇您的系所！', 'error');
+      return;
+    }
+
+    const required = courses.filter(c => c.dept === myDept && c.type === '必修');
+    if (required.length === 0) {
+      showToast('找不到該系所的必修課程', 'warning');
+      return;
+    }
+
+    setSelected(prev => {
+      const next = new Set(prev);
+      const currentSelected = courses.filter(c => next.has(c.id));
+      let added = 0;
+      let skippedConflict = 0;
+
+      for (const course of required) {
+        if (next.has(course.id)) continue;
+        const conflict = detectConflict(course, currentSelected);
+        if (conflict.conflict) {
+          skippedConflict++;
+          continue;
+        }
+        next.add(course.id);
+        currentSelected.push(course);
+        added++;
+      }
+
+      if (added > 0) {
+        const msg = skippedConflict > 0
+          ? `✅ 已帶入 ${added} 堂必修（${skippedConflict} 堂因衝堂跳過）`
+          : `✅ 已帶入 ${added} 堂必修！`;
+        showToast(msg, 'success');
+      } else if (skippedConflict > 0) {
+        showToast(`所有必修皆已選或衝堂 (${skippedConflict} 堂衝堂)`, 'warning');
+      } else {
+        showToast('所有必修課程皆已選取', 'info');
+      }
+
+      return next;
+    });
+  }, [courses, myDept, showToast]);
+
+  /* ── Loading ── */
   if (loading) {
     return (
       <div className="app-loading">
@@ -201,7 +238,6 @@ function App() {
             <span className="header-title-main">靜宜大學</span>
             <span className="header-title-sub">排課模擬系統 115-1</span>
           </div>
-          <DepartmentNotes />
         </div>
         <div className="header-stats">
           <div className="header-stat">
@@ -210,67 +246,72 @@ function App() {
           <div className="header-stat">
             🎯 學分 <span className="header-stat-value">{totalCredits}</span>
           </div>
+          {conflicts.length > 0 && (
+            <div className="header-stat header-stat--conflict">
+              ⚠️ 衝堂 <span className="header-stat-value">{conflicts.length}</span>
+            </div>
+          )}
         </div>
       </header>
 
       {/* ── Mobile Tabs ── */}
       <div className="mobile-tabs">
-        <button
-          className={`mobile-tab-btn ${mobileTab === 'filter' ? 'active' : ''}`}
-          onClick={() => setMobileTab('filter')}
-        >
-          🔍 篩選
-        </button>
-        <button
-          className={`mobile-tab-btn ${mobileTab === 'courses' ? 'active' : ''}`}
-          onClick={() => setMobileTab('courses')}
-        >
-          📋 課程
-        </button>
-        <button
-          className={`mobile-tab-btn ${mobileTab === 'schedule' ? 'active' : ''}`}
-          onClick={() => setMobileTab('schedule')}
-        >
-          📅 課表
-        </button>
+        {['filter', 'courses', 'schedule'].map(tab => (
+          <button
+            key={tab}
+            className={`mobile-tab-btn ${mobileTab === tab ? 'active' : ''}`}
+            onClick={() => setMobileTab(tab)}
+          >
+            {tab === 'filter' ? '🔍 篩選' : tab === 'courses' ? '📋 課程' : '📅 課表'}
+          </button>
+        ))}
       </div>
 
-      {/* ── Main Content ── */}
+      {/* ══════════════════════════════════════════════════════
+          FIX #2: 三欄佈局 — 左(固定) - 中(固定) - 右(彈性)
+          ══════════════════════════════════════════════════════ */}
       <div className="app-content">
-        {/* Left Sidebar */}
+        {/* ── 左側 Sidebar: FilterPanel + CreditSummary ── */}
         <aside className={`app-sidebar ${mobileTab === 'filter' ? 'mobile-active' : ''}`}>
           <FilterPanel
-            myDept={myDept}
-            setMyDept={setMyDept}
-            enrollYear={enrollYear}
-            setEnrollYear={setEnrollYear}
-            filters={filters}
-            setFilters={setFilters}
+            myDept={myDept} setMyDept={setMyDept}
+            enrollYear={enrollYear} setEnrollYear={setEnrollYear}
+            filters={filters} setFilters={setFilters}
             deptList={deptList}
           />
-        </aside>
-
-        {/* Center */}
-        <main className={`app-center ${mobileTab === 'courses' ? 'mobile-active' : ''}`}>
-          <CourseList
-            courses={filteredCourses}
-            selected={selected}
-            toggleCourse={toggleCourse}
-            myDept={myDept}
-            getGenEdTag={getGenEdTag}
-          />
-        </main>
-
-        {/* Right Panel */}
-        <aside className={`app-right ${mobileTab === 'schedule' ? 'mobile-active' : ''}`}>
-          <ScheduleGrid
-            selectedCourses={selectedCourses}
-          />
+          <div className="sidebar-divider" />
           <CreditSummary
             selectedCourses={selectedCourses}
             enrollYear={enrollYear}
           />
         </aside>
+
+        {/* ── 中間: 一鍵帶入 + CourseList ── */}
+        <div className={`app-center ${mobileTab === 'courses' ? 'mobile-active' : ''}`}>
+          <div className="center-toolbar">
+            <button className="btn-add-required" onClick={handleAddRequired}>
+              ⚡ 一鍵帶入必修
+            </button>
+            <span className="center-count">
+              共 {filteredCourses.length} 門課程
+            </span>
+          </div>
+          <CourseList
+            courses={filteredCourses}
+            selected={selected}
+            onToggle={toggleCourse}
+            myDept={myDept}
+          />
+        </div>
+
+        {/* ── 右側: ScheduleGrid (佔滿剩餘空間) ── */}
+        <div className={`app-right ${mobileTab === 'schedule' ? 'mobile-active' : ''}`}>
+          <ScheduleGrid
+            selectedCourses={selectedCourses}
+            onRemove={toggleCourse}
+            conflicts={conflicts}
+          />
+        </div>
       </div>
 
       {/* ── Toast ── */}

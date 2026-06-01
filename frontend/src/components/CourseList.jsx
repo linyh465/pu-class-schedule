@@ -1,123 +1,88 @@
+import CourseCard from './CourseCard';
+import { getGenEdTag } from '../hooks/useGenEdTag';
 import './CourseList.css';
 
-/* Day labels (1-based index: 1=Mon..6=Sat) */
-const DAY_LABELS = { 1: '一', 2: '二', 3: '三', 4: '四', 5: '五', 6: '六', 7: '日' };
+/* 分組順序 */
+const TYPE_ORDER = [
+  { key: '必修', label: '必修', icon: '🔴' },
+  { key: '選修', label: '選修', icon: '🔵' },
+  { key: '通識', label: '通識', icon: '🟢', includes: ['通識', '通必'] },
+  { key: '師培', label: '師培', icon: '🟣', includes: ['教必', '教選'] },
+  { key: '其他', label: '體育 / 共同', icon: '🟠' },
+];
 
-/* Map type string to CSS class suffix */
-function getTypeClass(type) {
-  switch (type) {
-    case '必修': return 'type-required';
-    case '選修': return 'type-elective';
-    case '通識':
-    case '通必': return 'type-general';
-    case '教必':
-    case '教選': return 'type-teaching';
-    default: return 'type-common';
+function groupCourses(courses) {
+  const groups = TYPE_ORDER.map(g => ({ ...g, courses: [] }));
+
+  for (const course of courses) {
+    let placed = false;
+    for (const group of groups) {
+      if (group.includes) {
+        if (group.includes.includes(course.type)) {
+          group.courses.push(course);
+          placed = true;
+          break;
+        }
+      } else if (group.key === course.type) {
+        group.courses.push(course);
+        placed = true;
+        break;
+      }
+    }
+    if (!placed) {
+      groups[groups.length - 1].courses.push(course);
+    }
   }
+
+  return groups.filter(g => g.courses.length > 0);
 }
 
-/* Map type to badge class */
-function getBadgeClass(type) {
-  switch (type) {
-    case '必修': return 'badge-required';
-    case '選修': return 'badge-elective';
-    case '通識':
-    case '通必': return 'badge-general';
-    case '教必':
-    case '教選': return 'badge-teaching';
-    default: return '';
+export default function CourseList({ courses, selected, onToggle, myDept }) {
+  const groups = groupCourses(courses);
+
+  if (courses.length === 0) {
+    return (
+      <div className="course-list">
+        <div className="course-list-empty">
+          <div className="course-list-empty-icon">📭</div>
+          <div className="course-list-empty-text">沒有符合篩選條件的課程</div>
+          <div className="course-list-empty-hint">請調整左側篩選條件</div>
+        </div>
+      </div>
+    );
   }
-}
 
-/* Format time slots */
-function formatTimes(times) {
-  if (!times || times.length === 0) return '未定';
-  return times
-    .map((t) => `週${DAY_LABELS[t.day] || t.day} 第${t.periods.join(',')}節`)
-    .join('、');
-}
-
-function CourseList({ courses, selected, toggleCourse, myDept, getGenEdTag }) {
   return (
     <div className="course-list">
-      <div className="course-list-header">
-        <span className="course-list-title">📋 課程列表</span>
-        <span className="course-list-count">共 {courses.length} 門課</span>
-      </div>
+      {groups.map(group => (
+        <div key={group.key} className="course-list-group">
+          <div className="course-list-group-header">
+            <span className="course-list-group-icon">{group.icon}</span>
+            <span className="course-list-group-label">{group.label}</span>
+            <span className="course-list-group-count">{group.courses.length}</span>
+          </div>
+          <div className="course-list-group-items">
+            {group.courses.map(course => {
+              const isSelected = selected instanceof Set
+                ? selected.has(course.id)
+                : Array.isArray(selected) && selected.includes(course.id);
+              const genEdTag = course.gen_ed_group
+                ? getGenEdTag(course.gen_ed_group, myDept)
+                : null;
 
-      {courses.length === 0 ? (
-        <div className="course-list-empty">
-          <div className="course-list-empty-icon">🔍</div>
-          <div className="course-list-empty-text">沒有符合篩選條件的課程</div>
+              return (
+                <CourseCard
+                  key={course.id}
+                  course={course}
+                  isSelected={isSelected}
+                  onToggle={onToggle}
+                  genEdTag={genEdTag}
+                />
+              );
+            })}
+          </div>
         </div>
-      ) : (
-        <div className="course-list-items">
-          {courses.map((course) => {
-            const isSelected = selected.has(course.id);
-            const typeClass = getTypeClass(course.type);
-            const genEdTag = getGenEdTag ? getGenEdTag(course) : null;
-            const isCrossDept = myDept && course.dept && course.dept !== myDept
-              && course.type !== '通識' && course.type !== '通必';
-
-            return (
-              <div
-                key={course.id}
-                className={`course-card ${typeClass} ${isSelected ? 'selected' : ''}`}
-                onClick={() => toggleCourse(course.id)}
-              >
-                <div className="course-card-top">
-                  <div className="course-card-name">{course.name}</div>
-                  <div className="course-card-badges">
-                    <span className={`course-badge badge-type ${getBadgeClass(course.type)}`}>
-                      {course.type}
-                    </span>
-                    {genEdTag && (
-                      <span
-                        className="course-badge badge-dim"
-                        style={{
-                          background: `${genEdTag.color}20`,
-                          borderColor: `${genEdTag.color}50`,
-                          color: genEdTag.color,
-                        }}
-                      >
-                        {genEdTag.label}
-                      </span>
-                    )}
-                    {isCrossDept && (
-                      <span className="course-badge badge-cross-dept">跨系</span>
-                    )}
-                  </div>
-                </div>
-
-                <div className="course-card-meta">
-                  <span className="course-meta-item">
-                    <span className="course-meta-icon">👤</span>
-                    {course.instructor || '未定'}
-                  </span>
-                  <span className="course-meta-item">
-                    <span className="course-meta-icon">📍</span>
-                    {course.location || '未定'}
-                  </span>
-                  <span className="course-meta-item">
-                    <span className="course-meta-icon">🕐</span>
-                    {formatTimes(course.times)}
-                  </span>
-                  <span className="course-meta-item">
-                    <span className="course-meta-icon">📚</span>
-                    {course.credits} 學分
-                  </span>
-                  <span className="course-meta-item">
-                    <span className="course-meta-icon">🏛️</span>
-                    {course.dept}
-                  </span>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
+      ))}
     </div>
   );
 }
-
-export default CourseList;
