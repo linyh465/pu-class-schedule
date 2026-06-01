@@ -13,6 +13,7 @@ import {
   Pointer,
   ChevronDown,
   Download,
+  Info,
 } from 'lucide-react';
 
 const ALL_COURSES = [
@@ -314,6 +315,7 @@ export default function App() {
   const [toast, setToast] = useState(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
+  const [guideModalOpen, setGuideModalOpen] = useState(true);
 
   const dropdownRef = useRef(null);
   const pdfRef = useRef(null);
@@ -945,6 +947,83 @@ export default function App() {
                 className="w-full py-2.5 md:py-3 bg-slate-800 hover:bg-slate-900 text-white rounded-xl font-bold transition-colors shadow-sm active:scale-95 text-sm md:text-base"
               >
                 收到！我準備好了 🚀
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* 使用說明彈窗 */}
+      {guideModalOpen && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-[100] flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl shadow-2xl max-w-lg w-full max-h-[90dvh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-300">
+            <div className="bg-slate-800 p-6 flex flex-col items-center text-white shrink-0 relative">
+              <div className="w-16 h-16 bg-blue-500 rounded-2xl flex items-center justify-center mb-3 shadow-lg rotate-3">
+                <BookOpen className="w-8 h-8 text-white" />
+              </div>
+              <h2 className="text-2xl font-black tracking-tight">歡迎使用課表小幫手 ✨</h2>
+              <p className="text-slate-400 text-sm mt-1">輕鬆安排你的大學新生活</p>
+            </div>
+
+            <div className="p-6 md:p-8 overflow-y-auto flex-1 bg-white">
+              <div className="space-y-6">
+                <div className="flex gap-4">
+                  <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center shrink-0">
+                    <Pointer className="w-5 h-5 text-blue-500" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-slate-800 text-base">快速加入課程</h4>
+                    <p className="text-slate-500 text-sm mt-0.5">點擊左側課程卡片或「拖曳」至右側課表，即可輕鬆排入時段。</p>
+                  </div>
+                </div>
+
+                <div className="flex gap-4">
+                  <div className="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center shrink-0">
+                    <GripVertical className="w-5 h-5 text-indigo-500" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-slate-800 text-base">班級快速切換 (Tabs)</h4>
+                    <p className="text-slate-500 text-sm mt-0.5">相同課程的不同班級已自動合併，點擊卡片內的頁籤即可切換班級與代碼。</p>
+                  </div>
+                </div>
+
+                <div className="flex gap-4">
+                  <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center shrink-0">
+                    <Download className="w-5 h-5 text-emerald-500" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-slate-800 text-base">高品質 PDF 匯出</h4>
+                    <p className="text-slate-500 text-sm mt-0.5">一鍵產生精美的兩頁式 PDF，包含彩色網格課表與詳細課程清單。</p>
+                  </div>
+                </div>
+
+                <div className="flex gap-4">
+                  <div className="w-10 h-10 rounded-full bg-purple-50 flex items-center justify-center shrink-0">
+                    <Sparkles className="w-5 h-5 text-purple-500" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-slate-800 text-base">AI 智慧健檢</h4>
+                    <p className="text-slate-500 text-sm mt-0.5">由 AI 學長姐為你分析課表戰力，並給予幽默的生存建議與提醒。</p>
+                  </div>
+                </div>
+
+                <div className="flex gap-4">
+                  <div className="w-10 h-10 rounded-full bg-rose-50 flex items-center justify-center shrink-0">
+                    <Info className="w-5 h-5 text-rose-500" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-slate-800 text-base">衝堂偵測與提示</h4>
+                    <p className="text-slate-500 text-sm mt-0.5">系統會自動偵測時間重疊；重補修課程設有特殊閃爍標籤，提醒加退選時段。</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="p-6 bg-slate-50 border-t border-slate-100">
+              <button
+                onClick={() => setGuideModalOpen(false)}
+                className="w-full py-4 bg-slate-800 hover:bg-slate-900 text-white rounded-2xl font-black text-lg transition-all shadow-md active:scale-95 flex items-center justify-center gap-2"
+              >
+                開始規劃我的課表 🚀
               </button>
             </div>
           </div>
