@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>靜宜大學選課系統</title>
+<style>
+/* ===== CSS Variables ===== */
+:root {
+  --primary: #8B1A1A;
+  --primary-light: #b5292929;
+  --primary-dark: #6a1414;
+  --accent: #c0392b;
+  --bg: #f8f5f2;
+  --card-bg: #ffffff;
+  --border: #e0d6cc;
+  --text: #2c2c2c;
+  --text-muted: #7a7a7a;
+  --required: #c0392b;
+  --elective: #2980b9;
+  --general: #27ae60;
+  --shadow: 0 2px 8px rgba(0,0,0,0.08);
+  --radius: 10px;
+}
+
+/* ===== Reset & Base ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans TC', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.6;
+}
+a { color: var(--primary); text-decoration: none; }
+
+/* ===== Header ===== */
+header {
+  background: var(--primary);
+  color: white;
+  padding: 0 1rem;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+  gap: 0.75rem;
+}
+.logo { font-size: 1.1rem; font-weight: 700; white-space: nowrap; }
+.logo span { font-size: 0.85rem; font-weight: 400; opacity: 0.85; margin-left: 0.4rem; }
+.header-stats {
+  display: flex;
+  gap: 0.75rem;
+  font-size: 0.82rem;
+}
+.stat-chip {
+  background: rgba(255,255,255,0.18);
+  border-radius: 20px;
+  padding: 2px 10px;
+  white-space: nowrap;
+}
+
+/* ===== Layout ===== */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 1rem;
+  align-items: start;
+}
+@media (max-width: 768px) {
+  .container { grid-template-columns: 1fr; }
+  .logo span { display: none; }
+  .header-stats .stat-chip:nth-child(n+3) { display: none; }
+}
+
+/* ===== Sidebar ===== */
+.sidebar {
+  position: sticky;
+  top: 68px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+@media (max-width: 768px) {
+  .sidebar { position: static; }
+}
+
+/* ===== Cards ===== */
+.card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 1rem;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+.card-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.card-title::before {
+  content: '';
+  display: inline-block;
+  width: 4px;
+  height: 16px;
+  background: var(--primary);
+  border-radius: 2px;
+}
+
+/* ===== Form Controls ===== */
+select, input[type="text"] {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 0.9rem;
+  color: var(--text);
+  background: white;
+  appearance: none;
+  cursor: pointer;
+}
+select:focus, input:focus { outline: 2px solid var(--primary); border-color: var(--primary); }
+.select-wrapper { position: relative; }
+.select-wrapper::after {
+  content: '▾';
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: var(--text-muted);
+}
+label { display: block; font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.3rem; font-weight: 500; }
+
+/* ===== Filters Stack ===== */
+.filter-group { margin-bottom: 0.75rem; }
+.filter-group:last-child { margin-bottom: 0; }
+
+/* ===== Identity Options ===== */
+.identity-options { display: flex; flex-direction: column; gap: 0.4rem; }
+.identity-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.identity-item:hover { background: var(--bg); }
+.identity-item input[type="checkbox"] { accent-color: var(--primary); width: 16px; height: 16px; }
+.identity-item label { margin: 0; cursor: pointer; font-size: 0.88rem; color: var(--text); }
+
+/* ===== Credit Panel ===== */
+.credit-panel { display: flex; flex-direction: column; gap: 0.5rem; }
+.credit-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+}
+.credit-row .label { display: flex; align-items: center; gap: 0.35rem; }
+.credit-row .val { font-weight: 700; font-size: 1rem; }
+.badge {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+.badge.required { background: var(--required); }
+.badge.elective { background: var(--elective); }
+.badge.general { background: var(--general); }
+.badge.extra { background: #e67e22; }
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: #e8e0d8;
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 0.3rem 0;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  border-radius: 4px;
+  transition: width 0.3s;
+}
+.credit-total {
+  border-top: 1px solid var(--border);
+  padding-top: 0.5rem;
+  margin-top: 0.25rem;
+  font-weight: 700;
+}
+.graduation-status {
+  text-align: center;
+  padding: 0.5rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-top: 0.25rem;
+}
+.graduation-status.ok { background: #d4efdf; color: #1a7a40; }
+.graduation-status.warn { background: #fde8d8; color: #9a4a00; }
+
+/* ===== Main Content ===== */
+.main-content { display: flex; flex-direction: column; gap: 1rem; }
+
+/* ===== Tab Bar ===== */
+.tab-bar {
+  display: flex;
+  gap: 0.4rem;
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 0.4rem;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  overflow-x: auto;
+}
+.tab-btn {
+  flex: 1;
+  min-width: 80px;
+  padding: 0.45rem 0.75rem;
+  border: none;
+  border-radius: 7px;
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.tab-btn.active {
+  background: var(--primary);
+  color: white;
+}
+.tab-btn:hover:not(.active) { background: var(--bg); color: var(--text); }
+
+/* ===== Course Section ===== */
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.section-title {
+  font-size: 1rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.type-badge {
+  font-size: 0.72rem;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-weight: 600;
+}
+.type-badge.required { background: #fde8e8; color: var(--required); }
+.type-badge.elective { background: #d6eaf8; color: var(--elective); }
+.type-badge.general  { background: #d5f5e3; color: #1a7a40; }
+.type-badge.extra    { background: #fef0e0; color: #9a5a00; }
+
+/* ===== Course Grid ===== */
+.course-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 0.6rem;
+}
+@media (max-width: 480px) {
+  .course-grid { grid-template-columns: 1fr; }
+}
+
+/* ===== Course Card ===== */
+.course-card {
+  background: white;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 0.7rem 0.85rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  position: relative;
+}
+.course-card:hover { border-color: var(--primary); box-shadow: 0 2px 8px rgba(139,26,26,0.1); }
+.course-card.selected {
+  border-color: var(--primary);
+  background: #fdf6f6;
+}
+.course-card.selected::after {
+  content: '✓';
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+.course-card.required-card {
+  border-left: 3px solid var(--required);
+}
+.course-card.elective-card {
+  border-left: 3px solid var(--elective);
+}
+.course-card.general-card {
+  border-left: 3px solid var(--general);
+}
+.course-name {
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 0.25rem;
+  line-height: 1.4;
+  padding-right: 1.2rem;
+}
+.course-meta {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+.course-meta span { display: flex; align-items: center; gap: 0.2rem; }
+.credit-tag {
+  background: var(--bg);
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+  color: var(--text);
+  font-size: 0.75rem;
+}
+
+/* ===== Empty State ===== */
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--text-muted);
+}
+.empty-state .icon { font-size: 3rem; margin-bottom: 0.75rem; }
+.empty-state p { font-size: 0.9rem; }
+
+/* ===== Search ===== */
+.search-bar {
+  position: relative;
+  margin-bottom: 0.75rem;
+}
+.search-bar input {
+  padding-left: 2.2rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+}
+.search-bar::before {
+  content: '🔍';
+  position: absolute;
+  left: 0.65rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.85rem;
+}
+
+/* ===== Loading ===== */
+.loading {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+/* ===== Toast ===== */
+.toast {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: #2c2c2c;
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border-radius: 24px;
+  font-size: 0.85rem;
+  z-index: 999;
+  transition: transform 0.3s;
+  white-space: nowrap;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* ===== Mobile FAB ===== */
+.fab {
+  display: none;
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: white;
+  border: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+  z-index: 90;
+}
+@media (max-width: 768px) {
+  .fab { display: flex; align-items: center; justify-content: center; }
+}
+
+/* ===== Mobile Drawer ===== */
+.drawer-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 200;
+}
+.drawer-overlay.open { display: block; }
+.drawer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  border-radius: 16px 16px 0 0;
+  padding: 1rem;
+  z-index: 210;
+  max-height: 85vh;
+  overflow-y: auto;
+  transform: translateY(100%);
+  transition: transform 0.3s;
+}
+.drawer.open { transform: translateY(0); }
+.drawer-handle {
+  width: 40px;
+  height: 4px;
+  background: #ccc;
+  border-radius: 2px;
+  margin: 0 auto 1rem;
+}
+
+/* ===== No selection prompt ===== */
+.prompt-card {
+  background: linear-gradient(135deg, #fff5f5, #fff);
+  border: 1.5px dashed var(--border);
+  border-radius: var(--radius);
+  padding: 2rem;
+  text-align: center;
+}
+.prompt-card h3 { color: var(--primary); margin-bottom: 0.5rem; }
+.prompt-card p { color: var(--text-muted); font-size: 0.9rem; }
+
+/* ===== Minor/Double Major badge ===== */
+.minor-note {
+  background: #fef0e0;
+  border: 1px solid #f0c070;
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.82rem;
+  color: #8a5000;
+  display: none;
+}
+.minor-note.visible { display: block; }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header>
+  <div class="header-inner">
+    <div class="logo">靜宜大學 <span>選課輔助系統 115-1</span></div>
+    <div class="header-stats" id="headerStats">
+      <span class="stat-chip">已選 <strong id="hTotal">0</strong> 學分</span>
+      <span class="stat-chip">必修 <strong id="hReq">0</strong></span>
+      <span class="stat-chip">選修 <strong id="hElec">0</strong></span>
+    </div>
+  </div>
+</header>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Mobile Drawer Overlay -->
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()">
+  <div class="drawer" id="drawer" onclick="event.stopPropagation()">
+    <div class="drawer-handle"></div>
+    <div id="drawerContent"></div>
+  </div>
+</div>
+
+<!-- Mobile FAB -->
+<button class="fab" onclick="openDrawer()" title="篩選與統計">☰</button>
+
+<!-- Main Layout -->
+<div class="container">
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+
+    <!-- Department selector -->
+    <div class="card">
+      <div class="card-title">選擇系所與年級</div>
+      <div class="filter-group">
+        <label>學院</label>
+        <div class="select-wrapper">
+          <select id="collegeSelect" onchange="onCollegeChange()">
+            <option value="">— 請選擇學院 —</option>
+          </select>
+        </div>
+      </div>
+      <div class="filter-group">
+        <label>系所</label>
+        <div class="select-wrapper">
+          <select id="deptSelect" onchange="onDeptChange()" disabled>
+            <option value="">— 請先選學院 —</option>
+          </select>
+        </div>
+      </div>
+      <div class="filter-group">
+        <label>年級</label>
+        <div class="select-wrapper">
+          <select id="yearSelect" onchange="onYearChange()" disabled>
+            <option value="">— 請先選系所 —</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Identity -->
+    <div class="card">
+      <div class="card-title">修課身份</div>
+      <div class="identity-options">
+        <div class="identity-item">
+          <input type="checkbox" id="chkMinor" onchange="updateMinorDisplay()">
+          <label for="chkMinor">修輔系（另需 18+ 學分）</label>
+        </div>
+        <div class="identity-item">
+          <input type="checkbox" id="chkDouble" onchange="updateMinorDisplay()">
+          <label for="chkDouble">雙主修（另需 40+ 學分）</label>
+        </div>
+      </div>
+      <div class="minor-note" id="minorNote"></div>
+    </div>
+
+    <!-- Credit Counter -->
+    <div class="card">
+      <div class="card-title">學分統計</div>
+      <div class="credit-panel">
+        <div class="credit-row">
+          <span class="label"><span class="badge required"></span> 必修</span>
+          <span class="val" id="cReq">0</span>
+        </div>
+        <div class="credit-row">
+          <span class="label"><span class="badge elective"></span> 選修</span>
+          <span class="val" id="cElec">0</span>
+        </div>
+        <div class="credit-row">
+          <span class="label"><span class="badge general"></span> 通識</span>
+          <span class="val" id="cGen">0</span>
+        </div>
+        <div class="credit-row" id="extraRow" style="display:none">
+          <span class="label"><span class="badge extra"></span> 輔/雙修</span>
+          <span class="val" id="cExtra">0</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill" style="width:0%"></div>
+        </div>
+        <div class="credit-row credit-total">
+          <span>已選總計</span>
+          <span class="val" id="cTotal">0</span>
+        </div>
+        <div class="credit-row">
+          <span style="color:var(--text-muted);font-size:0.82rem">畢業需 128 學分</span>
+          <span id="cRemain" style="font-size:0.82rem;color:var(--text-muted)">還差 128</span>
+        </div>
+        <div class="graduation-status warn" id="gradStatus">尚未達到畢業學分</div>
+      </div>
+    </div>
+
+    <!-- Legend -->
+    <div class="card">
+      <div class="card-title">圖示說明</div>
+      <div style="display:flex;flex-direction:column;gap:0.4rem;font-size:0.82rem">
+        <span><span style="color:var(--required);font-weight:700">■</span> 必修 — 系上規定必修</span>
+        <span><span style="color:var(--elective);font-weight:700">■</span> 選修 — 系所選修課程</span>
+        <span><span style="color:var(--general);font-weight:700">■</span> 通識 — 全校通識課程</span>
+        <span>✓ 點擊課程卡片可加入/移除</span>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content" id="mainContent">
+    <div class="prompt-card" id="promptCard">
+      <div style="font-size:3rem;margin-bottom:0.75rem">📚</div>
+      <h3>歡迎使用靜宜大學選課輔助系統</h3>
+      <p style="margin-top:0.5rem">請從左側選擇學院、系所與年級，系統將自動帶入對應課程。</p>
+      <p style="margin-top:0.5rem;font-size:0.8rem;color:#aaa">資料來源：靜宜大學課綱查詢系統 115-1 學期</p>
+    </div>
+  </main>
+
+</div>
+
+<script>
+// ===== Data Loading =====
+let COURSES_DATA = {};
+let GENERAL_DATA = [];
+let selectedCourses = {}; // no -> {name, credit, type}
+
+async function loadData() {
+  try {
+    const [cRes, gRes] = await Promise.all([
+      fetch('data/courses.json'),
+      fetch('data/general_ed.json')
+    ]);
+    COURSES_DATA = await cRes.json();
+    GENERAL_DATA = await gRes.json();
+    initUI();
+  } catch(e) {
+    document.getElementById('mainContent').innerHTML =
+      '<div class="empty-state"><div class="icon">⚠️</div><p>無法載入課程資料，請確認 data/ 目錄存在。</p></div>';
+  }
+}
+
+// ===== UI Initialization =====
+function initUI() {
+  const colleges = [...new Set(Object.values(COURSES_DATA).map(d => d.college))].sort();
+  const sel = document.getElementById('collegeSelect');
+  colleges.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c; opt.textContent = c;
+    sel.appendChild(opt);
+  });
+}
+
+function onCollegeChange() {
+  const college = document.getElementById('collegeSelect').value;
+  const deptSel = document.getElementById('deptSelect');
+  const yearSel = document.getElementById('yearSelect');
+  deptSel.innerHTML = '<option value="">— 請選擇系所 —</option>';
+  yearSel.innerHTML = '<option value="">— 請先選系所 —</option>';
+  yearSel.disabled = true;
+
+  if (!college) { deptSel.disabled = true; return; }
+  deptSel.disabled = false;
+
+  const depts = Object.values(COURSES_DATA).filter(d => d.college === college);
+  depts.sort((a,b) => a.name.localeCompare(b.name));
+  depts.forEach(d => {
+    const opt = document.createElement('option');
+    opt.value = d.dep1; opt.textContent = d.name;
+    deptSel.appendChild(opt);
+  });
+}
+
+function onDeptChange() {
+  const dep1 = document.getElementById('deptSelect').value;
+  const yearSel = document.getElementById('yearSelect');
+  yearSel.innerHTML = '<option value="">— 請選擇年級 —</option>';
+
+  if (!dep1) { yearSel.disabled = true; return; }
+  yearSel.disabled = false;
+
+  const dept = COURSES_DATA[dep1];
+  if (!dept) return;
+  const years = Object.keys(dept.years).sort();
+  const labels = { '1':'大一', '2':'大二', '3':'大三', '4':'大四' };
+  years.forEach(y => {
+    const opt = document.createElement('option');
+    opt.value = y; opt.textContent = labels[y] || `第${y}年`;
+    yearSel.appendChild(opt);
+  });
+}
+
+function onYearChange() { renderCourses(); }
+
+// ===== Render Courses =====
+function renderCourses() {
+  const dep1 = document.getElementById('deptSelect').value;
+  const year = document.getElementById('yearSelect').value;
+  const main = document.getElementById('mainContent');
+  const prompt = document.getElementById('promptCard');
+
+  if (prompt) prompt.style.display = 'none';
+
+  if (!dep1 || !year) { return; }
+
+  const dept = COURSES_DATA[dep1];
+  if (!dept || !dept.years[year]) {
+    main.innerHTML = '<div class="empty-state"><div class="icon">🔍</div><p>找不到該系所年級的課程資料</p></div>';
+    return;
+  }
+
+  const yrData = dept.years[year];
+
+  main.innerHTML = `
+    <div class="card" id="reqSection">
+      <div class="section-header">
+        <div class="section-title"><span class="type-badge required">必修</span>${dept.name} ${['','大一','大二','大三','大四'][year]} 必修課程</div>
+        <small style="color:var(--text-muted)">${yrData.required.length} 門</small>
+      </div>
+      <div class="course-grid" id="reqGrid"></div>
+      ${yrData.required.length===0?'<div class="empty-state" style="padding:1.5rem"><p>無必修課程資料</p></div>':''}
+    </div>
+
+    <div class="card" id="elecSection">
+      <div class="section-header">
+        <div class="section-title"><span class="type-badge elective">選修</span>系所選修</div>
+        <div style="display:flex;align-items:center;gap:0.5rem">
+          <div class="search-bar" style="margin:0;width:160px">
+            <input type="text" placeholder="搜尋課程…" oninput="filterElective(this.value)" id="elecSearch">
+          </div>
+          <small style="color:var(--text-muted)">${yrData.elective.length} 門</small>
+        </div>
+      </div>
+      <div class="course-grid" id="elecGrid"></div>
+      ${yrData.elective.length===0?'<div class="empty-state" style="padding:1.5rem"><p>無選修課程資料</p></div>':''}
+    </div>
+
+    <div class="card" id="genSection">
+      <div class="section-header">
+        <div class="section-title"><span class="type-badge general">通識</span>通識課程</div>
+        <div style="display:flex;align-items:center;gap:0.5rem">
+          <div class="search-bar" style="margin:0;width:160px">
+            <input type="text" placeholder="搜尋通識…" oninput="filterGeneral(this.value)" id="genSearch">
+          </div>
+          <small style="color:var(--text-muted)">${GENERAL_DATA.length} 門</small>
+        </div>
+      </div>
+      <div class="course-grid" id="genGrid"></div>
+    </div>
+  `;
+
+  // Render required (always all shown, auto-selected)
+  const reqGrid = document.getElementById('reqGrid');
+  yrData.required.forEach(c => {
+    reqGrid.appendChild(makeCourseCard(c, 'required', true));
+  });
+
+  // Auto-select required courses
+  yrData.required.forEach(c => {
+    if (!selectedCourses[c.no]) {
+      selectedCourses[c.no] = { name: c.name, credit: c.credit, type: 'required' };
+    }
+  });
+
+  // Render elective
+  renderElective(yrData.elective);
+  // Render general
+  renderGeneral(GENERAL_DATA);
+
+  updateCredits();
+}
+
+function makeCourseCard(c, type, autoSelected) {
+  const card = document.createElement('div');
+  card.className = `course-card ${type}-card ${(autoSelected || selectedCourses[c.no]) ? 'selected' : ''}`;
+  card.dataset.no = c.no;
+  card.dataset.type = type;
+
+  card.innerHTML = `
+    <div class="course-name">${c.name}</div>
+    <div class="course-meta">
+      <span class="credit-tag">${c.credit} 學分</span>
+      ${c.teacher ? `<span>👨‍🏫 ${c.teacher}</span>` : ''}
+      ${c.time ? `<span>⏰ ${c.time.replace(/\s+/g,' ').trim()}</span>` : ''}
+    </div>
+  `;
+
+  if (type !== 'required') {
+    card.onclick = () => toggleCourse(card, c, type);
+  } else {
+    card.style.cursor = 'default';
+    card.title = '必修課程（已自動選取）';
+  }
+
+  return card;
+}
+
+function renderElective(courses) {
+  const grid = document.getElementById('elecGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  courses.forEach(c => grid.appendChild(makeCourseCard(c, 'elective', false)));
+}
+
+function renderGeneral(courses) {
+  const grid = document.getElementById('genGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  courses.slice(0, 60).forEach(c => grid.appendChild(makeCourseCard(c, 'general', false)));
+}
+
+function filterElective(q) {
+  const dep1 = document.getElementById('deptSelect').value;
+  const year = document.getElementById('yearSelect').value;
+  if (!dep1 || !year) return;
+  const courses = COURSES_DATA[dep1]?.years[year]?.elective || [];
+  const filtered = q ? courses.filter(c => c.name.includes(q) || (c.teacher||'').includes(q)) : courses;
+  renderElective(filtered);
+}
+
+function filterGeneral(q) {
+  const filtered = q ? GENERAL_DATA.filter(c => c.name.includes(q) || (c.teacher||'').includes(q)) : GENERAL_DATA;
+  const grid = document.getElementById('genGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  filtered.slice(0, 60).forEach(c => grid.appendChild(makeCourseCard(c, 'general', false)));
+}
+
+// ===== Course Toggle =====
+function toggleCourse(card, course, type) {
+  if (selectedCourses[course.no]) {
+    delete selectedCourses[course.no];
+    card.classList.remove('selected');
+    showToast(`已移除：${course.name}`);
+  } else {
+    selectedCourses[course.no] = { name: course.name, credit: course.credit, type };
+    card.classList.add('selected');
+    showToast(`已加入：${course.name}（${course.credit} 學分）`);
+  }
+  updateCredits();
+}
+
+// ===== Credit Update =====
+function updateCredits() {
+  let req=0, elec=0, gen=0, extra=0;
+  for (const c of Object.values(selectedCourses)) {
+    if (c.type === 'required') req += c.credit;
+    else if (c.type === 'elective') elec += c.credit;
+    else if (c.type === 'general') gen += c.credit;
+    else if (c.type === 'extra') extra += c.credit;
+  }
+  const total = req + elec + gen + extra;
+  const GRAD = 128;
+  const remain = Math.max(0, GRAD - total);
+  const pct = Math.min(100, (total/GRAD)*100);
+
+  document.getElementById('cReq').textContent = req;
+  document.getElementById('cElec').textContent = elec;
+  document.getElementById('cGen').textContent = gen;
+  document.getElementById('cTotal').textContent = total;
+  document.getElementById('cRemain').textContent = remain > 0 ? `還差 ${remain}` : '已達標 🎉';
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('hTotal').textContent = total;
+  document.getElementById('hReq').textContent = req;
+  document.getElementById('hElec').textContent = elec + gen;
+
+  if (extra > 0) {
+    document.getElementById('cExtra').textContent = extra;
+    document.getElementById('extraRow').style.display = 'flex';
+  }
+
+  const status = document.getElementById('gradStatus');
+  if (total >= GRAD) {
+    status.className = 'graduation-status ok';
+    status.textContent = '🎓 已達畢業學分要求！';
+  } else {
+    status.className = 'graduation-status warn';
+    status.textContent = `還需修 ${remain} 學分才能畢業`;
+  }
+}
+
+// ===== Minor / Double Major =====
+function updateMinorDisplay() {
+  const minor = document.getElementById('chkMinor').checked;
+  const double = document.getElementById('chkDouble').checked;
+  const note = document.getElementById('minorNote');
+  const row = document.getElementById('extraRow');
+
+  if (minor || double) {
+    note.className = 'minor-note visible';
+    row.style.display = 'flex';
+    let msg = '';
+    if (minor) msg += '輔系需額外修習至少 18 學分（依各系規定）。';
+    if (double) msg += (msg?' ':'') + '雙主修需額外修習至少 40 學分（依各系規定）。';
+    msg += '<br>請從右側「選修」或「通識」區勾選相關課程，並在此追蹤額外學分。';
+    note.innerHTML = msg;
+  } else {
+    note.className = 'minor-note';
+    if (![...Object.values(selectedCourses)].some(c=>c.type==='extra')) row.style.display='none';
+  }
+}
+
+// ===== Mobile Drawer =====
+function openDrawer() {
+  document.getElementById('drawerContent').innerHTML = document.getElementById('sidebar').innerHTML;
+  document.getElementById('drawerOverlay').classList.add('open');
+  document.getElementById('drawer').classList.add('open');
+}
+function closeDrawer() {
+  document.getElementById('drawerOverlay').classList.remove('open');
+  document.getElementById('drawer').classList.remove('open');
+}
+
+// ===== Toast =====
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+// ===== Boot =====
+loadData();
+</script>
+</body>
+</html>

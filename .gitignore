@@ -1,0 +1,8 @@
+# Large raw data files (not needed for deployment)
+data/all_courses_raw.json
+data/all_classes.json
+data/undergrad_classes.json
+
+# OS files
+.DS_Store
+Thumbs.db

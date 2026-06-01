@@ -1,0 +1,458 @@
+[
+  {
+    "dep1": "20",
+    "college_cn": "理學院",
+    "college_en": "Science",
+    "offerUnitName": "理學院"
+  },
+  {
+    "dep1": "22",
+    "college_cn": "理學院",
+    "college_en": "Science",
+    "offerUnitName": "食營系"
+  },
+  {
+    "dep1": "23",
+    "college_cn": "理學院",
+    "college_en": "Science",
+    "offerUnitName": "應化系"
+  },
+  {
+    "dep1": "24",
+    "college_cn": "理學院",
+    "college_en": "Science",
+    "offerUnitName": "化科系"
+  },
+  {
+    "dep1": "28",
+    "college_cn": "理學院",
+    "college_en": "Science",
+    "offerUnitName": "財工系"
+  },
+  {
+    "dep1": "29",
+    "college_cn": "理學院",
+    "college_en": "Science",
+    "offerUnitName": "國際碩士產學班"
+  },
+  {
+    "dep1": "2A",
+    "college_cn": "理學院",
+    "college_en": "Science",
+    "offerUnitName": "永續智慧學士學位學程"
+  },
+  {
+    "dep1": "2B",
+    "college_cn": "理學院",
+    "college_en": "Science",
+    "offerUnitName": "食品人工智慧產業國際專班"
+  },
+  {
+    "dep1": "30",
+    "college_cn": "管理學院",
+    "college_en": "Management",
+    "offerUnitName": "管理學院"
+  },
+  {
+    "dep1": "30",
+    "college_cn": "管理學院",
+    "college_en": "Management",
+    "offerUnitName": "管碩專班"
+  },
+  {
+    "dep1": "32",
+    "college_cn": "管理學院",
+    "college_en": "Management",
+    "offerUnitName": "會計系"
+  },
+  {
+    "dep1": "35",
+    "college_cn": "管理學院",
+    "college_en": "Management",
+    "offerUnitName": "觀光系"
+  },
+  {
+    "dep1": "36",
+    "college_cn": "管理學院",
+    "college_en": "Management",
+    "offerUnitName": "財金系"
+  },
+  {
+    "dep1": "37",
+    "college_cn": "管理學院",
+    "college_en": "Management",
+    "offerUnitName": "國企系"
+  },
+  {
+    "dep1": "39",
+    "college_cn": "管理學院",
+    "college_en": "Management",
+    "offerUnitName": "創創碩士學位學程"
+  },
+  {
+    "dep1": "3A",
+    "college_cn": "管理學院",
+    "college_en": "Management",
+    "offerUnitName": "行銷數位經營系"
+  },
+  {
+    "dep1": "3B",
+    "college_cn": "管理學院",
+    "college_en": "Management",
+    "offerUnitName": "經管進學班"
+  },
+  {
+    "dep1": "3C",
+    "college_cn": "管理學院",
+    "college_en": "International",
+    "offerUnitName": "城市行銷碩專班"
+  },
+  {
+    "dep1": "40",
+    "college_cn": "外語學院",
+    "college_en": "Foreign Languages and Literature",
+    "offerUnitName": "外語學院"
+  },
+  {
+    "dep1": "41",
+    "college_cn": "外語學院",
+    "college_en": "Foreign Languages and Literature",
+    "offerUnitName": "英文系"
+  },
+  {
+    "dep1": "42",
+    "college_cn": "外語學院",
+    "college_en": "Foreign Languages and Literature",
+    "offerUnitName": "西文系"
+  },
+  {
+    "dep1": "43",
+    "college_cn": "外語學院",
+    "college_en": "Foreign Languages and Literature",
+    "offerUnitName": "日文系"
+  },
+  {
+    "dep1": "50",
+    "college_cn": "人文暨社會科學院",
+    "college_en": "Humanities and Social Sciences",
+    "offerUnitName": "人社院"
+  },
+  {
+    "dep1": "51",
+    "college_cn": "人文暨社會科學院",
+    "college_en": "Humanities and Social Sciences",
+    "offerUnitName": "中文系"
+  },
+  {
+    "dep1": "53",
+    "college_cn": "人文暨社會科學院",
+    "college_en": "Humanities and Social Sciences",
+    "offerUnitName": "台文系"
+  },
+  {
+    "dep1": "54",
+    "college_cn": "人文暨社會科學院",
+    "college_en": "Humanities and Social Sciences",
+    "offerUnitName": "法律系"
+  },
+  {
+    "dep1": "55",
+    "college_cn": "人文暨社會科學院",
+    "college_en": "Humanities and Social Sciences",
+    "offerUnitName": "生態系"
+  },
+  {
+    "dep1": "56",
+    "college_cn": "人文暨社會科學院",
+    "college_en": "Humanities and Social Sciences",
+    "offerUnitName": "大傳系"
+  },
+  {
+    "dep1": "57",
+    "college_cn": "人文暨社會科學院",
+    "college_en": "Humanities and Social Sciences",
+    "offerUnitName": "教研所"
+  },
+  {
+    "dep1": "58",
+    "college_cn": "人文暨社會科學院",
+    "college_en": "Humanities and Social Sciences",
+    "offerUnitName": "社工系"
+  },
+  {
+    "dep1": "59",
+    "college_cn": "人文暨社會科學院",
+    "college_en": "Humanities and Social Sciences",
+    "offerUnitName": "犯罪防治碩士學位學程"
+  },
+  {
+    "dep1": "5A",
+    "college_cn": "人文暨社會科學院",
+    "college_en": "Humanities and Social Sciences",
+    "offerUnitName": "社企文創碩士學程"
+  },
+  {
+    "dep1": "5B",
+    "college_cn": "人文暨社會科學院",
+    "college_en": "Humanities and Social Sciences",
+    "offerUnitName": "原民文化碩士學程"
+  },
+  {
+    "dep1": "5C",
+    "college_cn": "人文暨社會科學院",
+    "college_en": "Humanities and Social Sciences",
+    "offerUnitName": "法律原民專班"
+  },
+  {
+    "dep1": "5D",
+    "college_cn": "人文暨社會科學院",
+    "college_en": "Humanities and Social Sciences",
+    "offerUnitName": "社工原民專班"
+  },
+  {
+    "dep1": "5E",
+    "college_cn": "人文暨社會科學院",
+    "college_en": "Humanities and Social Sciences",
+    "offerUnitName": "社福博班"
+  },
+  {
+    "dep1": "5F",
+    "college_cn": "人文暨社會科學院",
+    "college_en": "Humanities and Social Sciences",
+    "offerUnitName": "犯防原民專班"
+  },
+  {
+    "dep1": "5G",
+    "college_cn": "人文暨社會科學院",
+    "college_en": "Humanities and Social Sciences",
+    "offerUnitName": "社工培力專班"
+  },
+  {
+    "dep1": "5G",
+    "college_cn": "人文暨社會科學院",
+    "college_en": "Humanities and Social Sciences",
+    "offerUnitName": "社工培力專班"
+  },
+  {
+    "dep1": "5H",
+    "college_cn": "人文暨社會科學院",
+    "college_en": "Humanities and Social Sciences",
+    "offerUnitName": "社企社福碩士學程"
+  },
+  {
+    "dep1": "5I",
+    "college_cn": "人文暨社會科學院",
+    "college_en": "Humanities and Social Sciences",
+    "offerUnitName": "藝術跨域創作學士學位學程"
+  },
+  {
+    "dep1": "63",
+    "college_cn": "人文暨社會科學院",
+    "college_en": "Humanities and Social Sciences",
+    "offerUnitName": "師培中心"
+  },
+  {
+    "dep1": "70",
+    "college_cn": "資訊學院",
+    "college_en": "Computing and Informatics",
+    "offerUnitName": "資訊學院"
+  },
+  {
+    "dep1": "71",
+    "college_cn": "資訊學院",
+    "college_en": "Computing and Informatics",
+    "offerUnitName": "資管系"
+  },
+  {
+    "dep1": "72",
+    "college_cn": "資訊學院",
+    "college_en": "Computing and Informatics",
+    "offerUnitName": "資工系"
+  },
+  {
+    "dep1": "74",
+    "college_cn": "資訊學院",
+    "college_en": "Computing and Informatics",
+    "offerUnitName": "國際資訊學士學程"
+  },
+  {
+    "dep1": "75",
+    "college_cn": "資訊學院",
+    "college_en": "Computing and Informatics",
+    "offerUnitName": "人工智慧系"
+  },
+  {
+    "dep1": "76",
+    "college_cn": "資訊學院",
+    "college_en": "Computing and Informatics",
+    "offerUnitName": "資科系"
+  },
+  {
+    "dep1": "77",
+    "college_cn": "資訊學院",
+    "college_en": "Computing and Informatics",
+    "offerUnitName": "晶片設計學士學位學程"
+  },
+  {
+    "dep1": "78",
+    "college_cn": "資訊學院",
+    "college_en": "Computing and Informatics",
+    "offerUnitName": "人工智慧培力專班"
+  },
+  {
+    "dep1": "95",
+    "college_cn": "國際學院",
+    "college_en": "International",
+    "offerUnitName": "外語教學中心"
+  },
+  {
+    "dep1": "V0",
+    "college_cn": "國際學院",
+    "college_en": "International",
+    "offerUnitName": "國際學院"
+  },
+  {
+    "dep1": "V1",
+    "college_cn": "國際學院",
+    "college_en": "International",
+    "offerUnitName": "寰管碩士學程"
+  },
+  {
+    "dep1": "V2",
+    "college_cn": "國際學院",
+    "college_en": "International",
+    "offerUnitName": "寰宇管理學士學程"
+  },
+  {
+    "dep1": "V3",
+    "college_cn": "國際學院",
+    "college_en": "International",
+    "offerUnitName": "寰宇外語教育學程"
+  },
+  {
+    "dep1": "V4",
+    "college_cn": "國際學院",
+    "college_en": "International",
+    "offerUnitName": "智慧媒體學士學位學程"
+  },
+  {
+    "dep1": "V6",
+    "college_cn": "國際學院",
+    "college_en": "International",
+    "offerUnitName": "博雅教育學士學程"
+  },
+  {
+    "dep1": "61",
+    "college_cn": "通識教育中心",
+    "college_en": "General Education Center",
+    "offerUnitName": "通識中心"
+  },
+  {
+    "dep1": "64",
+    "college_cn": "通識教育中心",
+    "college_en": "General Education Center",
+    "offerUnitName": "通識涵養課程"
+  },
+  {
+    "dep1": "65",
+    "college_cn": "通識教育中心",
+    "college_en": "General Education Center",
+    "offerUnitName": "通識學程"
+  },
+  {
+    "dep1": "62",
+    "college_cn": "體育室",
+    "college_en": "Office of Physical Education",
+    "offerUnitName": "體育室"
+  },
+  {
+    "dep1": "66",
+    "college_cn": "其他",
+    "college_en": " ",
+    "offerUnitName": "閱讀書寫"
+  },
+  {
+    "dep1": "67",
+    "college_cn": "其他",
+    "college_en": " ",
+    "offerUnitName": "資訊能力"
+  },
+  {
+    "dep1": "81",
+    "college_cn": "軍訓室",
+    "college_en": "Office of Military Education",
+    "offerUnitName": "軍訓室"
+  },
+  {
+    "dep1": "82",
+    "college_cn": "校園安全暨生活輔導中心",
+    "college_en": " ",
+    "offerUnitName": "校園安全暨生活輔導中心"
+  },
+  {
+    "dep1": "91",
+    "college_cn": "其他",
+    "college_en": " ",
+    "offerUnitName": "英特、資訊進階"
+  },
+  {
+    "dep1": "92",
+    "college_cn": "其他",
+    "college_en": " ",
+    "offerUnitName": "暑修"
+  },
+  {
+    "dep1": "93",
+    "college_cn": "其他",
+    "college_en": " ",
+    "offerUnitName": "交換學生"
+  },
+  {
+    "dep1": "93",
+    "college_cn": "其他",
+    "college_en": " ",
+    "offerUnitName": "交換學生(碩)"
+  },
+  {
+    "dep1": "94",
+    "college_cn": "其他",
+    "college_en": " ",
+    "offerUnitName": "華文中心"
+  },
+  {
+    "dep1": "98",
+    "college_cn": "其他",
+    "college_en": " ",
+    "offerUnitName": "校外輔雙"
+  },
+  {
+    "dep1": "9A",
+    "college_cn": "教務處",
+    "college_en": " ",
+    "offerUnitName": "教發中心"
+  },
+  {
+    "dep1": "9C",
+    "college_cn": "研發處",
+    "college_en": " ",
+    "offerUnitName": "研發處"
+  },
+  {
+    "dep1": "9D",
+    "college_cn": "教務處",
+    "college_en": " ",
+    "offerUnitName": "教務處"
+  },
+  {
+    "dep1": "A0",
+    "college_cn": "產業學院",
+    "college_en": " ",
+    "offerUnitName": "產業學院"
+  },
+  {
+    "dep1": "A1",
+    "college_cn": "職產處",
+    "college_en": " ",
+    "offerUnitName": "職產處"
+  }
+]
