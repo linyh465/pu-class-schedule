@@ -277,12 +277,7 @@ const CourseCard = ({ group, selectedCourses, onAdd, onDragStart }) => {
             )}
             {activeSection.note === '跨系二階' && (
               <span className="text-[11px] md:text-xs px-2 py-0.5 rounded-md font-bold bg-orange-100 text-orange-700">
-                跨系時段 (二階)
-              </span>
-            )}
-            {activeSection.note === '加退選才能選' && (
-              <span className="text-[11px] md:text-xs px-2 py-0.5 rounded-md font-bold bg-rose-100 text-rose-700 animate-pulse">
-                加退選才能選
+                跨班時段
               </span>
             )}
           </div>
@@ -755,7 +750,7 @@ export default function App() {
                             block.note === '跨系二階' ? 'bg-orange-100/80 text-orange-800' :
                             'bg-rose-100/80 text-rose-800'
                           }`}>
-                            {block.note === '跨系二階' ? '二階才能選' : block.note}
+                            {block.note === '跨系二階' ? '跨班時段' : block.note}
                           </div>
                         )}
 
@@ -871,7 +866,7 @@ export default function App() {
                         block.note === '跨系二階' ? 'bg-orange-100 text-orange-800' :
                         'bg-rose-100 text-rose-800'
                       }`}>
-                        {block.note === '跨系二階' ? '二階才能選' : block.note}
+                        {block.note === '跨系二階' ? '跨班時段' : block.note}
                       </div>
                     )}
 
