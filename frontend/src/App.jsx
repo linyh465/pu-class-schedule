@@ -317,6 +317,7 @@ export default function App() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [guideModalOpen, setGuideModalOpen] = useState(true);
+  const [disclaimerModalOpen, setDisclaimerModalOpen] = useState(false);
 
   const dropdownRef = useRef(null);
   const pdfRef = useRef(null);
