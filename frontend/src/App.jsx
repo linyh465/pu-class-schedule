@@ -79,16 +79,16 @@ const ALL_COURSES = [
   { id: '1816', name: '資訊安全技術應用實務 (四A)', type: '選修', credits: 3, instructor: '林全財', times: [{ day: 5, periods: [5, 6, 7] }], location: '主顧316' },
 
   // 大一重補修 (標註：加退選才能選)
-  { id: '1763', name: '數位設計基礎 (一A)', type: '大一重補修', note: '加退選才能選', credits: 3, instructor: '王肇', times: [{ day: 4, periods: [2, 3, 4] }], location: '任垣142' },
-  { id: '1768', name: '數位設計基礎 (一B)', type: '大一重補修', note: '加退選才能選', credits: 3, instructor: '王肇', times: [{ day: 2, periods: [2, 3, 4] }], location: '主顧322' },
-  { id: '1764', name: '計算機概論(一) (一A)', type: '大一重補修', note: '加退選才能選', credits: 2, instructor: '陳智賢', times: [{ day: 3, periods: [5, 6] }], location: '主顧207' },
-  { id: '1769', name: '計算機概論(一) (一B)', type: '大一重補修', note: '加退選才能選', credits: 2, instructor: '吳賦哲', times: [{ day: 4, periods: [3, 4] }], location: '主顧301' },
-  { id: '1765', name: '程式設計 (一A)', type: '大一重補修', note: '加退選才能選', credits: 3, instructor: '劉國有', times: [{ day: 2, periods: [5, 6, 7] }], location: '主顧324' },
-  { id: '1770', name: '程式設計 (一B)', type: '大一重補修', note: '加退選才能選', credits: 3, instructor: '陳文敬', times: [{ day: 3, periods: [2, 3, 4] }], location: '任垣142' },
-  { id: '1766', name: '運動健康與素養 (一A)', type: '大一重補修', note: '加退選才能選', credits: 1, instructor: '李晨鐘', times: [{ day: 5, periods: [1, 2] }], location: '體育館' },
-  { id: '1771', name: '運動健康與素養 (一B)', type: '大一重補修', note: '加退選才能選', credits: 1, instructor: '張甄玲', times: [{ day: 4, periods: [1, 2] }], location: '體育館' },
-  { id: '1767', name: '人工智慧概論 (一A)', type: '大一重補修', note: '加退選才能選', credits: 3, instructor: '楊孟蒨', times: [{ day: 2, periods: [2, 3, 4] }], location: '主顧301' },
-  { id: '1772', name: '人工智慧概論 (一B)', type: '大一重補修', note: '加退選才能選', credits: 3, instructor: '楊孟蒨', times: [{ day: 3, periods: [5, 6, 7] }], location: '主顧224' },
+  { id: '1763', name: '數位設計基礎 (一A)', type: '大一重補修', credits: 3, instructor: '王肇', times: [{ day: 4, periods: [2, 3, 4] }], location: '任垣142' },
+  { id: '1768', name: '數位設計基礎 (一B)', type: '大一重補修', credits: 3, instructor: '王肇', times: [{ day: 2, periods: [2, 3, 4] }], location: '主顧322' },
+  { id: '1764', name: '計算機概論(一) (一A)', type: '大一重補修', credits: 2, instructor: '陳智賢', times: [{ day: 3, periods: [5, 6] }], location: '主顧207' },
+  { id: '1769', name: '計算機概論(一) (一B)', type: '大一重補修', credits: 2, instructor: '吳賦哲', times: [{ day: 4, periods: [3, 4] }], location: '主顧301' },
+  { id: '1765', name: '程式設計 (一A)', type: '大一重補修', credits: 3, instructor: '劉國有', times: [{ day: 2, periods: [5, 6, 7] }], location: '主顧324' },
+  { id: '1770', name: '程式設計 (一B)', type: '大一重補修', credits: 3, instructor: '陳文敬', times: [{ day: 3, periods: [2, 3, 4] }], location: '任垣142' },
+  { id: '1766', name: '運動健康與素養 (一A)', type: '大一重補修', credits: 1, instructor: '李晨鐘', times: [{ day: 5, periods: [1, 2] }], location: '體育館' },
+  { id: '1771', name: '運動健康與素養 (一B)', type: '大一重補修', credits: 1, instructor: '張甄玲', times: [{ day: 4, periods: [1, 2] }], location: '體育館' },
+  { id: '1767', name: '人工智慧概論 (一A)', type: '大一重補修', credits: 3, instructor: '楊孟蒨', times: [{ day: 2, periods: [2, 3, 4] }], location: '主顧301' },
+  { id: '1772', name: '人工智慧概論 (一B)', type: '大一重補修', credits: 3, instructor: '楊孟蒨', times: [{ day: 3, periods: [5, 6, 7] }], location: '主顧224' },
 
   // 新增：兵役
   { id: '2464', name: '全民國防教育軍事訓練(一)國際情勢', type: '兵役', credits: 0, instructor: '盧諝程', times: [{ day: 1, periods: [3, 4] }], location: '任垣203' },
@@ -749,9 +749,11 @@ export default function App() {
 
                         {block.note && (
                           <div className={`text-[10px] md:text-xs font-bold inline-block px-1 md:px-1.5 py-0.5 rounded mb-1 w-fit ${
-                            block.note === '本系時段' ? 'bg-blue-100/80 text-blue-800' : 'bg-orange-100/80 text-orange-800'
+                            block.note === '本系時段' ? 'bg-blue-100/80 text-blue-800' :
+                            block.note === '跨系二階' ? 'bg-orange-100/80 text-orange-800' :
+                            'bg-rose-100/80 text-rose-800'
                           }`}>
-                            {block.note === '跨系二階' ? '二階才能選' : '本系時段'}
+                            {block.note === '跨系二階' ? '二階才能選' : block.note}
                           </div>
                         )}
 
@@ -859,7 +861,18 @@ export default function App() {
                     style={{ backgroundColor: bgColor, border: `2px solid ${borderColor}` }}
                   >
                     <div className="font-bold text-xs text-slate-700 opacity-90 mb-1">[{block.id}]</div>
-                    <div className="font-bold text-[15px] text-slate-900 leading-tight mb-2">{block.name}</div>
+                    <div className="font-bold text-[15px] text-slate-900 leading-tight mb-1">{block.name}</div>
+                    
+                    {block.note && (
+                      <div className={`text-[10px] font-bold px-1.5 py-0.5 rounded mb-1 ${
+                        block.note === '本系時段' ? 'bg-blue-100 text-blue-800' :
+                        block.note === '跨系二階' ? 'bg-orange-100 text-orange-800' :
+                        'bg-rose-100 text-rose-800'
+                      }`}>
+                        {block.note === '跨系二階' ? '二階才能選' : block.note}
+                      </div>
+                    )}
+
                     <div className="text-sm font-medium text-slate-700">{block.instructor}</div>
                     <div className="text-sm font-medium text-slate-700 mt-0.5">{block.location}</div>
                   </div>
