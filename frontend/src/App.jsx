@@ -42,27 +42,52 @@ const ALL_COURSES = [
   { id: '1776', name: '網頁前端程式設計 (二A)', type: '備用必修', credits: 3, instructor: '王岱伊', times: [{ day: 4, periods: [1, 2, 3] }], location: '主顧322' },
   { id: '1777', name: '搜尋方法與推論邏輯 (二A)', type: '備用必修', credits: 3, instructor: '吳賦哲', times: [{ day: 5, periods: [2, 3, 4] }], location: '主顧322' },
 
-  // 人工智慧選修 (AB班共同與獨立)
-  { id: '1778/1789', name: '配樂與影像氛圍 (AB班共同)', type: '選修', credits: 3, instructor: '彭宇薰', times: [{ day: 4, periods: [5, 6, 9] }], location: '任垣107' },
-  { id: '1779/1790', name: '基礎日文(一) (AB班共同)', type: '選修', credits: 3, instructor: '卓美幸', times: [{ day: 1, periods: [8, 9, 10] }], location: '伯鐸332' },
-  { id: '1780/1791', name: '2D基礎動畫設計 (AB班共同)', type: '選修', credits: 3, instructor: '資院未定一', times: [{ day: 3, periods: [7, 8, 9] }], location: '主顧320' },
-  { id: '1781/1792', name: '2D遊戲製作 (AB班共同)', type: '選修', credits: 3, instructor: '林峻安', times: [{ day: 1, periods: [8, 9, 10] }], location: '主顧322' },
-  { id: '1783/1793', name: '物聯網互動設計 (AB班共同)', type: '選修', credits: 3, instructor: '陳文敬', times: [{ day: 1, periods: [5, 6, 7] }], location: '任垣141' },
+  // 人工智慧二A/二B 選修 (AB 班)
+  { id: '1778', name: '配樂與影像氛圍 (二A)', type: '選修', credits: 3, instructor: '彭宇薰', times: [{ day: 4, periods: [5, 6, 9] }], location: '任垣107' },
+  { id: '1789', name: '配樂與影像氛圍 (二B)', type: '選修', credits: 3, instructor: '彭宇薰', times: [{ day: 4, periods: [5, 6, 9] }], location: '任垣107' },
+  { id: '1779', name: '基礎日文(一) (二A)', type: '選修', credits: 3, instructor: '卓美幸', times: [{ day: 1, periods: [8, 9, 10] }], location: '伯鐸332' },
+  { id: '1790', name: '基礎日文(一) (二B)', type: '選修', credits: 3, instructor: '卓美幸', times: [{ day: 1, periods: [8, 9, 10] }], location: '伯鐸332' },
+  { id: '1780', name: '2D基礎動畫設計 (二A)', type: '選修', credits: 3, instructor: '資院未定一', times: [{ day: 3, periods: [7, 8, 9] }], location: '主顧320' },
+  { id: '1791', name: '2D基礎動畫設計 (二B)', type: '選修', credits: 3, instructor: '資院未定一', times: [{ day: 3, periods: [7, 8, 9] }], location: '主顧320' },
+  { id: '1781', name: '2D遊戲製作 (二A)', type: '選修', credits: 3, instructor: '林峻安', times: [{ day: 1, periods: [8, 9, 10] }], location: '主顧322' },
+  { id: '1792', name: '2D遊戲製作 (二B)', type: '選修', credits: 3, instructor: '林峻安', times: [{ day: 1, periods: [8, 9, 10] }], location: '主顧322' },
+  { id: '1783', name: '物聯網互動設計 (二A)', type: '選修', credits: 3, instructor: '陳文敬', times: [{ day: 1, periods: [5, 6, 7] }], location: '任垣141' },
+  { id: '1793', name: '物聯網互動設計 (二B)', type: '選修', credits: 3, instructor: '陳文敬', times: [{ day: 1, periods: [5, 6, 7] }], location: '任垣141' },
   { id: '1782', name: '初階資訊日文 (二A)', type: '選修', credits: 3, instructor: '蔡季汝', times: [{ day: 2, periods: [5, 6, 7] }], location: '主顧303' },
 
-  // 大三大四選修
-  { id: '1797/1804', name: '新媒體藝術論 (三AB)', type: '大三大四選修', credits: 2, instructor: '邱奕龍', times: [{ day: 3, periods: [8, 9] }], location: '主顧222' },
-  { id: '1798/1805', name: '數位插畫與動態繪本創作 (三AB)', type: '大三大四選修', credits: 3, instructor: '鄧佩珊', times: [{ day: 3, periods: [2, 3, 4] }], location: '主顧320' },
-  { id: '1799/1806', name: '進階3D電腦動畫 (三AB)', type: '大三大四選修', credits: 3, instructor: '林康琦', times: [{ day: 2, periods: [7, 8, 9] }], location: '主顧320' },
-  { id: '1807', name: '擴增實境互動開發 (三B)', type: '大三大四選修', credits: 3, instructor: '溫建豪', times: [{ day: 1, periods: [5, 6, 7] }], location: '主顧305' },
-  { id: '1809', name: '資料庫系統實作 (四A)', type: '大三大四選修', credits: 3, instructor: '許慈芳', times: [{ day: 4, periods: [2, 3, 4] }], location: '主顧320' },
-  { id: '1812', name: '智慧互動設計實務 (四A)', type: '大三大四選修', credits: 3, instructor: '馬宏諭', times: [{ day: 3, periods: [8, 9, 10] }], location: '主顧316' },
-  { id: '1813', name: '高效網站開發實務(合授課程) (四A)', type: '大三大四選修', credits: 3, instructor: '陳智賢 / 陳文敬', times: [{ day: 2, periods: [8, 9, 10] }], location: '主顧316' },
-  { id: '1814', name: '科技創新與創業 (四A)', type: '大三大四選修', credits: 3, instructor: '張甫丞', times: [{ day: 1, periods: [5, 6, 7] }], location: '主顧301' },
-  { id: '1815', name: '專案系統開發實務 (四A)', type: '大三大四選修', credits: 3, instructor: '胡學誠', times: [{ day: 1, periods: [8, 9, 10] }], location: '主顧316' },
-  { id: '1816', name: '資訊安全技術應用實務 (四A)', type: '大三大四選修', credits: 3, instructor: '林全財', times: [{ day: 5, periods: [5, 6, 7] }], location: '主顧316' },
-  { id: '1819', name: '智慧互動設計實務 (四B)', type: '大三大四選修', credits: 3, instructor: '馬宏諭', times: [{ day: 3, periods: [8, 9, 10] }], location: '主顧316' },
-  { id: '1820', name: '科技創新與創業 (四B)', type: '大三大四選修', credits: 3, instructor: '張甫丞', times: [{ day: 1, periods: [5, 6, 7] }], location: '主顧301' },
+  // 人工智慧三A/三B 選修
+  { id: '1796', name: '資料庫系統實作 (三A)', type: '選修', credits: 3, instructor: '許慈芳', times: [{ day: 4, periods: [2, 3, 4] }], location: '主顧320' },
+  { id: '1803', name: '資料庫系統實作 (三B)', type: '選修', credits: 3, instructor: '許慈芳', times: [{ day: 4, periods: [2, 3, 4] }], location: '主顧320' },
+  { id: '1797', name: '新媒體藝術論 (三A)', type: '選修', credits: 2, instructor: '邱奕龍', times: [{ day: 3, periods: [8, 9] }], location: '主顧222' },
+  { id: '1804', name: '新媒體藝術論 (三B)', type: '選修', credits: 2, instructor: '邱奕龍', times: [{ day: 3, periods: [8, 9] }], location: '主顧222' },
+  { id: '1798', name: '數位插畫與動態繪本創作 (三A)', type: '選修', credits: 3, instructor: '鄧佩珊', times: [{ day: 3, periods: [2, 3, 4] }], location: '主顧320' },
+  { id: '1805', name: '數位插畫與動態繪本創作 (三B)', type: '選修', credits: 3, instructor: '鄧佩珊', times: [{ day: 3, periods: [2, 3, 4] }], location: '主顧320' },
+  { id: '1799', name: '進階3D電腦動畫 (三A)', type: '選修', credits: 3, instructor: '林康琦', times: [{ day: 2, periods: [7, 8, 9] }], location: '主顧320' },
+  { id: '1806', name: '進階3D電腦動畫 (三B)', type: '選修', credits: 3, instructor: '林康琦', times: [{ day: 2, periods: [7, 8, 9] }], location: '主顧320' },
+  { id: '1800', name: '擴增實境互動開發 (三A)', type: '選修', credits: 3, instructor: '溫建豪', times: [{ day: 1, periods: [5, 6, 7] }], location: '主顧305' },
+  { id: '1807', name: '擴增實境互動開發 (三B)', type: '選修', credits: 3, instructor: '溫建豪', times: [{ day: 1, periods: [5, 6, 7] }], location: '主顧305' },
+
+  // 人工智慧四A/四B 選修
+  { id: '1809', name: '資料庫系統實作 (四A)', type: '選修', credits: 3, instructor: '許慈芳', times: [{ day: 4, periods: [2, 3, 4] }], location: '主顧320' },
+  { id: '1812', name: '智慧互動設計實務 (四A)', type: '選修', credits: 3, instructor: '馬宏諭', times: [{ day: 3, periods: [8, 9, 10] }], location: '主顧316' },
+  { id: '1819', name: '智慧互動設計實務 (四B)', type: '選修', credits: 3, instructor: '馬宏諭', times: [{ day: 3, periods: [8, 9, 10] }], location: '主顧316' },
+  { id: '1813', name: '高效網站開發實務(合授課程) (四A)', type: '選修', credits: 3, instructor: '陳智賢 / 陳文敬', times: [{ day: 2, periods: [8, 9, 10] }], location: '主顧316' },
+  { id: '1814', name: '科技創新與創業 (四A)', type: '選修', credits: 3, instructor: '張甫丞', times: [{ day: 1, periods: [5, 6, 7] }], location: '主顧301' },
+  { id: '1820', name: '科技創新與創業 (四B)', type: '選修', credits: 3, instructor: '張甫丞', times: [{ day: 1, periods: [5, 6, 7] }], location: '主顧301' },
+  { id: '1815', name: '專案系統開發實務 (四A)', type: '選修', credits: 3, instructor: '胡學誠', times: [{ day: 1, periods: [8, 9, 10] }], location: '主顧316' },
+  { id: '1816', name: '資訊安全技術應用實務 (四A)', type: '選修', credits: 3, instructor: '林全財', times: [{ day: 5, periods: [5, 6, 7] }], location: '主顧316' },
+
+  // 大一重補修 (標註：加退選才能選)
+  { id: '1763', name: '數位設計基礎 (一A)', type: '大一重補修', note: '加退選才能選', credits: 3, instructor: '王肇', times: [{ day: 4, periods: [2, 3, 4] }], location: '任垣142' },
+  { id: '1768', name: '數位設計基礎 (一B)', type: '大一重補修', note: '加退選才能選', credits: 3, instructor: '王肇', times: [{ day: 2, periods: [2, 3, 4] }], location: '主顧322' },
+  { id: '1764', name: '計算機概論(一) (一A)', type: '大一重補修', note: '加退選才能選', credits: 2, instructor: '陳智賢', times: [{ day: 3, periods: [5, 6] }], location: '主顧207' },
+  { id: '1769', name: '計算機概論(一) (一B)', type: '大一重補修', note: '加退選才能選', credits: 2, instructor: '吳賦哲', times: [{ day: 4, periods: [3, 4] }], location: '主顧301' },
+  { id: '1765', name: '程式設計 (一A)', type: '大一重補修', note: '加退選才能選', credits: 3, instructor: '劉國有', times: [{ day: 2, periods: [5, 6, 7] }], location: '主顧324' },
+  { id: '1770', name: '程式設計 (一B)', type: '大一重補修', note: '加退選才能選', credits: 3, instructor: '陳文敬', times: [{ day: 3, periods: [2, 3, 4] }], location: '任垣142' },
+  { id: '1766', name: '運動健康與素養 (一A)', type: '大一重補修', note: '加退選才能選', credits: 1, instructor: '李晨鐘', times: [{ day: 5, periods: [1, 2] }], location: '體育館' },
+  { id: '1771', name: '運動健康與素養 (一B)', type: '大一重補修', note: '加退選才能選', credits: 1, instructor: '張甄玲', times: [{ day: 4, periods: [1, 2] }], location: '體育館' },
+  { id: '1767', name: '人工智慧概論 (一A)', type: '大一重補修', note: '加退選才能選', credits: 3, instructor: '楊孟蒨', times: [{ day: 2, periods: [2, 3, 4] }], location: '主顧301' },
+  { id: '1772', name: '人工智慧概論 (一B)', type: '大一重補修', note: '加退選才能選', credits: 3, instructor: '楊孟蒨', times: [{ day: 3, periods: [5, 6, 7] }], location: '主顧224' },
 
   // 新增：兵役
   { id: '2464', name: '全民國防教育軍事訓練(一)國際情勢', type: '兵役', credits: 0, instructor: '盧諝程', times: [{ day: 1, periods: [3, 4] }], location: '任垣203' },
@@ -97,7 +122,7 @@ const ALL_COURSES = [
   { id: '2532', name: '多媒材地景創作與療癒(跨域與設計)', type: '通識', note: '跨系二階', credits: 2, instructor: '蔡佳吟', times: [{ day: 5, periods: [5, 6] }], location: '思源421' },
 ];
 
-const TABS = ['全部', '必修', '備用必修', '選修', '大三大四選修', '通識', '兵役'];
+const TABS = ['全部', '必修', '備用必修', '選修', '大一重補修', '通識', '兵役'];
 
 const dayNames = ['星期一', '星期二', '星期三', '星期四', '星期五'];
 const periods = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
@@ -251,6 +276,11 @@ const CourseCard = ({ group, selectedCourses, onAdd, onDragStart }) => {
             {activeSection.note === '跨系二階' && (
               <span className="text-[11px] md:text-xs px-2 py-0.5 rounded-md font-bold bg-orange-100 text-orange-700">
                 跨系時段 (二階)
+              </span>
+            )}
+            {activeSection.note === '加退選才能選' && (
+              <span className="text-[11px] md:text-xs px-2 py-0.5 rounded-md font-bold bg-rose-100 text-rose-700 animate-pulse">
+                加退選才能選
               </span>
             )}
           </div>
