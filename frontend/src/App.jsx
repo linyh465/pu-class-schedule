@@ -14,6 +14,7 @@ import {
   ChevronDown,
   Download,
   Info,
+  AlertTriangle,
 } from 'lucide-react';
 
 const ALL_COURSES = [
@@ -1033,10 +1034,60 @@ export default function App() {
 
             <div className="p-6 bg-slate-50 border-t border-slate-100">
               <button
-                onClick={() => setGuideModalOpen(false)}
+                onClick={() => {
+                  setGuideModalOpen(false);
+                  setDisclaimerModalOpen(true);
+                }}
                 className="w-full py-4 bg-slate-800 hover:bg-slate-900 text-white rounded-2xl font-black text-lg transition-all shadow-md active:scale-95 flex items-center justify-center gap-2"
               >
-                開始規劃我的課表 🚀
+                下一步 🚀
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 免責聲明與學分提醒彈窗 */}
+      {disclaimerModalOpen && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-[100] flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl shadow-2xl max-w-lg w-full flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-300">
+            <div className="bg-amber-500 p-6 flex flex-col items-center text-white shrink-0 relative">
+              <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mb-3 shadow-sm rotate-3">
+                <AlertTriangle className="w-8 h-8 text-white" />
+              </div>
+              <h2 className="text-2xl font-black tracking-tight">使用前注意事項 ⚠️</h2>
+            </div>
+
+            <div className="p-6 md:p-8 overflow-y-auto flex-1 bg-white">
+              <div className="space-y-6">
+                <div className="flex gap-4">
+                  <div className="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center shrink-0">
+                    <Info className="w-5 h-5 text-amber-500" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-slate-800 text-base">系統僅供參考</h4>
+                    <p className="text-slate-500 text-sm mt-0.5">本系統所提供之課程資訊如有錯誤，排課結果與選課規則仍以學校官方公告為準，作者不負任何責任喔～</p>
+                  </div>
+                </div>
+
+                <div className="flex gap-4">
+                  <div className="w-10 h-10 rounded-full bg-rose-50 flex items-center justify-center shrink-0">
+                    <BookOpen className="w-5 h-5 text-rose-500" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-slate-800 text-base">畢業學分提醒</h4>
+                    <p className="text-slate-500 text-sm mt-0.5">人工智慧應用學系除本系 85 學分（校訂＋專業必修）外，還需修習 <span className="font-bold text-rose-600">選修學分至少 43 學分以上</span> 才能畢業！</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="p-6 bg-slate-50 border-t border-slate-100">
+              <button
+                onClick={() => setDisclaimerModalOpen(false)}
+                className="w-full py-4 bg-amber-500 hover:bg-amber-600 text-white rounded-2xl font-black text-lg transition-all shadow-md active:scale-95 flex items-center justify-center gap-2"
+              >
+                我瞭解了，開始排課！
               </button>
             </div>
           </div>
