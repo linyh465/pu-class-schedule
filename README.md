@@ -2,7 +2,7 @@
 
 > 專為 **靜宜大學人工智慧應用學系 114學年度入學（大一升大二）** 學生打造的專屬排課表與選課輔助系統。
 
-🌐 **網站網址**：[https://puclass.piypu.me](https://puclass.piyou.me)
+🌐 **網站網址**：[https://puclass.piyou.me](https://puclass.piyou.me)
 
 ---
 
