@@ -133,9 +133,16 @@ const ALL_COURSES = [
   { id: '2307', name: '音像詮釋so easy(跨域與設計)', type: '通識', note: '跨系二階', credits: 2, instructor: '呂威儀', times: [{ day: 1, periods: [1, 2] }], location: '主顧104' },
   { id: '2308', name: '書畫與創意設計的美感探索(跨域與設計)', type: '通識', note: '跨系二階', credits: 2, instructor: '陳韻翎', times: [{ day: 1, periods: [1, 2] }], location: '任垣305' },
   { id: '2524', name: '臺灣原住民文化與創意設計(永續與在地)', type: '通識', note: '跨系二階', credits: 2, instructor: '官志隆', times: [{ day: 1, periods: [1, 2] }], location: '主顧102' },
+
+  // 其他（跨系課程）── 2026-06-03 新增
+  { id: '1854', name: '微積分(一) (資科一A)', type: '其他', credits: 3, instructor: '袁淵明', times: [{ day: 4, periods: [2, 3, 4] }], location: '靜安221' },
+  { id: '0514', name: '證券交易法 (法律四A)', type: '其他', credits: 2, instructor: '葉新民', times: [{ day: 4, periods: [5, 6] }], location: '任垣402' },
+  { id: '0527', name: '證券交易法 (法律四B)', type: '其他', credits: 2, instructor: '葉新民', times: [{ day: 4, periods: [5, 6] }], location: '任垣402' },
+  { id: '1912', name: '區塊鍊應用與實作 (資科四A)', type: '其他', credits: 2, instructor: '林昌平', times: [{ day: 4, periods: [5, 6] }], location: '靜安227' },
+  { id: '1924', name: '區塊鍊應用與實作 (資科四B)', type: '其他', credits: 2, instructor: '林昌平', times: [{ day: 4, periods: [5, 6] }], location: '靜安227' },
 ];
 
-const TABS = ['全部', '必修', '備用必修', '選修', '大一重補修', '通識', '兵役'];
+const TABS = ['全部', '必修', '備用必修', '選修', '大一重補修', '通識', '兵役', '其他'];
 
 const dayNames = ['星期一', '星期二', '星期三', '星期四', '星期五'];
 const periods = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
@@ -225,6 +232,7 @@ const CourseCard = ({ group, selectedCourses, onAdd, onDragStart }) => {
   const isBackupReq = activeSection.type === '備用必修';
   const isGeneral = activeSection.type === '通識';
   const isMilitary = activeSection.type === '兵役';
+  const isOther = activeSection.type === '其他';
 
   let borderClass = 'border-emerald-200 bg-white hover:border-emerald-400 hover:shadow-md cursor-pointer md:cursor-grab active:cursor-grabbing';
   if (isSelected) borderClass = 'border-slate-200 bg-slate-100 opacity-50 cursor-not-allowed';
@@ -232,12 +240,14 @@ const CourseCard = ({ group, selectedCourses, onAdd, onDragStart }) => {
   else if (isBackupReq) borderClass = 'border-amber-200 bg-white hover:border-amber-400 hover:shadow-md cursor-pointer md:cursor-grab active:cursor-grabbing';
   else if (isGeneral) borderClass = 'border-purple-200 bg-white hover:border-purple-400 hover:shadow-md cursor-pointer md:cursor-grab active:cursor-grabbing';
   else if (isMilitary) borderClass = 'border-slate-300 bg-white hover:border-slate-500 hover:shadow-md cursor-pointer md:cursor-grab active:cursor-grabbing';
+  else if (isOther) borderClass = 'border-rose-200 bg-white hover:border-rose-400 hover:shadow-md cursor-pointer md:cursor-grab active:cursor-grabbing';
 
   let badgeClass = 'bg-emerald-100 text-emerald-700';
   if (isRequired) badgeClass = 'bg-indigo-100 text-indigo-700';
   else if (isBackupReq) badgeClass = 'bg-amber-100 text-amber-700';
   else if (isGeneral) badgeClass = 'bg-purple-100 text-purple-700';
   else if (isMilitary) badgeClass = 'bg-slate-200 text-slate-700';
+  else if (isOther) badgeClass = 'bg-rose-100 text-rose-700';
 
   return (
     <div
@@ -735,6 +745,7 @@ export default function App() {
                   const isGeneral = block.type === '通識';
                   const isMilitary = block.type === '兵役';
                   const isAdvanced = block.type === '大三大四選修';
+                  const isOther = block.type === '其他';
 
                   return (
                     <div
@@ -750,6 +761,7 @@ export default function App() {
                         isBackupReq ? 'bg-amber-50 border-amber-200 text-amber-900' :
                         isGeneral ? 'bg-purple-50 border-purple-200 text-purple-900' :
                         isMilitary ? 'bg-slate-100 border-slate-300 text-slate-800' :
+                        isOther ? 'bg-rose-50 border-rose-200 text-rose-900' :
                         isAdvanced ? 'bg-cyan-50 border-cyan-200 text-cyan-900' :
                         'bg-emerald-50 border-emerald-200 text-emerald-900'
                       }`}>
@@ -843,18 +855,21 @@ export default function App() {
               const isGeneral = block.type === '通識';
               const isMilitary = block.type === '兵役';
               const isAdvanced = block.type === '大三大四選修';
+              const isOther = block.type === '其他';
 
               const bgColor = isRequired ? '#eef2ff'
                 : isBackupReq ? '#fffbeb'
                   : isGeneral ? '#faf5ff'
                     : isMilitary ? '#f1f5f9'
-                      : isAdvanced ? '#ecfeff' : '#ecfdf5';
+                      : isOther ? '#fff1f2'
+                        : isAdvanced ? '#ecfeff' : '#ecfdf5';
 
               const borderColor = isRequired ? '#c7d2fe'
                 : isBackupReq ? '#fde68a'
                   : isGeneral ? '#e9d5ff'
                     : isMilitary ? '#cbd5e1'
-                      : isAdvanced ? '#a5f3fc' : '#a7f3d0';
+                      : isOther ? '#fecdd3'
+                        : isAdvanced ? '#a5f3fc' : '#a7f3d0';
 
               return (
                 <div
