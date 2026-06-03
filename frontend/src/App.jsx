@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import {
@@ -11,138 +11,14 @@ import {
   Bot,
   X,
   Pointer,
-  ChevronDown,
   Download,
   Info,
   AlertTriangle,
 } from 'lucide-react';
 
-const ALL_COURSES = [
-  // 通識課程 (三 5、6) - 本系時段
-  { id: '2309', name: '國際關係與發展現勢(永續與在地)', type: '通識', note: '本系時段', credits: 2, instructor: '余健慈', times: [{ day: 3, periods: [5, 6] }], location: '伯鐸221' },
-  { id: '2310', name: '社會設計:專案規畫與實踐(永續與在地)', type: '通識', note: '本系時段', credits: 2, instructor: '邱紹堯', times: [{ day: 3, periods: [5, 6] }], location: '主顧104' },
-  { id: '2311', name: '餐桌上的建築史(永續與在地)', type: '通識', note: '本系時段', credits: 2, instructor: '林依陵', times: [{ day: 3, periods: [5, 6] }], location: '思源316' },
-  { id: '2312', name: '歌劇、藝術與愛情(永續與在地)', type: '通識', note: '本系時段', credits: 2, instructor: '阮文池', times: [{ day: 3, periods: [5, 6] }], location: '任垣443' },
-  { id: '2313', name: '體驗式生死關懷(宗教與思維)', type: '通識', note: '本系時段', credits: 2, instructor: '羅耀明', times: [{ day: 3, periods: [5, 6] }], location: '主顧107' },
-  { id: '2314', name: '創意APP開發與應用(科技與服務)', type: '通識', note: '本系時段', credits: 2, instructor: '邱奕龍', times: [{ day: 3, periods: [5, 6] }], location: '主顧324' },
-  { id: '2315', name: '空間觀察與設計(跨域與設計)', type: '通識', note: '本系時段', credits: 2, instructor: '通未定六', times: [{ day: 3, periods: [5, 6] }], location: '伯鐸436' },
-  { id: '2316', name: '故事行銷與攝影(跨域與設計)', type: '通識', note: '本系時段', credits: 2, instructor: '吳政樺', times: [{ day: 3, periods: [5, 6] }], location: '主顧102' },
-  { id: '2317', name: '劇場與身體敘事(跨域與設計)', type: '通識', note: '本系時段', credits: 2, instructor: '郎亞玲', times: [{ day: 3, periods: [5, 6] }], location: '至善舞蹈教室' },
-  { id: '2318', name: '傳記文學的人物探索與個人形象(跨域與設計)', type: '通識', note: '本系時段', credits: 2, instructor: '陳紹慈', times: [{ day: 3, periods: [5, 6] }], location: '伯鐸217' },
-
-  // 人工智慧二B 必修
-  { id: '1784', name: '資料結構 (二B)', type: '必修', credits: 3, instructor: '莊潤洲', times: [{ day: 2, periods: [5, 6, 7] }], location: '主顧301' },
-  { id: '1785', name: '數位媒體設計 (二B)', type: '必修', credits: 3, instructor: '鄧佩珊', times: [{ day: 4, periods: [2, 3, 4] }], location: '思源221' },
-  { id: '1786', name: '網路通訊概論 (二B)', type: '必修', credits: 3, instructor: '許慈芳', times: [{ day: 2, periods: [2, 3, 4] }], location: '主顧224' },
-  { id: '1787', name: '網頁前端程式設計 (二B)', type: '必修', credits: 3, instructor: '王岱伊', times: [{ day: 5, periods: [2, 3, 4] }], location: '計205' },
-  { id: '1788', name: '搜尋方法與推論邏輯 (二B)', type: '必修', credits: 3, instructor: '吳賦哲', times: [{ day: 3, periods: [2, 3, 4] }], location: '主顧322' },
-
-  // 人工智慧二A 備用必修
-  { id: '1773', name: '資料結構 (二A)', type: '備用必修', credits: 3, instructor: '莊潤洲', times: [{ day: 1, periods: [2, 3, 4] }], location: '主顧224' },
-  { id: '1774', name: '數位媒體設計 (二A)', type: '備用必修', credits: 3, instructor: '鄧佩珊', times: [{ day: 2, periods: [2, 3, 4] }], location: '主顧324' },
-  { id: '1775', name: '網路通訊概論 (二A)', type: '備用必修', credits: 3, instructor: '許慈芳', times: [{ day: 3, periods: [2, 3, 4] }], location: '主顧303' },
-  { id: '1776', name: '網頁前端程式設計 (二A)', type: '備用必修', credits: 3, instructor: '王岱伊', times: [{ day: 4, periods: [1, 2, 3] }], location: '主顧322' },
-  { id: '1777', name: '搜尋方法與推論邏輯 (二A)', type: '備用必修', credits: 3, instructor: '吳賦哲', times: [{ day: 5, periods: [2, 3, 4] }], location: '主顧322' },
-
-  // 人工智慧二A/二B 選修 (AB 班)
-  { id: '1778', name: '配樂與影像氛圍 (二A)', type: '選修', credits: 3, instructor: '彭宇薰', times: [{ day: 4, periods: [5, 6, 9] }], location: '任垣107' },
-  { id: '1789', name: '配樂與影像氛圍 (二B)', type: '選修', credits: 3, instructor: '彭宇薰', times: [{ day: 4, periods: [5, 6, 9] }], location: '任垣107' },
-  { id: '1779', name: '基礎日文(一) (二A)', type: '選修', credits: 3, instructor: '卓美幸', times: [{ day: 1, periods: [8, 9, 10] }], location: '伯鐸332' },
-  { id: '1790', name: '基礎日文(一) (二B)', type: '選修', credits: 3, instructor: '卓美幸', times: [{ day: 1, periods: [8, 9, 10] }], location: '伯鐸332' },
-  { id: '1780', name: '2D基礎動畫設計 (二A)', type: '選修', credits: 3, instructor: '資院未定一', times: [{ day: 3, periods: [7, 8, 9] }], location: '主顧320' },
-  { id: '1791', name: '2D基礎動畫設計 (二B)', type: '選修', credits: 3, instructor: '資院未定一', times: [{ day: 3, periods: [7, 8, 9] }], location: '主顧320' },
-  { id: '1781', name: '2D遊戲製作 (二A)', type: '選修', credits: 3, instructor: '林峻安', times: [{ day: 1, periods: [8, 9, 10] }], location: '主顧322' },
-  { id: '1792', name: '2D遊戲製作 (二B)', type: '選修', credits: 3, instructor: '林峻安', times: [{ day: 1, periods: [8, 9, 10] }], location: '主顧322' },
-  { id: '1783', name: '物聯網互動設計 (二A)', type: '選修', credits: 3, instructor: '陳文敬', times: [{ day: 1, periods: [5, 6, 7] }], location: '任垣141' },
-  { id: '1793', name: '物聯網互動設計 (二B)', type: '選修', credits: 3, instructor: '陳文敬', times: [{ day: 1, periods: [5, 6, 7] }], location: '任垣141' },
-  { id: '1782', name: '初階資訊日文 (二A)', type: '選修', credits: 3, instructor: '蔡季汝', times: [{ day: 2, periods: [5, 6, 7] }], location: '主顧303' },
-
-  // 人工智慧三A/三B 選修
-  { id: '1796', name: '資料庫系統實作 (三A)', type: '選修', credits: 3, instructor: '許慈芳', times: [{ day: 4, periods: [2, 3, 4] }], location: '主顧320' },
-  { id: '1803', name: '資料庫系統實作 (三B)', type: '選修', credits: 3, instructor: '許慈芳', times: [{ day: 4, periods: [2, 3, 4] }], location: '主顧320' },
-  { id: '1797', name: '新媒體藝術論 (三A)', type: '選修', credits: 2, instructor: '邱奕龍', times: [{ day: 3, periods: [8, 9] }], location: '主顧222' },
-  { id: '1804', name: '新媒體藝術論 (三B)', type: '選修', credits: 2, instructor: '邱奕龍', times: [{ day: 3, periods: [8, 9] }], location: '主顧222' },
-  { id: '1798', name: '數位插畫與動態繪本創作 (三A)', type: '選修', credits: 3, instructor: '鄧佩珊', times: [{ day: 3, periods: [2, 3, 4] }], location: '主顧320' },
-  { id: '1805', name: '數位插畫與動態繪本創作 (三B)', type: '選修', credits: 3, instructor: '鄧佩珊', times: [{ day: 3, periods: [2, 3, 4] }], location: '主顧320' },
-  { id: '1799', name: '進階3D電腦動畫 (三A)', type: '選修', credits: 3, instructor: '林康琦', times: [{ day: 2, periods: [7, 8, 9] }], location: '主顧320' },
-  { id: '1806', name: '進階3D電腦動畫 (三B)', type: '選修', credits: 3, instructor: '林康琦', times: [{ day: 2, periods: [7, 8, 9] }], location: '主顧320' },
-  { id: '1800', name: '擴增實境互動開發 (三A)', type: '選修', credits: 3, instructor: '溫建豪', times: [{ day: 1, periods: [5, 6, 7] }], location: '主顧305' },
-  { id: '1807', name: '擴增實境互動開發 (三B)', type: '選修', credits: 3, instructor: '溫建豪', times: [{ day: 1, periods: [5, 6, 7] }], location: '主顧305' },
-
-  // 人工智慧四A/四B 選修
-  { id: '1809', name: '資料庫系統實作 (四A)', type: '選修', credits: 3, instructor: '許慈芳', times: [{ day: 4, periods: [2, 3, 4] }], location: '主顧320' },
-  { id: '1812', name: '智慧互動設計實務 (四A)', type: '選修', credits: 3, instructor: '馬宏諭', times: [{ day: 3, periods: [8, 9, 10] }], location: '主顧316' },
-  { id: '1819', name: '智慧互動設計實務 (四B)', type: '選修', credits: 3, instructor: '馬宏諭', times: [{ day: 3, periods: [8, 9, 10] }], location: '主顧316' },
-  { id: '1813', name: '高效網站開發實務(合授課程) (四A)', type: '選修', credits: 3, instructor: '陳智賢 / 陳文敬', times: [{ day: 2, periods: [8, 9, 10] }], location: '主顧316' },
-  { id: '1814', name: '科技創新與創業 (四A)', type: '選修', credits: 3, instructor: '張甫丞', times: [{ day: 1, periods: [5, 6, 7] }], location: '主顧301' },
-  { id: '1820', name: '科技創新與創業 (四B)', type: '選修', credits: 3, instructor: '張甫丞', times: [{ day: 1, periods: [5, 6, 7] }], location: '主顧301' },
-  { id: '1815', name: '專案系統開發實務 (四A)', type: '選修', credits: 3, instructor: '胡學誠', times: [{ day: 1, periods: [8, 9, 10] }], location: '主顧316' },
-  { id: '1816', name: '資訊安全技術應用實務 (四A)', type: '選修', credits: 3, instructor: '林全財', times: [{ day: 5, periods: [5, 6, 7] }], location: '主顧316' },
-
-  // 大一重補修 (標註：加退選才能選)
-  { id: '1763', name: '數位設計基礎 (一A)', type: '大一重補修', credits: 3, instructor: '王肇', times: [{ day: 4, periods: [2, 3, 4] }], location: '任垣142' },
-  { id: '1768', name: '數位設計基礎 (一B)', type: '大一重補修', credits: 3, instructor: '王肇', times: [{ day: 2, periods: [2, 3, 4] }], location: '主顧322' },
-  { id: '1764', name: '計算機概論(一) (一A)', type: '大一重補修', credits: 2, instructor: '陳智賢', times: [{ day: 3, periods: [5, 6] }], location: '主顧207' },
-  { id: '1769', name: '計算機概論(一) (一B)', type: '大一重補修', credits: 2, instructor: '吳賦哲', times: [{ day: 4, periods: [3, 4] }], location: '主顧301' },
-  { id: '1765', name: '程式設計 (一A)', type: '大一重補修', credits: 3, instructor: '劉國有', times: [{ day: 2, periods: [5, 6, 7] }], location: '主顧324' },
-  { id: '1770', name: '程式設計 (一B)', type: '大一重補修', credits: 3, instructor: '陳文敬', times: [{ day: 3, periods: [2, 3, 4] }], location: '任垣142' },
-  { id: '1766', name: '運動健康與素養 (一A)', type: '大一重補修', credits: 1, instructor: '李晨鐘', times: [{ day: 5, periods: [1, 2] }], location: '體育館' },
-  { id: '1771', name: '運動健康與素養 (一B)', type: '大一重補修', credits: 1, instructor: '張甄玲', times: [{ day: 4, periods: [1, 2] }], location: '體育館' },
-  { id: '1767', name: '人工智慧概論 (一A)', type: '大一重補修', credits: 3, instructor: '楊孟蒨', times: [{ day: 2, periods: [2, 3, 4] }], location: '主顧301' },
-  { id: '1772', name: '人工智慧概論 (一B)', type: '大一重補修', credits: 3, instructor: '楊孟蒨', times: [{ day: 3, periods: [5, 6, 7] }], location: '主顧224' },
-
-  // 新增：兵役
-  { id: '2464', name: '全民國防教育軍事訓練(一)國際情勢', type: '兵役', credits: 0, instructor: '盧諝程', times: [{ day: 1, periods: [3, 4] }], location: '任垣203' },
-  { id: '2465', name: '全民國防教育軍事訓練(二)國防政策', type: '兵役', credits: 0, instructor: '李曉菁', times: [{ day: 5, periods: [3, 4] }], location: '任垣203' },
-
-  // 資工系 必修
-  { id: '1684', name: '線性代數 (資工一B)', type: '必修', credits: 3, instructor: '林耀鈴', times: [{ day: 4, periods: [2, 3, 4] }], location: '主顧205' },
-  { id: '1691', name: '邏輯設計 (資工二A)', type: '必修', credits: 3, instructor: '羅峻旗', times: [{ day: 3, periods: [2, 3, 4] }], location: '主顧222' },
-  { id: '1679', name: '線性代數 (資工一A)', type: '必修', credits: 3, instructor: '林耀鈴', times: [{ day: 2, periods: [5, 6, 7] }], location: '主顧205' },
-  { id: '1703', name: '邏輯設計 (資工二B)', type: '必修', credits: 3, instructor: '羅峻旗', times: [{ day: 1, periods: [5, 6, 7] }], location: '主顧222' },
-
-  // 通識課程 (星期五 5、6節) - 跨系時段(二階)
-  { id: '2319', name: '藝術真與美的探索(永續與在地)', type: '通識', note: '跨系二階', credits: 2, instructor: '彭宇薰', times: [{ day: 5, periods: [5, 6] }], location: '任垣107' },
-  { id: '2320', name: '性/別與多元文化(永續與在地)', type: '通識', note: '跨系二階', credits: 2, instructor: '王孝勇', times: [{ day: 5, periods: [5, 6] }], location: '任垣307' },
-  { id: '2321', name: '現代藝術與社會議題(永續與在地)', type: '通識', note: '跨系二階', credits: 2, instructor: '劉耀中', times: [{ day: 5, periods: [5, 6] }], location: '思源427' },
-  { id: '2322', name: '社會公義與倫理(永續與在地)', type: '通識', note: '跨系二階', credits: 2, instructor: '李庭毓', times: [{ day: 5, periods: [5, 6] }], location: '任垣503' },
-  { id: '2323', name: '環境永續與在地文化(永續與在地)', type: '通識', note: '跨系二階', credits: 2, instructor: '蔡志忠', times: [{ day: 5, periods: [5, 6] }], location: '思源327' },
-  { id: '2324', name: '餐桌上的建築史(五)(永續與在地)', type: '通識', note: '跨系二階', credits: 2, instructor: '林依陵', times: [{ day: 5, periods: [5, 6] }], location: '思源316' },
-  { id: '2325', name: '歌劇、藝術與愛情(五)(永續與在地)', type: '通識', note: '跨系二階', credits: 2, instructor: '阮文池', times: [{ day: 5, periods: [5, 6] }], location: '任垣443' },
-  { id: '2326', name: '人生哲學與幸福(宗教與思維)', type: '通識', note: '跨系二階', credits: 2, instructor: '石致華', times: [{ day: 5, periods: [5, 6] }], location: '思源523' },
-  { id: '2327', name: '世界宗教與幸福智慧(宗教與思維)', type: '通識', note: '跨系二階', credits: 2, instructor: '洪裕元', times: [{ day: 5, periods: [5, 6] }], location: '任垣404' },
-  { id: '2328', name: '宗教與社會關懷(宗教與思維)', type: '通識', note: '跨系二階', credits: 2, instructor: '黃富巧', times: [{ day: 5, periods: [5, 6] }], location: '思源321' },
-  { id: '2329', name: '數位利用與地方展示(科技與服務)', type: '通識', note: '跨系二階', credits: 2, instructor: '楊勝欽', times: [{ day: 5, periods: [5, 6] }], location: '思源429' },
-  { id: '2330', name: '資訊科技與應用(科技與服務)', type: '通識', note: '跨系二階', credits: 2, instructor: '簡永仁', times: [{ day: 5, periods: [5, 6] }], location: '主顧324' },
-  { id: '2331', name: '數位敘事與動畫製作(科技與服務)', type: '通識', note: '跨系二階', credits: 2, instructor: '陳鈺淋', times: [{ day: 5, periods: [5, 6] }], location: '計203' },
-  { id: '2332', name: '裝置藝術與實踐(跨域與設計)', type: '通識', note: '跨系二階', credits: 2, instructor: '尹子潔', times: [{ day: 5, periods: [5, 6] }], location: '任垣304' },
-  { id: '2334', name: '永續家園與綠色生活(跨域與設計)', type: '通識', note: '跨系二階', credits: 2, instructor: '鄭宜玟', times: [{ day: 5, periods: [5, 6] }], location: '任垣504' },
-  { id: '2335', name: '跨域連結與未來探索(跨域與設計)', type: '通識', note: '跨系二階', credits: 2, instructor: '楊慧姿', times: [{ day: 5, periods: [5, 6] }], location: '思源323' },
-  { id: '2336', name: '點到面的影像美學設計(跨域與設計)', type: '通識', note: '跨系二階', credits: 2, instructor: '林俞伶', times: [{ day: 5, periods: [5, 6] }], location: '任垣505' },
-  { id: '2337', name: '劇場與身體敘事(五)(跨域與設計)', type: '通識', note: '跨系二階', credits: 2, instructor: '郎亞玲', times: [{ day: 5, periods: [5, 6] }], location: '至善舞蹈教室' },
-  { id: '2525', name: '回收循環經濟與環境(科技與服務)', type: '通識', note: '跨系二階', credits: 2, instructor: '林哲寬', times: [{ day: 5, periods: [5, 6] }], location: '任垣407' },
-  { id: '2532', name: '多媒材地景創作與療癒(跨域與設計)', type: '通識', note: '跨系二階', credits: 2, instructor: '蔡佳吟', times: [{ day: 5, periods: [5, 6] }], location: '思源421' },
-
-  // 通識課程 (週一 1、2 節) - 跨班時段(人社院) ── 2026-06-03 新增
-  { id: '2299', name: '人與當代社會的建構(永續與在地)', type: '通識', note: '跨系二階', credits: 2, instructor: '曾馨婷', times: [{ day: 1, periods: [1, 2] }], location: '主顧222' },
-  { id: '2300', name: '社會學思考與在地議題分析(永續與在地)', type: '通識', note: '跨系二階', credits: 2, instructor: '陳迪暉', times: [{ day: 1, periods: [1, 2] }], location: '思源423' },
-  { id: '2303', name: '哲學的傳統與現在(宗教與思維)', type: '通識', note: '跨系二階', credits: 2, instructor: '劉希文', times: [{ day: 1, periods: [1, 2] }], location: '思源427' },
-  { id: '2304', name: '宗教情操的社會關懷(宗教與思維)', type: '通識', note: '跨系二階', credits: 2, instructor: '方純強', times: [{ day: 1, periods: [1, 2] }], location: '主顧301' },
-  { id: '2305', name: '無人機生態影像解析(科技與服務)', type: '通識', note: '跨系二階', credits: 2, instructor: '蔡嘉陽', times: [{ day: 1, periods: [1, 2] }], location: '任垣403' },
-  { id: '2306', name: '自說自話——編輯有意思(跨域與設計)', type: '通識', note: '跨系二階', credits: 2, instructor: '林美蘭', times: [{ day: 1, periods: [1, 2] }], location: '思源429' },
-  { id: '2307', name: '音像詮釋so easy(跨域與設計)', type: '通識', note: '跨系二階', credits: 2, instructor: '呂威儀', times: [{ day: 1, periods: [1, 2] }], location: '主顧104' },
-  { id: '2308', name: '書畫與創意設計的美感探索(跨域與設計)', type: '通識', note: '跨系二階', credits: 2, instructor: '陳韻翎', times: [{ day: 1, periods: [1, 2] }], location: '任垣305' },
-  { id: '2524', name: '臺灣原住民文化與創意設計(永續與在地)', type: '通識', note: '跨系二階', credits: 2, instructor: '官志隆', times: [{ day: 1, periods: [1, 2] }], location: '主顧102' },
-
-  // 其他（跨系課程）── 2026-06-03 新增
-  { id: '1854', name: '微積分(一) (資科一A)', type: '其他', credits: 3, instructor: '袁淵明', times: [{ day: 4, periods: [2, 3, 4] }], location: '靜安221' },
-  { id: '0514', name: '證券交易法 (法律四A)', type: '其他', credits: 2, instructor: '葉新民', times: [{ day: 4, periods: [5, 6] }], location: '任垣402' },
-  { id: '0527', name: '證券交易法 (法律四B)', type: '其他', credits: 2, instructor: '葉新民', times: [{ day: 4, periods: [5, 6] }], location: '任垣402' },
-  { id: '1912', name: '區塊鍊應用與實作 (資科四A)', type: '其他', credits: 2, instructor: '林昌平', times: [{ day: 4, periods: [5, 6] }], location: '靜安227' },
-  { id: '1924', name: '區塊鍊應用與實作 (資科四B)', type: '其他', credits: 2, instructor: '林昌平', times: [{ day: 4, periods: [5, 6] }], location: '靜安227' },
-];
-
-const TABS = ['全部', '必修', '備用必修', '選修', '大一重補修', '通識', '兵役', '其他'];
+// TAB_ORDER determines left-panel tab sequence; only tabs whose type exists in the
+// filtered course list are shown (except '全部' which is always shown).
+const TAB_ORDER = ['全部', '必修', '備用必修', '教必', '選修', '教選', '通識', '通必', '兵役', '大一重補修', '其他'];
 
 const dayNames = ['星期一', '星期二', '星期三', '星期四', '星期五'];
 const periods = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
@@ -168,18 +44,6 @@ const formatTimes = (times) => {
   return times.map(t => `${dayNames[t.day - 1]} ${t.periods.join(', ')}`).join(' / ');
 };
 
-const loadStoredCourses = () => {
-  try {
-    const saved = localStorage.getItem('selectedCourses');
-    if (!saved) return [];
-    const ids = JSON.parse(saved);
-    if (!Array.isArray(ids)) return [];
-    return ids.map(id => ALL_COURSES.find(c => c.id === id)).filter(Boolean);
-  } catch {
-    return [];
-  }
-};
-
 const loadStoredTab = () => {
   try {
     return localStorage.getItem('activeTab') || '全部';
@@ -196,58 +60,42 @@ const parseCourseName = (fullName) => {
   return { baseName: fullName, className: '一般' };
 };
 
-const groupedCoursesList = (() => {
-  const groups = {};
-  ALL_COURSES.forEach(course => {
-    const { baseName, className } = parseCourseName(course.name);
-    const timeStr = JSON.stringify(course.times);
-    const key = `${baseName}|${timeStr}|${course.location}`;
-    
-    if (!groups[key]) {
-      groups[key] = {
-        ...course,
-        name: baseName,
-        sections: []
-      };
-    }
-    groups[key].sections.push({
-      id: course.id,
-      className: className,
-      type: course.type,
-      note: course.note,
-      originalName: course.name,
-    });
-  });
-  return Object.values(groups);
-})();
-
 const CourseCard = ({ group, selectedCourses, onAdd, onDragStart }) => {
   const [activeTabIndex, setActiveTabIndex] = useState(0);
-  
+
   const safeIndex = activeTabIndex < group.sections.length ? activeTabIndex : 0;
   const activeSection = group.sections[safeIndex];
   const isSelected = selectedCourses.some(c => c.id === activeSection.id);
-  
+
   const isRequired = activeSection.type === '必修';
   const isBackupReq = activeSection.type === '備用必修';
+  const isEduReq = activeSection.type === '教必';
   const isGeneral = activeSection.type === '通識';
+  const isGenReq = activeSection.type === '通必';
   const isMilitary = activeSection.type === '兵役';
   const isOther = activeSection.type === '其他';
+  const isEduElective = activeSection.type === '教選';
 
   let borderClass = 'border-emerald-200 bg-white hover:border-emerald-400 hover:shadow-md cursor-pointer md:cursor-grab active:cursor-grabbing';
   if (isSelected) borderClass = 'border-slate-200 bg-slate-100 opacity-50 cursor-not-allowed';
   else if (isRequired) borderClass = 'border-indigo-200 bg-white hover:border-indigo-400 hover:shadow-md cursor-pointer md:cursor-grab active:cursor-grabbing';
   else if (isBackupReq) borderClass = 'border-amber-200 bg-white hover:border-amber-400 hover:shadow-md cursor-pointer md:cursor-grab active:cursor-grabbing';
+  else if (isEduReq) borderClass = 'border-teal-200 bg-white hover:border-teal-400 hover:shadow-md cursor-pointer md:cursor-grab active:cursor-grabbing';
   else if (isGeneral) borderClass = 'border-purple-200 bg-white hover:border-purple-400 hover:shadow-md cursor-pointer md:cursor-grab active:cursor-grabbing';
+  else if (isGenReq) borderClass = 'border-violet-200 bg-white hover:border-violet-400 hover:shadow-md cursor-pointer md:cursor-grab active:cursor-grabbing';
   else if (isMilitary) borderClass = 'border-slate-300 bg-white hover:border-slate-500 hover:shadow-md cursor-pointer md:cursor-grab active:cursor-grabbing';
   else if (isOther) borderClass = 'border-rose-200 bg-white hover:border-rose-400 hover:shadow-md cursor-pointer md:cursor-grab active:cursor-grabbing';
+  else if (isEduElective) borderClass = 'border-cyan-200 bg-white hover:border-cyan-400 hover:shadow-md cursor-pointer md:cursor-grab active:cursor-grabbing';
 
   let badgeClass = 'bg-emerald-100 text-emerald-700';
   if (isRequired) badgeClass = 'bg-indigo-100 text-indigo-700';
   else if (isBackupReq) badgeClass = 'bg-amber-100 text-amber-700';
+  else if (isEduReq) badgeClass = 'bg-teal-100 text-teal-700';
   else if (isGeneral) badgeClass = 'bg-purple-100 text-purple-700';
+  else if (isGenReq) badgeClass = 'bg-violet-100 text-violet-700';
   else if (isMilitary) badgeClass = 'bg-slate-200 text-slate-700';
   else if (isOther) badgeClass = 'bg-rose-100 text-rose-700';
+  else if (isEduElective) badgeClass = 'bg-cyan-100 text-cyan-700';
 
   return (
     <div
@@ -270,8 +118,8 @@ const CourseCard = ({ group, selectedCourses, onAdd, onDragStart }) => {
                 key={sec.id}
                 onClick={() => setActiveTabIndex(idx)}
                 className={`px-2 py-1 rounded-md text-[11px] md:text-xs font-bold transition-colors ${
-                  safeIndex === idx 
-                    ? 'bg-blue-500 text-white shadow-sm' 
+                  safeIndex === idx
+                    ? 'bg-blue-500 text-white shadow-sm'
                     : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
                 }`}
               >
@@ -301,6 +149,16 @@ const CourseCard = ({ group, selectedCourses, onAdd, onDragStart }) => {
                 跨班時段
               </span>
             )}
+            {activeSection.note && activeSection.note !== '本系時段' && activeSection.note !== '跨系二階' && (
+              <span className="text-[11px] md:text-xs px-2 py-0.5 rounded-md font-bold bg-slate-100 text-slate-600">
+                {activeSection.note}
+              </span>
+            )}
+            {activeSection.dimension && (
+              <span className="text-[11px] md:text-xs px-2 py-0.5 rounded-md font-bold bg-violet-50 text-violet-600 border border-violet-100">
+                {activeSection.dimension}
+              </span>
+            )}
           </div>
         </div>
 
@@ -327,43 +185,151 @@ const CourseCard = ({ group, selectedCourses, onAdd, onDragStart }) => {
 };
 
 export default function App() {
-  const [selectedCourses, setSelectedCourses] = useState(loadStoredCourses);
+  const [allCourses, setAllCourses] = useState([]);
+  const [coursesLoading, setCoursesLoading] = useState(true);
+  const [selectedDept, setSelectedDept] = useState(() => {
+    try { return localStorage.getItem('selectedDept') || ''; } catch { return ''; }
+  });
+  const [selectedCourses, setSelectedCourses] = useState([]);
+  const [storageRestored, setStorageRestored] = useState(false);
   const [activeTab, setActiveTab] = useState(loadStoredTab);
   const [toast, setToast] = useState(null);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
-  const [updateModalOpen, setUpdateModalOpen] = useState(true);
+  const [updateModalOpen, setUpdateModalOpen] = useState(() => {
+    try { return !sessionStorage.getItem('updateModalDismissed'); } catch { return true; }
+  });
   const [guideModalOpen, setGuideModalOpen] = useState(false);
   const [disclaimerModalOpen, setDisclaimerModalOpen] = useState(false);
 
-  const dropdownRef = useRef(null);
   const pdfRef = useRef(null);
 
   const [aiModalOpen, setAiModalOpen] = useState(false);
   const [aiLoading, setAiLoading] = useState(false);
   const [aiResult, setAiResult] = useState('');
 
+  // Fetch courses data on mount
   useEffect(() => {
-    localStorage.setItem('selectedCourses', JSON.stringify(selectedCourses.map(c => c.id)));
-  }, [selectedCourses]);
+    fetch('/data/courses_output.json')
+      .then(r => r.json())
+      .then(data => {
+        setAllCourses(data);
+        setCoursesLoading(false);
+      })
+      .catch(() => {
+        setCoursesLoading(false);
+      });
+  }, []);
 
+  // Restore selectedCourses from localStorage after allCourses is loaded
+  useEffect(() => {
+    if (coursesLoading || storageRestored) return;
+    try {
+      const saved = localStorage.getItem('selectedCourses');
+      if (saved) {
+        const ids = JSON.parse(saved);
+        if (Array.isArray(ids)) {
+          const restored = ids.map(id => allCourses.find(c => c.id === id)).filter(Boolean);
+          setSelectedCourses(restored);
+        }
+      }
+    } catch {
+      // ignore
+    }
+    setStorageRestored(true);
+  }, [coursesLoading, allCourses, storageRestored]);
+
+  // Persist selectedCourses
+  useEffect(() => {
+    if (!storageRestored) return;
+    localStorage.setItem('selectedCourses', JSON.stringify(selectedCourses.map(c => c.id)));
+  }, [selectedCourses, storageRestored]);
+
+  // Persist activeTab
   useEffect(() => {
     localStorage.setItem('activeTab', activeTab);
   }, [activeTab]);
 
+  // Persist selectedDept
   useEffect(() => {
-    function handleClickOutside(event) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsDropdownOpen(false);
+    try { localStorage.setItem('selectedDept', selectedDept); } catch { /* ignore */ }
+  }, [selectedDept]);
+
+  // --- Derived values ---
+
+  const deptList = useMemo(() => {
+    const depts = [...new Set(allCourses.map(c => c.dept))].sort();
+    return depts;
+  }, [allCourses]);
+
+  const filteredCourses = useMemo(() => {
+    if (!selectedDept) return [];
+    return allCourses.filter(c => c.dept === selectedDept);
+  }, [allCourses, selectedDept]);
+
+  const groupedCoursesList = useMemo(() => {
+    const groups = {};
+    filteredCourses.forEach(course => {
+      const { baseName, className } = parseCourseName(course.name);
+      const timeStr = JSON.stringify(course.times);
+      const key = `${baseName}|${timeStr}|${course.location}`;
+
+      if (!groups[key]) {
+        groups[key] = {
+          ...course,
+          name: baseName,
+          sections: [],
+        };
       }
+      groups[key].sections.push({
+        id: course.id,
+        className: className,
+        type: course.type,
+        note: course.note,
+        dimension: course.dimension,
+        originalName: course.name,
+      });
+    });
+    return Object.values(groups);
+  }, [filteredCourses]);
+
+  const availableTabs = useMemo(() => {
+    const types = new Set(filteredCourses.map(c => c.type));
+    return TAB_ORDER.filter(t => t === '全部' || types.has(t));
+  }, [filteredCourses]);
+
+  // If active tab becomes unavailable after dept change, reset to 全部
+  useEffect(() => {
+    if (!availableTabs.includes(activeTab)) {
+      setActiveTab('全部');
     }
-    document.addEventListener('mousedown', handleClickOutside);
-    document.addEventListener('touchstart', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('touchstart', handleClickOutside);
-    };
-  }, []);
+  }, [availableTabs, activeTab]);
+
+  const filteredGroups = useMemo(() => {
+    return groupedCoursesList.filter(group => {
+      if (activeTab === '全部') return true;
+      return group.sections.some(sec => sec.type === activeTab);
+    });
+  }, [groupedCoursesList, activeTab]);
+
+  const totalCredits = selectedCourses.reduce((sum, c) => sum + c.credits, 0);
+
+  const scheduleBlocks = [];
+  selectedCourses.forEach(course => {
+    course.times.forEach(time => {
+      const chunks = getContinuousChunks(time.periods);
+      chunks.forEach(chunk => {
+        scheduleBlocks.push({
+          ...course,
+          day: time.day,
+          startPeriod: chunk[0],
+          length: chunk.length,
+          chunkText: chunk.join(', '),
+        });
+      });
+    });
+  });
+
+  // --- Handlers ---
 
   const showToast = (message, type = 'error') => {
     setToast({ message, type });
@@ -385,7 +351,7 @@ export default function App() {
   };
 
   const tryAddCourse = (courseId) => {
-    const course = ALL_COURSES.find(c => c.id === courseId);
+    const course = allCourses.find(c => c.id === courseId);
     if (!course) return;
 
     if (selectedCourses.some(c => c.id === course.id)) {
@@ -417,16 +383,8 @@ export default function App() {
     setSelectedCourses(selectedCourses.filter(c => c.id !== courseId));
   };
 
-  const addSpecificRequired = (groupName) => {
-    let requiredCourses = [];
-    if (groupName === 'AI_2A') {
-      requiredCourses = ALL_COURSES.filter(c => c.type === '備用必修' && c.name.includes('(二A)'));
-    } else if (groupName === 'AI_2B') {
-      requiredCourses = ALL_COURSES.filter(c => c.type === '必修' && !c.name.includes('資工'));
-    } else if (groupName === 'CSIE') {
-      requiredCourses = ALL_COURSES.filter(c => c.type === '必修' && c.name.includes('資工'));
-    }
-
+  const autoLoadRequired = () => {
+    const requiredCourses = filteredCourses.filter(c => c.type === '必修');
     let addedCount = 0;
     const newSelected = [...selectedCourses];
 
@@ -449,14 +407,11 @@ export default function App() {
       }
     });
 
-    setIsDropdownOpen(false);
-
     if (addedCount > 0) {
       setSelectedCourses(newSelected);
-      const groupLabel = groupName === 'AI_2A' ? '人工智慧二A' : groupName === 'AI_2B' ? '人工智慧二B' : '資工系';
-      showToast(`✅ 已自動帶入 ${addedCount} 堂 ${groupLabel} 必修課！`, 'success');
+      showToast(`✅ 已自動帶入 ${addedCount} 堂必修課！`, 'success');
     } else {
-      showToast('💡 該群組的必修課都已在課表內，或因為衝堂無法加入喔！', 'success');
+      showToast('💡 必修課都已在課表內，或因衝堂無法加入！', 'success');
     }
   };
 
@@ -471,19 +426,18 @@ export default function App() {
 
     const element = pdfRef.current;
     const originalClassName = element.className;
-    
-    // 暫時將元素移入可見區域的最底層進行截圖
+
     element.className = 'absolute top-0 left-0 w-[950px] font-sans z-[-1]';
 
     try {
       const page1 = document.getElementById('pdf-page-1');
       const page2 = document.getElementById('pdf-page-2');
 
-      const opt = { 
-        scale: 2, 
-        useCORS: true, 
-        logging: false, 
-        windowWidth: 950 
+      const opt = {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        windowWidth: 950,
       };
 
       const canvas1 = await html2canvas(page1, opt);
@@ -494,7 +448,7 @@ export default function App() {
 
       const pdf = new jsPDF('p', 'mm', 'a4');
       const pdfWidth = pdf.internal.pageSize.getWidth();
-      
+
       const pdfHeight1 = (canvas1.height * pdfWidth) / canvas1.width;
       pdf.addImage(imgData1, 'JPEG', 0, 0, pdfWidth, pdfHeight1);
 
@@ -503,7 +457,7 @@ export default function App() {
       pdf.addImage(imgData2, 'JPEG', 0, 0, pdfWidth, pdfHeight2);
 
       pdf.save('我的專屬課表.pdf');
-      
+
       showToast('✅ PDF 匯出成功！', 'success');
     } catch (err) {
       console.error('PDF Export Error:', err);
@@ -562,28 +516,7 @@ export default function App() {
     return { __html: html };
   };
 
-  const filteredGroups = groupedCoursesList.filter(group => {
-    if (activeTab === '全部') return true;
-    return group.sections.some(sec => sec.type === activeTab);
-  });
-
-  const totalCredits = selectedCourses.reduce((sum, c) => sum + c.credits, 0);
-
-  const scheduleBlocks = [];
-  selectedCourses.forEach(course => {
-    course.times.forEach(time => {
-      const chunks = getContinuousChunks(time.periods);
-      chunks.forEach(chunk => {
-        scheduleBlocks.push({
-          ...course,
-          day: time.day,
-          startPeriod: chunk[0],
-          length: chunk.length,
-          chunkText: chunk.join(', '),
-        });
-      });
-    });
-  });
+  const hasDeptRequired = selectedDept && filteredCourses.some(c => c.type === '必修');
 
   return (
     <>
@@ -603,10 +536,28 @@ export default function App() {
             <p className="text-slate-400 text-xs md:text-sm mt-1 flex items-center gap-1">
               <Pointer className="w-3 h-3 md:hidden" /> 點擊課程直接加入課表
             </p>
+            {/* 系所選擇器 */}
+            <div className="mt-2">
+              <select
+                value={selectedDept}
+                onChange={e => setSelectedDept(e.target.value)}
+                className="w-full bg-slate-700 text-white text-sm rounded-lg px-3 py-2 border border-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-400 cursor-pointer"
+              >
+                <option value="">— 請選擇系所 —</option>
+                {deptList.map(dept => (
+                  <option key={dept} value={dept}>{dept}</option>
+                ))}
+              </select>
+            </div>
+            {selectedDept && !coursesLoading && (
+              <p className="text-slate-400 text-xs mt-1">
+                共 {filteredCourses.length} 門課程
+              </p>
+            )}
           </div>
 
           <div className="flex border-b border-slate-100 bg-slate-50 overflow-x-auto shrink-0 scrollbar-hide">
-            {TABS.map(tab => (
+            {availableTabs.map(tab => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
@@ -618,15 +569,32 @@ export default function App() {
           </div>
 
           <div className="flex-1 overflow-y-auto p-3 space-y-2.5 bg-slate-50 pb-6">
-            {filteredGroups.map(group => (
-              <CourseCard
-                key={group.sections[0].id}
-                group={group}
-                selectedCourses={selectedCourses}
-                onAdd={tryAddCourse}
-                onDragStart={handleDragStart}
-              />
-            ))}
+            {coursesLoading ? (
+              <div className="flex flex-col items-center justify-center py-12 text-slate-400">
+                <Sparkles className="w-8 h-8 animate-spin mb-3" />
+                <p className="font-bold text-sm">載入課程資料中…</p>
+              </div>
+            ) : !selectedDept ? (
+              <div className="flex flex-col items-center justify-center py-12 text-slate-400 text-center px-4">
+                <BookOpen className="w-10 h-10 mb-3 opacity-40" />
+                <p className="font-bold text-sm">請先選擇系所</p>
+                <p className="text-xs mt-1 text-slate-400">從上方下拉選單選擇你的系所</p>
+              </div>
+            ) : filteredGroups.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-12 text-slate-400 text-center px-4">
+                <p className="font-bold text-sm">此分類無課程</p>
+              </div>
+            ) : (
+              filteredGroups.map(group => (
+                <CourseCard
+                  key={group.sections[0].id}
+                  group={group}
+                  selectedCourses={selectedCourses}
+                  onAdd={tryAddCourse}
+                  onDragStart={handleDragStart}
+                />
+              ))
+            )}
           </div>
         </div>
 
@@ -660,45 +628,14 @@ export default function App() {
               </button>
 
               {/* 一鍵必修 */}
-              <div
-                className="relative flex-1 lg:flex-none min-w-[110px]"
-                ref={dropdownRef}
-                onClick={(event) => event.stopPropagation()}
-                onMouseDown={(event) => event.stopPropagation()}
-                onTouchStart={(event) => event.stopPropagation()}
-              >
+              {hasDeptRequired && (
                 <button
-                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                  className="w-full flex items-center justify-center gap-1 md:gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-2 md:px-4 py-2 rounded-lg font-bold text-xs md:text-sm transition-colors shadow-sm whitespace-nowrap"
+                  onClick={autoLoadRequired}
+                  className="flex-1 lg:flex-none flex items-center justify-center gap-1 md:gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-2 md:px-4 py-2 rounded-lg font-bold text-xs md:text-sm transition-colors shadow-sm whitespace-nowrap"
                 >
-                  <Plus className="w-3.5 h-3.5 md:w-4 md:h-4" /> 一鍵必修 <ChevronDown className={`w-4 h-4 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
+                  <Plus className="w-3.5 h-3.5 md:w-4 md:h-4" /> 一鍵必修
                 </button>
-
-                {isDropdownOpen && (
-                  <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-xl border border-slate-100 overflow-hidden z-[100] animate-in fade-in slide-in-from-top-2">
-                    <div className="py-1">
-                      <button
-                        onClick={() => addSpecificRequired('AI_2A')}
-                        className="w-full text-left px-4 py-3 hover:bg-amber-50 text-slate-700 font-bold text-sm flex items-center gap-2 border-b border-slate-50 last:border-0 transition-colors"
-                      >
-                        <div className="w-2 h-2 rounded-full bg-amber-400"></div> 人工智慧二A 必修
-                      </button>
-                      <button
-                        onClick={() => addSpecificRequired('AI_2B')}
-                        className="w-full text-left px-4 py-3 hover:bg-indigo-50 text-slate-700 font-bold text-sm flex items-center gap-2 border-b border-slate-50 last:border-0 transition-colors"
-                      >
-                        <div className="w-2 h-2 rounded-full bg-indigo-500"></div> 人工智慧二B 必修
-                      </button>
-                      <button
-                        onClick={() => addSpecificRequired('CSIE')}
-                        className="w-full text-left px-4 py-3 hover:bg-blue-50 text-slate-700 font-bold text-sm flex items-center gap-2 transition-colors"
-                      >
-                        <div className="w-2 h-2 rounded-full bg-blue-500"></div> 資工系 必修
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
+              )}
             </div>
           </div>
 
@@ -742,10 +679,12 @@ export default function App() {
                 {scheduleBlocks.map((block, idx) => {
                   const isRequired = block.type === '必修';
                   const isBackupReq = block.type === '備用必修';
+                  const isEduReq = block.type === '教必';
                   const isGeneral = block.type === '通識';
+                  const isGenReq = block.type === '通必';
                   const isMilitary = block.type === '兵役';
-                  const isAdvanced = block.type === '大三大四選修';
                   const isOther = block.type === '其他';
+                  const isEduElective = block.type === '教選';
 
                   return (
                     <div
@@ -759,10 +698,12 @@ export default function App() {
                       <div className={`relative h-full w-full rounded-md md:rounded-lg p-1.5 md:p-2 border shadow-sm flex flex-col group overflow-hidden ${
                         isRequired ? 'bg-indigo-50 border-indigo-200 text-indigo-900' :
                         isBackupReq ? 'bg-amber-50 border-amber-200 text-amber-900' :
+                        isEduReq ? 'bg-teal-50 border-teal-200 text-teal-900' :
                         isGeneral ? 'bg-purple-50 border-purple-200 text-purple-900' :
+                        isGenReq ? 'bg-violet-50 border-violet-200 text-violet-900' :
                         isMilitary ? 'bg-slate-100 border-slate-300 text-slate-800' :
                         isOther ? 'bg-rose-50 border-rose-200 text-rose-900' :
-                        isAdvanced ? 'bg-cyan-50 border-cyan-200 text-cyan-900' :
+                        isEduElective ? 'bg-cyan-50 border-cyan-200 text-cyan-900' :
                         'bg-emerald-50 border-emerald-200 text-emerald-900'
                       }`}>
                         <div className="font-bold text-[10px] md:text-xs mb-0.5 opacity-80">[{block.id}]</div>
@@ -772,7 +713,7 @@ export default function App() {
                           <div className={`text-[10px] md:text-xs font-bold inline-block px-1 md:px-1.5 py-0.5 rounded mb-1 w-fit ${
                             block.note === '本系時段' ? 'bg-blue-100/80 text-blue-800' :
                             block.note === '跨系二階' ? 'bg-orange-100/80 text-orange-800' :
-                            'bg-rose-100/80 text-rose-800'
+                            'bg-slate-100/80 text-slate-700'
                           }`}>
                             {block.note === '跨系二階' ? '跨班時段' : block.note}
                           </div>
@@ -801,7 +742,7 @@ export default function App() {
                   <p className="text-lg md:text-xl font-bold text-slate-300">將左側課程拖曳至此處</p>
                   <p className="text-xs md:text-sm text-slate-400 mt-2 bg-slate-50 px-3 py-1 rounded-full border border-slate-100">
                     <span className="md:hidden">💡 手機版可以直接點擊左側課程加入喔！</span>
-                    <span className="hidden md:inline">或點擊上方「一鍵必修」快速開始</span>
+                    <span className="hidden md:inline">或選擇系所後點擊「一鍵必修」快速開始</span>
                   </p>
                 </div>
               )}
@@ -852,24 +793,32 @@ export default function App() {
             {scheduleBlocks.map((block, idx) => {
               const isRequired = block.type === '必修';
               const isBackupReq = block.type === '備用必修';
+              const isEduReq = block.type === '教必';
               const isGeneral = block.type === '通識';
+              const isGenReq = block.type === '通必';
               const isMilitary = block.type === '兵役';
-              const isAdvanced = block.type === '大三大四選修';
               const isOther = block.type === '其他';
+              const isEduElective = block.type === '教選';
 
               const bgColor = isRequired ? '#eef2ff'
                 : isBackupReq ? '#fffbeb'
-                  : isGeneral ? '#faf5ff'
-                    : isMilitary ? '#f1f5f9'
-                      : isOther ? '#fff1f2'
-                        : isAdvanced ? '#ecfeff' : '#ecfdf5';
+                : isEduReq ? '#f0fdfa'
+                : isGeneral ? '#faf5ff'
+                : isGenReq ? '#f5f3ff'
+                : isMilitary ? '#f1f5f9'
+                : isOther ? '#fff1f2'
+                : isEduElective ? '#ecfeff'
+                : '#ecfdf5';
 
               const borderColor = isRequired ? '#c7d2fe'
                 : isBackupReq ? '#fde68a'
-                  : isGeneral ? '#e9d5ff'
-                    : isMilitary ? '#cbd5e1'
-                      : isOther ? '#fecdd3'
-                        : isAdvanced ? '#a5f3fc' : '#a7f3d0';
+                : isEduReq ? '#99f6e4'
+                : isGeneral ? '#e9d5ff'
+                : isGenReq ? '#ddd6fe'
+                : isMilitary ? '#cbd5e1'
+                : isOther ? '#fecdd3'
+                : isEduElective ? '#a5f3fc'
+                : '#a7f3d0';
 
               return (
                 <div
@@ -886,12 +835,12 @@ export default function App() {
                   >
                     <div className="font-bold text-xs text-slate-700 opacity-90 mb-1">[{block.id}]</div>
                     <div className="font-bold text-[15px] text-slate-900 leading-tight mb-1">{block.name}</div>
-                    
+
                     {block.note && (
                       <div className={`text-[10px] font-bold px-1.5 py-0.5 rounded mb-1 ${
                         block.note === '本系時段' ? 'bg-blue-100 text-blue-800' :
                         block.note === '跨系二階' ? 'bg-orange-100 text-orange-800' :
-                        'bg-rose-100 text-rose-800'
+                        'bg-slate-100 text-slate-700'
                       }`}>
                         {block.note === '跨系二階' ? '跨班時段' : block.note}
                       </div>
@@ -989,6 +938,7 @@ export default function App() {
           </div>
         </div>
       )}
+
       {/* 課表更新通知彈窗（第一個彈出，每次有新推送即更新內容） */}
       {updateModalOpen && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-[110] flex items-center justify-center p-4">
@@ -1038,6 +988,7 @@ export default function App() {
             <div className="p-6 bg-slate-50 border-t border-slate-100">
               <button
                 onClick={() => {
+                  sessionStorage.setItem('updateModalDismissed', '1');
                   setUpdateModalOpen(false);
                   setGuideModalOpen(true);
                 }}

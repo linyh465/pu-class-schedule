@@ -3,20 +3,27 @@
 ## 專案架構
 
 ```
-Class_Schedule/
-├── index.html          # 主應用程式（單頁 HTML）
-├── Dockerfile          # Railway 部署用（nginx:alpine）
-├── nginx.conf          # nginx 設定（gzip、快取、安全標頭）
-├── CLAUDE.md           # 本文件
-├── PROCESS.md          # 製作過程記錄
-└── data/
-    ├── courses.json        # 結構化課程資料（依系所/年級）
-    ├── general_ed.json     # 通識課程列表
-    ├── units.json          # 所有系所單位（76 個）
-    ├── all_classes.json    # 所有班級（659 個）
-    ├── undergrad_classes.json  # 大學部班級（465 個）
-    ├── all_courses_raw.json    # 原始課程資料（爬蟲結果）
-    └── schedule.pdf        # 115-1 選課時間表 PDF
+pu-class-schedule/
+├── frontend/               # React (Vite) 應用程式
+│   ├── src/
+│   │   ├── App.jsx         # 主元件（1,200 行，含全部邏輯）
+│   │   └── main.jsx
+│   ├── public/
+│   │   ├── data/
+│   │   │   └── courses_output.json   # 動態載入的課程資料（Dockerfile 注入）
+│   │   └── notes/          # 課程大綱 PDF（55+ 份）
+│   └── package.json        # React 19, Tailwind, Lucide, html2canvas, jsPDF
+├── server/                 # Express.js 後端
+│   └── index.js            # 靜態檔服務 + Gemini AI 代理
+├── data/                   # 原始資料（爬蟲輸出）
+│   ├── courses_output.json # ★ 主要課程資料：923 門，119 系所，已解析時間格式
+│   ├── courses.json        # 原始格式（依 dep1 / year / required/elective 分類）
+│   ├── general_ed.json     # 通識課程列表
+│   └── units.json          # 76 個系所單位（dep1, college_cn, offerUnitName）
+├── scripts/
+│   └── integrate_courses.py # 將爬蟲結果轉換成 courses_output.json 的腳本
+├── Dockerfile              # Railway 部署：Stage 1 build React；Stage 2 Node server
+└── nginx.conf              # 備用（目前用 Node serve static）
 ```
 
 ## 資料來源
@@ -34,23 +41,102 @@ Class_Schedule/
 | `/fetchOfferUnit` | POST | 取得系所列表（需 `fullYearsem`） |
 | `/fetchOfferClass` | POST | 取得班級列表（需 `fullYearsem`, `offerUnit`） |
 | `/fullSearch` | POST | 搜尋班級課程（需 `fullYearsem`, `offerUnit`, `offerClass`, `category`） |
-| `/simpleSearch` | POST | 關鍵字搜尋（需 `simpleYearsem`, `searchName`） |
 
-> **注意**：需在 HTTP request 加入以下 headers 才能通過 WAF：
-> - `User-Agent`: Chrome/120 瀏覽器 UA
-> - `X-Requested-With`: XMLHttpRequest
-> - `Referer`: https://mypu.pu.edu.tw/Framework/Academic/CourseCatalogSys/
+> **注意**：Headers 需加入 `User-Agent`（Chrome UA）、`X-Requested-With: XMLHttpRequest`、`Referer` 才能通過 WAF。
 
-## 如何更新課程資料
+## 前端應用程式（React + Vite）
 
-每學期開始前，用以下 Python 腳本重新爬蟲。修改 `YEARSEM` 為當學期代碼（格式：`YYYP`，如 `1152` = 114學年度第2學期）。
+**目前實際部署的是 `frontend/` 的 React 應用程式**。Railway 透過 `Dockerfile` 執行 `npm run build` 打包。
 
-### 更新腳本
+### 課程資料載入方式（Phase 1 後）
+
+課程資料**不再**硬編碼在 `App.jsx`，改為動態從 `courses_output.json` 載入：
+
+```js
+// App.jsx 啟動時 fetch
+const [allCourses, setAllCourses] = useState([]);
+useEffect(() => {
+  fetch('/data/courses_output.json').then(r => r.json()).then(data => {
+    setAllCourses(data);
+  });
+}, []);
+```
+
+`courses_output.json` 的欄位格式：
+```json
+{
+  "id": "1784",
+  "name": "資料結構 (二B)",
+  "type": "必修",
+  "credits": 3,
+  "instructor": "莊潤洲",
+  "times": [{"day": 2, "periods": [5, 6, 7]}],
+  "location": "主顧301",
+  "dept": "人工智慧",
+  "year": 2,
+  "dimension": null,
+  "note": ""
+}
+```
+
+**課程類型（`type` 欄位）**：`必修` / `選修` / `通識` / `通必`（通識必修） / `教必`（教育部必修） / `教選`（教育部選修）。
+
+### 多系所支援（Phase 1，已實作）
+
+- 左側面板頂部有「選擇系所」下拉選單，由 `deptList`（courses_output.json 的所有 `dept` 值）驅動。
+- 選擇系所後，課程列表自動過濾至該系所；頁籤動態顯示該系所實際有的類型。
+- `selectedDept` 儲存於 localStorage，重新整理後不需重新選擇。
+- **本機驗證**：`cd frontend && npm ci && npm run build`（build 成功即可）。
+
+### 配色規則
+
+| 類別 type | 顏色 |
+|-----------|------|
+| 必修 | 靛藍 indigo |
+| 備用必修 | 琥珀 amber |
+| 教必 | 青藍 teal |
+| 選修 | 翠綠 emerald（fallback 預設色） |
+| 教選 | 青綠 cyan |
+| 通識 | 紫 purple |
+| 通必 | 靛紫 violet |
+| 兵役 | 灰 slate |
+| 大一重補修 | （預設 emerald） |
+| 其他 | 玫瑰紅 rose |
+
+**新增類型 SOP**：在 `App.jsx` 的三處樣式區塊（`CourseCard` borderClass/badgeClass、schedule grid block、PDF export bgColor/borderColor）各加對應顏色，並在 `TAB_ORDER` 陣列插入新 type。
+
+### 課表更新通知彈窗
+
+每次推送課程資料更新後，要同步更新彈窗，讓使用者一進站就看到異動說明。
+
+- **位置**：`App.jsx` 中標記 `{/* 課表更新通知彈窗 */}` 的區塊。
+- **彈窗順序**：`updateModal` → `guideModal` → `disclaimerModal`。
+- **顯示邏輯**：改用 `sessionStorage` 控制（`updateModalDismissed`），同一瀏覽器 session 只顯示一次。
+
+**每次推送要改的地方**：
+1. 標題下日期：`<p>2026-06-03 更新</p>` 改成本次推送日期。
+2. 課程清單：更新 `.map()` 的陣列（`{ id, name, cat, loc }`）與說明文字。
+
+> 慣例：彈窗只列「本次新增」的課程，不累積歷史。
+
+## 如何更新課程資料（每學期）
+
+1. **爬蟲**：執行 Python 更新腳本（見下方）輸出原始資料。
+2. **轉換**：執行 `python scripts/integrate_courses.py` 產生 `data/courses_output.json`。
+3. **部署**：
+   ```
+   git add data/courses_output.json
+   git commit -m "Update courses for 115-2"
+   git push  # Railway 自動重新部署
+   ```
+   Dockerfile 會自動 `COPY data/courses_output.json public/data/courses_output.json`。
+
+### 爬蟲腳本（每學期修改 YEARSEM）
 
 ```python
-import requests, json, os
+import requests, json
 
-YEARSEM = '1152'  # ← 修改這裡
+YEARSEM = '1152'  # 格式：YYYP（如 1152 = 114學年度第2學期）
 BASE = 'https://mypu.pu.edu.tw/Framework/Academic/CourseCatalogSys/'
 HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
@@ -67,11 +153,9 @@ s.get(BASE)
 def csrf():
     return s.get(BASE + 'getCsrfToken').json()['csrf_token']
 
-# 1. 取得系所列表
 units = json.loads(s.post(BASE + 'fetchOfferUnit',
     data={'csrf_token': csrf(), 'fullYearsem': YEARSEM}).text)
 
-# 2. 取得所有大學部班級
 undergrad = []
 for unit in units:
     classes = json.loads(s.post(BASE + 'fetchOfferClass',
@@ -83,11 +167,9 @@ for unit in units:
                 'classCode': code + cls['team'], 'cla_cn': cls['cla_cn'],
                 'year': int(code[3:5])})
 
-# 3. 爬取課程（每批 80 筆）
 all_courses = {}
 for i in range(0, len(undergrad), 80):
-    batch = undergrad[i:i+80]
-    for cls in batch:
+    for cls in undergrad[i:i+80]:
         try:
             r = s.post(BASE + 'fullSearch', data={'csrf_token': csrf(),
                 'fullYearsem': YEARSEM, 'offerUnit': cls['dep1'],
@@ -95,138 +177,46 @@ for i in range(0, len(undergrad), 80):
             all_courses[cls['classCode']] = {'meta': cls, 'courses': json.loads(r.text).get('courseResult', [])}
         except:
             all_courses[cls['classCode']] = {'meta': cls, 'courses': []}
-    print(f'  {min(i+80, len(undergrad))}/{len(undergrad)}')
+    print(f"  {min(i+80, len(undergrad))}/{len(undergrad)}")
 
-# 4. 整理並存檔
-depts = {}
-gen_all = {}
-unit_map = {u['dep1']: u for u in units}
-
-for classCode, val in all_courses.items():
-    dep1 = val['meta']['dep1']
-    unit = unit_map.get(dep1, {})
-    if dep1 not in depts:
-        depts[dep1] = {'dep1': dep1, 'college': unit.get('college_cn',''),
-            'name': unit.get('offerUnitName',''), 'years': {}}
-    yr = str(val['meta']['year'])
-    if yr not in depts[dep1]['years']:
-        depts[dep1]['years'][yr] = {'required': [], 'elective': [], 'general': []}
-    seen = {k: set(c['no'] for c in v) for k,v in depts[dep1]['years'][yr].items()}
-    for c in val['courses']:
-        entry = {'name': c.get('courseName',''), 'credit': int(c.get('credit',0) or 0),
-            'no': c.get('cus_num',''), 'teacher': c.get('tea_name',''),
-            'time': c.get('placeTime',''), 'selectno': c.get('selectno','')}
-        t = c.get('cus_select_cn','')
-        if t == '必修' and entry['no'] not in seen['required']:
-            depts[dep1]['years'][yr]['required'].append(entry); seen['required'].add(entry['no'])
-        elif t == '選修' and entry['no'] not in seen['elective']:
-            depts[dep1]['years'][yr]['elective'].append(entry); seen['elective'].add(entry['no'])
-        elif t and '通' in t:
-            if entry['no'] not in gen_all:
-                gen_all[entry['no']] = {**entry, 'type': t}
-            if entry['no'] not in seen['general']:
-                depts[dep1]['years'][yr]['general'].append(entry); seen['general'].add(entry['no'])
-
-json.dump(depts, open('data/courses.json','w'), ensure_ascii=False, indent=2)
-json.dump(list(gen_all.values()), open('data/general_ed.json','w'), ensure_ascii=False, indent=2)
-print('Done!')
+json.dump(all_courses, open('data/all_courses_raw.json','w'), ensure_ascii=False, indent=2)
+print('Done! Run integrate_courses.py next.')
 ```
 
 ## 部署到 Railway
 
-### 初次部署
-
 1. Push 到 GitHub repo: `https://github.com/linyh465/pu-class-schedule`
-2. 在 Railway 建立新 Project → Deploy from GitHub
-3. Railway 會自動偵測 `Dockerfile` 並 build
-
-### 自訂網域
-
-1. Railway → Service → Settings → Custom Domain
-2. 新增 `schedule.piyou.me`
-3. 在 DNS 設定 CNAME 指向 Railway 提供的域名
-
-### 更新部署
-
-1. 更新 `data/courses.json`（執行上方更新腳本）
-2. `git add data/ && git commit -m "Update courses for XXX semester"`
-3. `git push` → Railway 自動重新部署
-
-## 前端應用程式（實際運作的程式）
-
-> ⚠️ 本文件最上方的 `index.html` 為早期單頁版本，**目前實際部署的是 `frontend/` 的 React (Vite) 應用程式**。
-> Railway 透過 `Dockerfile` 執行 `npm run build` 打包，因此修改 `frontend/src/App.jsx` 後 push 即會重新部署。
-
-- **課程資料**：直接寫死在 [frontend/src/App.jsx](frontend/src/App.jsx) 開頭的 `ALL_COURSES` 陣列（非從 JSON 讀取）。
-- **本機驗證**：`cd frontend && npm ci && npm run build`（build 成功即代表 JSX 無語法錯誤）。
-
-### 如何新增課程
-
-在 `ALL_COURSES` 陣列加入物件，欄位格式如下：
-
-```js
-// id=選課代號, day: 1=一 … 5=五, periods: 節次, note 可省略
-{ id: '2299', name: '人與當代社會的建構(永續與在地)', type: '通識', note: '跨系二階', credits: 2, instructor: '曾馨婷', times: [{ day: 1, periods: [1, 2] }], location: '主顧222' },
-```
-
-- `type`：`必修` / `備用必修` / `選修` / `通識` / `兵役` / `大一重補修` / `其他`（對應左側頁籤與卡片顏色，見下方配色規則）。
-- `note`：`'本系時段'`（藍色徽章）或 `'跨系二階'`（顯示為橘色「跨班時段」徽章）；通識跨班時段一律用 `'跨系二階'`。
-- 多節數連續會自動合併成一個課表方塊；同名同時段同教室的不同班級會自動合併成卡片頁籤。
-
-### 合併＋切換鈕慣例（相同時間地點、不同代號）
-
-- 系統依 `parseCourseName` 取**最後一組括號**為「班級標籤」、其餘為課名，再以 `課名 | times | location` 為 key 自動合併（[App.jsx](frontend/src/App.jsx) 的 `groupedCoursesList`）。
-- 因此**相同時間＋相同地點**但不同代號的課程，命名為 `課名 (系級)` 即會自動合併成一張卡片，並產生切換鈕（鈕上文字＝括號內的系級），切換時代號徽章跟著變。例：
-  ```js
-  { id: '0514', name: '證券交易法 (法律四A)', type: '其他', ... location: '任垣402' },
-  { id: '0527', name: '證券交易法 (法律四B)', type: '其他', ... location: '任垣402' },
-  ```
-- 課名本身就含括號（如 `微積分(一)`）時，仍在尾端補 ` (系級)`，避免課名的括號被當成班級標籤而從標題消失。例：`微積分(一) (資科一A)`。
-
-### 頁籤與類別配色規則（新增頁籤時照此擴充）
-
-| 類別 type | 左側頁籤 | 配色 |
-|-----------|----------|------|
-| 必修 | 必修 | 靛藍 indigo |
-| 備用必修 | 備用必修 | 琥珀 amber |
-| 選修 | 選修 | 翠綠 emerald（fallback 預設色） |
-| 通識 | 通識 | 紫 purple |
-| 兵役 | 兵役 | 灰 slate |
-| 大一重補修 | 大一重補修 | （沿用預設） |
-| 其他 | 其他 | 玫瑰紅 rose |
-
-**新增頁籤 SOP**（以 `其他`／rose 為範本）：
-
-1. `TABS` 陣列（[App.jsx](frontend/src/App.jsx)）加入新類別字串。
-2. 課程資料的 `type` 設為該類別字串。
-3. 在**三處樣式區塊**各加一個 `isXxx` 旗標與對應顏色（插在 `isMilitary` 之後、`isAdvanced`/fallback 之前）：
-   - `CourseCard`：`borderClass`（`border-rose-200 … hover:border-rose-400`）＋ `badgeClass`（`bg-rose-100 text-rose-700`）。
-   - 畫面課表方塊（`scheduleBlocks.map`）：`bg-rose-50 border-rose-200 text-rose-900`。
-   - PDF 匯出方塊：`bgColor`（`#fff1f2`）＋ `borderColor`（`#fecdd3`）。
-
-## 課表更新通知彈窗（每次有新推送即更新）
-
-每次新增/推送課程後，需同步更新「課表更新通知」彈窗，讓使用者一進站就看到本次異動。
-
-- **位置**：[frontend/src/App.jsx](frontend/src/App.jsx)，標記 `{/* 課表更新通知彈窗（第一個彈出…）*/}` 的區塊。
-- **彈窗順序**：`updateModalOpen`（第一個，預設 `true`）→「下一步」→ `guideModalOpen`（使用說明）→ `disclaimerModalOpen`（免責聲明）。
-  - 對應 state 在 `App()` 開頭：`updateModalOpen=true`、`guideModalOpen=false`、`disclaimerModalOpen=false`。
-  - 按鈕 `onClick` 為 `setUpdateModalOpen(false); setGuideModalOpen(true);`，承接舊有的說明流程。
-
-### 每次推送要改的兩個地方
-
-1. **標題下的日期**：`<p ...>2026-06-03 更新</p>` 改成本次推送日期。
-2. **課程清單與標題文案**：更新彈窗內 `.map()` 的陣列（`{ id, name, cat, loc }`）與「新增…週一 第 1、2 節 共 N 門」說明文字，列出本次新增的課程。
-
-> 慣例：彈窗只列「本次新增」的課程，不累積歷史；標題用一句話描述本次主題（例：`通識課程跨班時段（人社院 週一 1、2 節）`）。
+2. Railway 偵測 `Dockerfile` 自動 build（Stage 1: React build，Stage 2: Node server）。
+3. 自訂網域 `schedule.piyou.me`（DNS CNAME 指向 Railway）。
 
 ## 畢業學分說明
 
-系統預設畢業需求為 **128 學分**（靜宜大學大學部通用值）。不同系所實際要求可能略有差異，請依各系課程規劃為準。
+系統目前顯示**總學分數**。各系畢業規定不同，請以各系課程規劃書為準。
 
-| 類別 | 說明 |
-|------|------|
-| 必修 | 系上規定必修，已自動帶入且不可取消 |
-| 選修 | 系所開設選修，點擊卡片可加入/移除 |
-| 通識 | 全校通識課程，點擊卡片可加入/移除 |
-| 輔/雙修 | 勾選修課身份後，另外計算額外學分 |
+## 下一步（Phase 2 & Phase 3）
+
+### Phase 2：畢業學分追蹤
+
+新建 `data/graduation_requirements.json`，儲存各系畢業條件（從各系課程規劃書整理）：
+
+```json
+{
+  "人工智慧": {
+    "totalCredits": 128,
+    "categories": {
+      "required":  { "label": "專業必修", "minCredits": 42, "types": ["必修"] },
+      "elective":  { "label": "專業選修", "minCredits": 43, "types": ["選修", "教選"] },
+      "general":   { "label": "通識",     "minCredits": 20, "types": ["通識", "通必"] }
+    },
+    "ownDeptTimeSlot": { "day": 3, "periods": [5, 6] }
+  }
+}
+```
+
+`ownDeptTimeSlot` 讓系統自動判斷通識課是「本系時段」或「跨系時段」（以時間匹配，不需手動標記）。
+
+UI：新增 `GraduationPanel` 元件（右側工具列），顯示各類別學分進度條。
+
+### Phase 3：老師評分論壇
+
+使用 Supabase 免費方案（`reviews` 表，匿名 RLS）。前端直接呼叫 Supabase REST API，不需新增後端路由。課程卡片加「評價」按鈕，開啟評分 Modal。

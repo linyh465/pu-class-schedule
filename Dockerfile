@@ -7,6 +7,7 @@ RUN npm ci
 
 COPY frontend/ .
 COPY data/courses_output.json public/data/courses_output.json
+COPY data/units.json public/data/units.json
 RUN npm run build
 
 # ── Stage 2: Node server (靜態檔 + Gemini 代理) ───────────
