@@ -88,6 +88,11 @@ useEffect(() => {
 - `selectedDept` 儲存於 localStorage，重新整理後不需重新選擇。
 - **本機驗證**：`cd frontend && npm ci && npm run build`（build 成功即可）。
 
+> **dept 正規化（Phase 2）**：`dept` 值已由 119 個收斂至 **51 個**。修正在 `integrate_courses.py` 的源頭（非前端）：
+> - `extract_class_info` 新增「rule 5b」處理多字母/小寫/「組」班別（`日二Aa`→`日`、`大傳三Ab`→`大傳`、`閱讀與書寫一Aa`→`閱讀與書寫`）。
+> - `DEPT_NORMALIZE` 合併同系不同寫法與來源拼字錯誤（`日文`→`日`、`中文`→`中`、`西文`→`西`、`寰語外語教育`→`寰宇外語教育`、`理院`→`理學院`、`應化四書報討論*組`→`應化`）。
+> - **未做（待辦）**：dept 仍是短碼（`日`/`中`/`西`/`化科`…），下拉未顯示全名。全名須以 `units.json`（`offerUnitName`）核對後填入，**勿臆測**（例：靜宜「化科」＝化粧品科學系，非化學系）。
+
 ### 配色規則
 
 | 類別 type | 顏色 |
@@ -221,18 +226,27 @@ print('Done! Run integrate_courses.py next.')
 - `categories[].types` 對應課程 `type` 欄位；建議每個 type 只歸一類，使各類 `minCredits` 加總 = `totalCredits`（AI 系已驗證：85+43=128，type 無重複/遺漏）。
 - 計算邏輯吃 **`selectedCourses`**（學生實際排入的課），與課程由哪個 `dept` 開設無關——所以學生加的通識（dept=`通識`）也會正確計入。
 - `ownDeptTimeSlot`（`{day,periods}`，1=週一）讓系統以**時間匹配**自動判斷通識課屬「本系時段」或「跨系時段」（helper：`isDeptOwnSlot`）；`null` = 未建檔、前端不顯示。AI 系此欄待補（無權威資料，未臆測）。
-- `_README` / `_template` 鍵（底線開頭）為文件用，前端會略過（`selectedDept.startsWith('_')`）。
+- `_README` / `_template` 鍵（底線開頭）為文件用，前端會略過（`selectedDept.startsWith('_')`）。`_README` 內含 `待建檔_學位系所`（33 系）與 `不需建檔_共同通識學院師培桶`（17 桶）兩份清單作為填寫指引。
+- **勿放空殼條目**：stub 的 `minCredits: null` 會被 JS 判為 `earned >= null` → `earned >= 0` → 永遠達標（假綠勾）。未建檔就讓它走 graceful degradation，不要塞 null 條目。
+
+### 雙主修 / 輔系（Phase 2，已實作）
+
+- 狀態：`secondaryProfile`（`null | {type:'雙主修'|'輔系', dept}`），存 localStorage。在「畢業學分」Modal 內設定。
+- **自動歸屬（不需逐課手動標記）**：靠正規化後乾淨的 `dept` 欄位——`dept === secondaryProfile.dept` 的課歸第二系所，其餘（含通識）歸主修。因此主修進度會排除第二系所的課，避免雙主修把法律必修誤算進 AI 必修。
+- Modal 分「主修」「第二系所」兩區（共用 `CreditSection` 元件，`variant='primary'|'secondary'`）。第二系所只統計累計學分（不顯示 /128），並附「輔系／雙主修應修學分依各系規定、請向系辦確認」的提醒（規定資料同樣須人工建檔，未臆測）。
 
 > 注意：`courses_output.json` 的 `note` 欄位**目前不含** `本系時段`/`跨系二階`（實際值為 `共同課程`/`共同選修`/`師培課程`/`體育選修`/空）。`CourseCard` 內針對 `本系時段`/`跨系二階` 的 badge 是舊資料遺留的 dead code，本系/跨系判斷已改由 `ownDeptTimeSlot` 時間匹配負責。
 
 ## 下一步
 
-### Phase 2 剩餘工作
+### Phase 2 剩餘工作（需資料，非程式）
 
-- **雙主修／輔系模式**（使用者需求第 5 點，尚未實作）：規劃用 `secondaryProfile`（`{type:'雙主修'|'輔系', dept}`）+ `courseRoleMap`（`{courseId: 'primary'|'secondary'}`）+ localStorage 持久化；Modal 分兩欄顯示主修與第二系所進度。
-- **補各系畢業條件**：逐系從課程規劃書填入 `graduation_requirements.json`（依 `_template`）。
-- **canonical 系所對照表**：`dept` 目前 119 個原始值含班級片段（如 `日二Aa`、`閱讀與書寫一Aa`）。可用 `units.json`（76 系所）的 `offerUnitName` 建半自動對照，清理系所下拉選單。
-- 補各系 `ownDeptTimeSlot` 本系通識時段。
+> Phase 2 程式面已完成：畢業學分追蹤、雙主修/輔系、dept 正規化。剩下都是**需人工查證的資料**，系統已就緒，填入即生效。
+
+- **補各系畢業條件**：逐系從課程規劃書填入 `graduation_requirements.json`（依 `_template`，清單見 `_README.待建檔_學位系所`，33 系待補）。**勿臆測學分數**。
+- **系所全名顯示**：dept 短碼 → 全名，須以 `units.json` 的 `offerUnitName` 核對（**勿臆測**，例：化科＝化粧品科學系）。可做前端 `DEPT_DISPLAY` 對照表，fallback 用短碼。
+- **補各系 `ownDeptTimeSlot`**：本系通識時段（`{day,periods}`），填入後自動標示本系/跨系通識。
+- **補各系輔系/雙主修應修學分**：目前第二系所僅統計累計學分，未驗畢業門檻（同樣需各系規定資料）。
 
 ### Phase 3：老師評分論壇
 

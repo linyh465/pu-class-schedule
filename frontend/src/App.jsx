@@ -51,6 +51,22 @@ const isDeptOwnSlot = (course, slot) => {
   return course.times.some(t => t.day === slot.day && t.periods.some(p => slot.periods.includes(p)));
 };
 
+// 依課程 type 加總學分。
+const creditsByType = (courses) => {
+  const m = {};
+  courses.forEach(c => { m[c.type] = (m[c.type] || 0) + (c.credits || 0); });
+  return m;
+};
+
+// 將某類別需求（reqs.categories）對照已修學分，產出進度。reqs 缺 categories 時回傳 []。
+const buildCategoryProgress = (reqs, earnedByType) => {
+  if (!reqs?.categories) return [];
+  return Object.entries(reqs.categories).map(([key, cat]) => {
+    const earned = cat.types.reduce((s, t) => s + (earnedByType[t] || 0), 0);
+    return { key, ...cat, earned, met: earned >= cat.minCredits };
+  });
+};
+
 const loadStoredTab = () => {
   try {
     return localStorage.getItem('activeTab') || '全部';
@@ -191,6 +207,93 @@ const CourseCard = ({ group, selectedCourses, onAdd, onDragStart }) => {
   );
 };
 
+// 單一系所的學分明細區塊（畢業學分追蹤 Modal；主修 variant='primary'、第二系所 variant='secondary' 共用）
+const CreditSection = ({ reqs, total, categoryProgress, earnedByType, courseCount, variant }) => {
+  const totalMet = reqs && total >= reqs.totalCredits;
+  return (
+    <div className="space-y-3">
+      {variant === 'primary' ? (
+        reqs ? (
+          <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
+            <div className="flex justify-between items-baseline mb-2">
+              <span className="font-bold text-slate-700 text-sm">畢業總學分</span>
+              <span className="text-sm font-bold">
+                <span className={totalMet ? 'text-emerald-600' : 'text-blue-600'}>{total}</span>
+                <span className="text-slate-400"> / {reqs.totalCredits}</span>
+              </span>
+            </div>
+            <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
+              <div
+                className={`h-full rounded-full transition-all ${totalMet ? 'bg-emerald-500' : 'bg-blue-500'}`}
+                style={{ width: `${reqs.totalCredits ? Math.min(100, (total / reqs.totalCredits) * 100) : 0}%` }}
+              />
+            </div>
+            {total < reqs.totalCredits && (
+              <p className="text-xs text-slate-500 mt-2">距畢業最低總學分還差 {reqs.totalCredits - total} 學分</p>
+            )}
+          </div>
+        ) : (
+          <div className="text-center">
+            <div className="text-4xl font-black text-slate-800">{total}</div>
+            <div className="text-sm text-slate-500 mt-1">目前總學分</div>
+            <div className="mt-3 bg-amber-50 border border-amber-100 rounded-xl p-3 text-xs text-amber-700 text-left leading-relaxed">
+              <span className="font-bold">此系所畢業條件尚未建檔</span>，僅顯示總學分。各系畢業規定（必修／選修／通識學分數）請以系上課程規劃書為準。
+            </div>
+          </div>
+        )
+      ) : (
+        <div className="bg-white rounded-xl border border-slate-200 p-3 flex justify-between items-baseline">
+          <span className="font-bold text-slate-700 text-sm">已累計第二系所學分</span>
+          <span className="font-bold text-indigo-600 text-sm">{total} 學分</span>
+        </div>
+      )}
+
+      {categoryProgress.map(cat => {
+        const pct = cat.minCredits ? Math.min(100, (cat.earned / cat.minCredits) * 100) : 100;
+        return (
+          <div key={cat.key} className="bg-white rounded-xl border border-slate-200 p-3">
+            <div className="flex justify-between items-baseline mb-1.5">
+              <span className="font-bold text-slate-700 text-sm flex items-center gap-1.5">
+                {cat.met && <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />}
+                {cat.label}
+              </span>
+              <span className="text-xs font-bold">
+                <span className={cat.met ? 'text-emerald-600' : 'text-indigo-600'}>{cat.earned}</span>
+                <span className="text-slate-400"> / {cat.minCredits}</span>
+              </span>
+            </div>
+            <div className="h-2.5 bg-slate-100 rounded-full overflow-hidden">
+              <div className={`h-full rounded-full transition-all ${cat.met ? 'bg-emerald-500' : 'bg-indigo-500'}`} style={{ width: `${pct}%` }} />
+            </div>
+          </div>
+        );
+      })}
+
+      {courseCount > 0 ? (
+        <div className="bg-white rounded-xl border border-slate-200 p-3">
+          <div className="font-bold text-slate-700 text-sm mb-2">學分明細</div>
+          <div className="space-y-1.5">
+            {Object.entries(earnedByType).sort((a, b) => b[1] - a[1]).map(([type, cr]) => (
+              <div key={type} className="flex justify-between text-xs">
+                <span className="text-slate-600">{type}</span>
+                <span className="font-bold text-slate-700">{cr} 學分</span>
+              </div>
+            ))}
+            <div className="flex justify-between text-xs pt-1.5 border-t border-slate-100">
+              <span className="text-slate-500 font-bold">合計</span>
+              <span className="font-bold text-slate-800">{total} 學分</span>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <p className="text-center text-slate-400 text-sm py-2">
+          {variant === 'primary' ? '尚未加入任何課程' : '尚未加入第二系所的課程'}
+        </p>
+      )}
+    </div>
+  );
+};
+
 export default function App() {
   const [allCourses, setAllCourses] = useState([]);
   const [coursesLoading, setCoursesLoading] = useState(true);
@@ -216,6 +319,10 @@ export default function App() {
 
   const [gradReqs, setGradReqs] = useState({});
   const [graduationModalOpen, setGraduationModalOpen] = useState(false);
+  // 雙主修 / 輔系：null | { type: '雙主修'|'輔系', dept: '法律' }
+  const [secondaryProfile, setSecondaryProfile] = useState(() => {
+    try { const s = localStorage.getItem('secondaryProfile'); return s ? JSON.parse(s) : null; } catch { return null; }
+  });
 
   // Fetch courses data on mount
   useEffect(() => {
@@ -271,6 +378,14 @@ export default function App() {
   useEffect(() => {
     try { localStorage.setItem('selectedDept', selectedDept); } catch { /* ignore */ }
   }, [selectedDept]);
+
+  // Persist secondaryProfile（雙主修/輔系）
+  useEffect(() => {
+    try {
+      if (secondaryProfile) localStorage.setItem('secondaryProfile', JSON.stringify(secondaryProfile));
+      else localStorage.removeItem('secondaryProfile');
+    } catch { /* ignore */ }
+  }, [secondaryProfile]);
 
   // --- Derived values ---
 
@@ -333,39 +448,54 @@ export default function App() {
 
   // --- 畢業學分追蹤 (Phase 2) ---
 
-  const deptReqs = useMemo(() => {
-    const r = gradReqs[selectedDept];
-    if (!r || selectedDept.startsWith('_')) return null;
-    return r;
-  }, [gradReqs, selectedDept]);
+  const lookupReqs = (dept) => {
+    if (!dept || dept.startsWith('_')) return null;
+    return gradReqs[dept] || null;
+  };
 
-  const earnedByType = useMemo(() => {
-    const m = {};
-    selectedCourses.forEach(c => { m[c.type] = (m[c.type] || 0) + (c.credits || 0); });
-    return m;
-  }, [selectedCourses]);
+  const deptReqs = useMemo(() => lookupReqs(selectedDept), [gradReqs, selectedDept]);
+  const secondaryReqs = useMemo(
+    () => (secondaryProfile ? lookupReqs(secondaryProfile.dept) : null),
+    [gradReqs, secondaryProfile]
+  );
 
-  const categoryProgress = useMemo(() => {
-    if (!deptReqs?.categories) return [];
-    return Object.entries(deptReqs.categories).map(([key, cat]) => {
-      const earned = cat.types.reduce((s, t) => s + (earnedByType[t] || 0), 0);
-      return { key, ...cat, earned, met: earned >= cat.minCredits };
-    });
-  }, [deptReqs, earnedByType]);
+  // 雙主修/輔系：以課程 dept 自動歸屬。第二系所的課歸第二系所，其餘（含通識）歸主修。
+  const primaryCourses = useMemo(
+    () => (secondaryProfile?.dept ? selectedCourses.filter(c => c.dept !== secondaryProfile.dept) : selectedCourses),
+    [selectedCourses, secondaryProfile]
+  );
+  const secondaryCourses = useMemo(
+    () => (secondaryProfile?.dept ? selectedCourses.filter(c => c.dept === secondaryProfile.dept) : []),
+    [selectedCourses, secondaryProfile]
+  );
+
+  const primaryEarned = useMemo(() => creditsByType(primaryCourses), [primaryCourses]);
+  const primaryCategoryProgress = useMemo(() => buildCategoryProgress(deptReqs, primaryEarned), [deptReqs, primaryEarned]);
+  const primaryTotal = useMemo(() => primaryCourses.reduce((s, c) => s + (c.credits || 0), 0), [primaryCourses]);
+
+  const secondaryEarned = useMemo(() => creditsByType(secondaryCourses), [secondaryCourses]);
+  const secondaryCategoryProgress = useMemo(() => buildCategoryProgress(secondaryReqs, secondaryEarned), [secondaryReqs, secondaryEarned]);
+  const secondaryTotal = useMemo(() => secondaryCourses.reduce((s, c) => s + (c.credits || 0), 0), [secondaryCourses]);
 
   // 通識本系/跨系時段學分分布；ownDeptTimeSlot 未建檔 (null) 時回傳 null，前端不顯示
   const ownSlotCredits = useMemo(() => {
     const slot = deptReqs?.ownDeptTimeSlot;
     if (!slot) return null;
     let own = 0, cross = 0;
-    selectedCourses.forEach(c => {
+    primaryCourses.forEach(c => {
       if (c.type === '通識' || c.type === '通必') {
         if (isDeptOwnSlot(c, slot)) own += c.credits || 0;
         else cross += c.credits || 0;
       }
     });
     return { own, cross };
-  }, [deptReqs, selectedCourses]);
+  }, [deptReqs, primaryCourses]);
+
+  // 第二系所可選清單（排除主修本身與文件用的 _ 鍵）
+  const secondaryDeptOptions = useMemo(
+    () => deptList.filter(d => d !== selectedDept && !d.startsWith('_')),
+    [deptList, selectedDept]
+  );
 
   const scheduleBlocks = [];
   selectedCourses.forEach(course => {
@@ -435,6 +565,14 @@ export default function App() {
 
   const removeCourse = (courseId) => {
     setSelectedCourses(selectedCourses.filter(c => c.id !== courseId));
+  };
+
+  const handleSecondaryType = (type) => {
+    if (type === '無') { setSecondaryProfile(null); return; }
+    setSecondaryProfile(prev => ({ type, dept: prev?.dept || '' }));
+  };
+  const handleSecondaryDept = (dept) => {
+    setSecondaryProfile(prev => ({ type: prev?.type || '雙主修', dept }));
   };
 
   const autoLoadRequired = () => {
@@ -1025,97 +1163,75 @@ export default function App() {
               </button>
             </div>
 
-            <div className="p-5 md:p-6 overflow-y-auto flex-1 bg-slate-50/50 space-y-4">
-              {/* 畢業總學分 / 未建檔總學分 */}
-              {deptReqs ? (
-                <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
-                  <div className="flex justify-between items-baseline mb-2">
-                    <span className="font-bold text-slate-700 text-sm">畢業總學分</span>
-                    <span className="text-sm font-bold">
-                      <span className={totalCredits >= deptReqs.totalCredits ? 'text-emerald-600' : 'text-blue-600'}>{totalCredits}</span>
-                      <span className="text-slate-400"> / {deptReqs.totalCredits}</span>
-                    </span>
-                  </div>
-                  <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
-                    <div
-                      className={`h-full rounded-full transition-all ${totalCredits >= deptReqs.totalCredits ? 'bg-emerald-500' : 'bg-blue-500'}`}
-                      style={{ width: `${deptReqs.totalCredits ? Math.min(100, (totalCredits / deptReqs.totalCredits) * 100) : 0}%` }}
-                    />
-                  </div>
-                  {totalCredits < deptReqs.totalCredits && (
-                    <p className="text-xs text-slate-500 mt-2">距畢業最低總學分還差 {deptReqs.totalCredits - totalCredits} 學分</p>
+            <div className="p-5 md:p-6 overflow-y-auto flex-1 bg-slate-50/50 space-y-5">
+              {/* 雙主修 / 輔系 設定 */}
+              <div className="bg-white rounded-xl border border-slate-200 p-3">
+                <div className="font-bold text-slate-700 text-sm mb-2">雙主修 / 輔系</div>
+                <div className="flex gap-2">
+                  <select
+                    value={secondaryProfile?.type || '無'}
+                    onChange={e => handleSecondaryType(e.target.value)}
+                    className="bg-slate-50 border border-slate-200 rounded-lg px-2 py-1.5 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-400 cursor-pointer"
+                  >
+                    <option value="無">無</option>
+                    <option value="雙主修">雙主修</option>
+                    <option value="輔系">輔系</option>
+                  </select>
+                  {secondaryProfile && (
+                    <select
+                      value={secondaryProfile.dept || ''}
+                      onChange={e => handleSecondaryDept(e.target.value)}
+                      className="flex-1 min-w-0 bg-slate-50 border border-slate-200 rounded-lg px-2 py-1.5 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-400 cursor-pointer"
+                    >
+                      <option value="">— 選擇第二系所 —</option>
+                      {secondaryDeptOptions.map(d => <option key={d} value={d}>{d}</option>)}
+                    </select>
                   )}
                 </div>
-              ) : (
-                <div className="text-center">
-                  <div className="text-4xl font-black text-slate-800">{totalCredits}</div>
-                  <div className="text-sm text-slate-500 mt-1">目前總學分</div>
-                  <div className="mt-4 bg-amber-50 border border-amber-100 rounded-xl p-3 text-xs text-amber-700 text-left leading-relaxed">
-                    <span className="font-bold">此系所畢業條件尚未建檔</span>，僅顯示總學分。各系畢業規定（必修／選修／通識學分數）請以系上課程規劃書為準。
+              </div>
+
+              {/* 主修 */}
+              <div>
+                {secondaryProfile?.dept && (
+                  <div className="text-xs font-bold text-slate-500 mb-2 tracking-wide">主修 · {deptReqs?.displayName || selectedDept}</div>
+                )}
+                <CreditSection
+                  variant="primary"
+                  reqs={deptReqs}
+                  total={primaryTotal}
+                  categoryProgress={primaryCategoryProgress}
+                  earnedByType={primaryEarned}
+                  courseCount={primaryCourses.length}
+                />
+                {ownSlotCredits && (
+                  <div className="mt-3 bg-blue-50 border border-blue-100 rounded-xl p-3 text-xs text-slate-600">
+                    <div className="font-bold text-blue-700 mb-1">通識時段分布</div>
+                    本系時段 <span className="font-bold">{ownSlotCredits.own}</span> 學分 · 跨系時段 <span className="font-bold">{ownSlotCredits.cross}</span> 學分
+                  </div>
+                )}
+                {deptReqs?.source && (
+                  <p className="text-[11px] text-slate-400 leading-relaxed mt-2">資料來源：{deptReqs.source}</p>
+                )}
+              </div>
+
+              {/* 第二系所（雙主修 / 輔系） */}
+              {secondaryProfile?.dept && (
+                <div className="pt-3 border-t border-slate-200">
+                  <div className="text-xs font-bold text-indigo-500 mb-2 tracking-wide">
+                    {secondaryProfile.type} · {secondaryReqs?.displayName || secondaryProfile.dept}
+                  </div>
+                  <CreditSection
+                    variant="secondary"
+                    reqs={secondaryReqs}
+                    total={secondaryTotal}
+                    categoryProgress={secondaryCategoryProgress}
+                    earnedByType={secondaryEarned}
+                    courseCount={secondaryCourses.length}
+                  />
+                  <div className="mt-3 bg-amber-50 border border-amber-100 rounded-xl p-3 text-xs text-amber-700 leading-relaxed">
+                    <span className="font-bold">{secondaryProfile.type}應修學分依各系規定不同</span>，本區僅統計你已排入的「{secondaryProfile.dept}」課程學分；實際{secondaryProfile.type}畢業條件請向系辦或教務處確認。
                   </div>
                 </div>
-              )}
-
-              {/* 各類別進度條 */}
-              {categoryProgress.length > 0 && (
-                <div className="space-y-3">
-                  {categoryProgress.map(cat => {
-                    const pct = cat.minCredits ? Math.min(100, (cat.earned / cat.minCredits) * 100) : 100;
-                    return (
-                      <div key={cat.key} className="bg-white rounded-xl border border-slate-200 p-3">
-                        <div className="flex justify-between items-baseline mb-1.5">
-                          <span className="font-bold text-slate-700 text-sm flex items-center gap-1.5">
-                            {cat.met && <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />}
-                            {cat.label}
-                          </span>
-                          <span className="text-xs font-bold">
-                            <span className={cat.met ? 'text-emerald-600' : 'text-indigo-600'}>{cat.earned}</span>
-                            <span className="text-slate-400"> / {cat.minCredits}</span>
-                          </span>
-                        </div>
-                        <div className="h-2.5 bg-slate-100 rounded-full overflow-hidden">
-                          <div
-                            className={`h-full rounded-full transition-all ${cat.met ? 'bg-emerald-500' : 'bg-indigo-500'}`}
-                            style={{ width: `${pct}%` }}
-                          />
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-
-              {/* 通識本系/跨系時段分布（僅當 ownDeptTimeSlot 已建檔） */}
-              {ownSlotCredits && (
-                <div className="bg-blue-50 border border-blue-100 rounded-xl p-3 text-xs text-slate-600">
-                  <div className="font-bold text-blue-700 mb-1">通識時段分布</div>
-                  本系時段 <span className="font-bold">{ownSlotCredits.own}</span> 學分 · 跨系時段 <span className="font-bold">{ownSlotCredits.cross}</span> 學分
-                </div>
-              )}
-
-              {/* 各類別學分明細（資訊用） */}
-              {selectedCourses.length > 0 ? (
-                <div className="bg-white rounded-xl border border-slate-200 p-3">
-                  <div className="font-bold text-slate-700 text-sm mb-2">已選課程學分明細</div>
-                  <div className="space-y-1.5">
-                    {Object.entries(earnedByType).sort((a, b) => b[1] - a[1]).map(([type, cr]) => (
-                      <div key={type} className="flex justify-between text-xs">
-                        <span className="text-slate-600">{type}</span>
-                        <span className="font-bold text-slate-700">{cr} 學分</span>
-                      </div>
-                    ))}
-                    <div className="flex justify-between text-xs pt-1.5 border-t border-slate-100">
-                      <span className="text-slate-500 font-bold">合計</span>
-                      <span className="font-bold text-slate-800">{totalCredits} 學分</span>
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <p className="text-center text-slate-400 text-sm py-2">尚未加入任何課程</p>
-              )}
-
-              {deptReqs?.source && (
-                <p className="text-[11px] text-slate-400 leading-relaxed">資料來源：{deptReqs.source}</p>
               )}
             </div>
 

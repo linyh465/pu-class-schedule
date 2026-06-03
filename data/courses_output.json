@@ -315,6 +315,32 @@
     "precautions": []
   },
   {
+    "id": "0232",
+    "name": "英文(一) (A班)",
+    "type": "必修",
+    "credits": 2,
+    "instructor": "柯儒伯",
+    "times": [
+      {
+        "day": 1,
+        "periods": [
+          7,
+          8
+        ]
+      }
+    ],
+    "location": "思源116",
+    "dept": "中",
+    "year": null,
+    "sections": [
+      "A"
+    ],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "共同課程",
+    "precautions": []
+  },
+  {
     "id": "2161",
     "name": "國文科/語文領域國文教材教法 (A班)",
     "type": "教必",
@@ -417,32 +443,6 @@
     "gen_ed_group": null,
     "dimension": null,
     "note": "師培課程",
-    "precautions": []
-  },
-  {
-    "id": "0232",
-    "name": "英文(一) (A班)",
-    "type": "必修",
-    "credits": 2,
-    "instructor": "柯儒伯",
-    "times": [
-      {
-        "day": 1,
-        "periods": [
-          7,
-          8
-        ]
-      }
-    ],
-    "location": "思源116",
-    "dept": "中文",
-    "year": null,
-    "sections": [
-      "A"
-    ],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
     "precautions": []
   },
   {
@@ -1293,7 +1293,8 @@
     "dept": "共同選",
     "year": null,
     "sections": [
-      "A"
+      "A",
+      "Aa組"
     ],
     "gen_ed_group": null,
     "dimension": null,
@@ -1320,6 +1321,7 @@
     "dept": "共同選",
     "year": null,
     "sections": [
+      "Ab組",
       "B"
     ],
     "gen_ed_group": null,
@@ -4783,6 +4785,86 @@
     "precautions": []
   },
   {
+    "id": "0622",
+    "name": "傳播倫理 (Ab組)",
+    "type": "必修",
+    "credits": 2,
+    "instructor": "王孝勇",
+    "times": [
+      {
+        "day": 4,
+        "periods": [
+          3,
+          4
+        ]
+      }
+    ],
+    "location": "任垣307",
+    "dept": "大傳",
+    "year": 2,
+    "sections": [
+      "Ab組"
+    ],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "",
+    "precautions": []
+  },
+  {
+    "id": "0616",
+    "name": "大眾傳播理論 (Aa組)",
+    "type": "必修",
+    "credits": 3,
+    "instructor": "陳韻如",
+    "times": [
+      {
+        "day": 4,
+        "periods": [
+          2,
+          3,
+          4
+        ]
+      }
+    ],
+    "location": "任垣305",
+    "dept": "大傳",
+    "year": 2,
+    "sections": [
+      "Aa組"
+    ],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "",
+    "precautions": []
+  },
+  {
+    "id": "0617",
+    "name": "影視藝術概論 (Aa組)",
+    "type": "必修",
+    "credits": 3,
+    "instructor": "奚浩",
+    "times": [
+      {
+        "day": 5,
+        "periods": [
+          2,
+          3,
+          4
+        ]
+      }
+    ],
+    "location": "任垣343",
+    "dept": "大傳",
+    "year": 2,
+    "sections": [
+      "Aa組"
+    ],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "",
+    "precautions": []
+  },
+  {
     "id": "0615",
     "name": "基礎電視製作概論 (二A)",
     "type": "選修",
@@ -4802,6 +4884,84 @@
     "year": 2,
     "sections": [
       "A"
+    ],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "",
+    "precautions": []
+  },
+  {
+    "id": "0619",
+    "name": "溝通藝術 (Aa組)",
+    "type": "選修",
+    "credits": 2,
+    "instructor": "鄭志文",
+    "times": [
+      {
+        "day": 1,
+        "periods": [
+          3,
+          4
+        ]
+      }
+    ],
+    "location": "文興一樓",
+    "dept": "大傳",
+    "year": 2,
+    "sections": [
+      "Aa組"
+    ],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "",
+    "precautions": []
+  },
+  {
+    "id": "0623",
+    "name": "溝通藝術 (Ab組)",
+    "type": "選修",
+    "credits": 2,
+    "instructor": "鄭志文",
+    "times": [
+      {
+        "day": 4,
+        "periods": [
+          5,
+          6
+        ]
+      }
+    ],
+    "location": "文興一樓",
+    "dept": "大傳",
+    "year": 2,
+    "sections": [
+      "Ab組"
+    ],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "",
+    "precautions": []
+  },
+  {
+    "id": "0633",
+    "name": "當代傳播問題 (Ab)",
+    "type": "必修",
+    "credits": 2,
+    "instructor": "李明穎",
+    "times": [
+      {
+        "day": 4,
+        "periods": [
+          5,
+          6
+        ]
+      }
+    ],
+    "location": "任垣305",
+    "dept": "大傳",
+    "year": 3,
+    "sections": [
+      "Ab"
     ],
     "gen_ed_group": null,
     "dimension": null,
@@ -4940,152 +5100,6 @@
     "precautions": []
   },
   {
-    "id": "0633",
-    "name": "當代傳播問題",
-    "type": "必修",
-    "credits": 2,
-    "instructor": "李明穎",
-    "times": [
-      {
-        "day": 4,
-        "periods": [
-          5,
-          6
-        ]
-      }
-    ],
-    "location": "任垣305",
-    "dept": "大傳三Ab",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
-    "id": "0616",
-    "name": "大眾傳播理論",
-    "type": "必修",
-    "credits": 3,
-    "instructor": "陳韻如",
-    "times": [
-      {
-        "day": 4,
-        "periods": [
-          2,
-          3,
-          4
-        ]
-      }
-    ],
-    "location": "任垣305",
-    "dept": "大傳二Aa組",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
-    "id": "0617",
-    "name": "影視藝術概論",
-    "type": "必修",
-    "credits": 3,
-    "instructor": "奚浩",
-    "times": [
-      {
-        "day": 5,
-        "periods": [
-          2,
-          3,
-          4
-        ]
-      }
-    ],
-    "location": "任垣343",
-    "dept": "大傳二Aa組",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
-    "id": "0619",
-    "name": "溝通藝術",
-    "type": "選修",
-    "credits": 2,
-    "instructor": "鄭志文",
-    "times": [
-      {
-        "day": 1,
-        "periods": [
-          3,
-          4
-        ]
-      }
-    ],
-    "location": "文興一樓",
-    "dept": "大傳二Aa組",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
-    "id": "0622",
-    "name": "傳播倫理",
-    "type": "必修",
-    "credits": 2,
-    "instructor": "王孝勇",
-    "times": [
-      {
-        "day": 4,
-        "periods": [
-          3,
-          4
-        ]
-      }
-    ],
-    "location": "任垣307",
-    "dept": "大傳二Ab組",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
-    "id": "0623",
-    "name": "溝通藝術",
-    "type": "選修",
-    "credits": 2,
-    "instructor": "鄭志文",
-    "times": [
-      {
-        "day": 4,
-        "periods": [
-          5,
-          6
-        ]
-      }
-    ],
-    "location": "文興一樓",
-    "dept": "大傳二Ab組",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
     "id": "0596",
     "name": "文化共融與地方傳播實踐(合授課程)",
     "type": "選修",
@@ -5130,6 +5144,58 @@
     "year": 1,
     "sections": [
       "A"
+    ],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "",
+    "precautions": []
+  },
+  {
+    "id": "2008",
+    "name": "基礎英文作文(一) (Aa組)",
+    "type": "必修",
+    "credits": 2,
+    "instructor": "張文忠",
+    "times": [
+      {
+        "day": 1,
+        "periods": [
+          3,
+          4
+        ]
+      }
+    ],
+    "location": "伯鐸113",
+    "dept": "寰宇外語教育",
+    "year": 1,
+    "sections": [
+      "Aa組"
+    ],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "",
+    "precautions": []
+  },
+  {
+    "id": "2010",
+    "name": "基礎英文作文(一) (Ab組)",
+    "type": "必修",
+    "credits": 2,
+    "instructor": "張藝寶",
+    "times": [
+      {
+        "day": 1,
+        "periods": [
+          3,
+          4
+        ]
+      }
+    ],
+    "location": "伯鐸114",
+    "dept": "寰宇外語教育",
+    "year": 1,
+    "sections": [
+      "Ab組"
     ],
     "gen_ed_group": null,
     "dimension": null,
@@ -5502,30 +5568,6 @@
     "precautions": []
   },
   {
-    "id": "2010",
-    "name": "基礎英文作文(一)",
-    "type": "必修",
-    "credits": 2,
-    "instructor": "張藝寶",
-    "times": [
-      {
-        "day": 1,
-        "periods": [
-          3,
-          4
-        ]
-      }
-    ],
-    "location": "伯鐸114",
-    "dept": "寰宇外語教育一Ab組",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
     "id": "1983",
     "name": "初級會計學(一) (一A)",
     "type": "必修",
@@ -5809,30 +5851,6 @@
     "sections": [
       "A"
     ],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
-    "id": "2008",
-    "name": "基礎英文作文(一)",
-    "type": "必修",
-    "credits": 2,
-    "instructor": "張文忠",
-    "times": [
-      {
-        "day": 1,
-        "periods": [
-          3,
-          4
-        ]
-      }
-    ],
-    "location": "伯鐸113",
-    "dept": "寰語外語教育一Aa組",
-    "year": null,
-    "sections": [],
     "gen_ed_group": null,
     "dimension": null,
     "note": "共同課程",
@@ -6764,6 +6782,102 @@
     "precautions": []
   },
   {
+    "id": "0885",
+    "name": "書報討論(一)",
+    "type": "必修",
+    "credits": 2,
+    "instructor": "關凱元",
+    "times": [
+      {
+        "day": 1,
+        "periods": [
+          5,
+          6
+        ]
+      }
+    ],
+    "location": "靜安306",
+    "dept": "應化",
+    "year": null,
+    "sections": [],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "共同課程",
+    "precautions": []
+  },
+  {
+    "id": "0886",
+    "name": "書報討論(一)",
+    "type": "必修",
+    "credits": 2,
+    "instructor": "周憲辛",
+    "times": [
+      {
+        "day": 1,
+        "periods": [
+          5,
+          6
+        ]
+      }
+    ],
+    "location": "靜安206",
+    "dept": "應化",
+    "year": null,
+    "sections": [],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "共同課程",
+    "precautions": []
+  },
+  {
+    "id": "0887",
+    "name": "書報討論(一)",
+    "type": "必修",
+    "credits": 2,
+    "instructor": "鄧名傑",
+    "times": [
+      {
+        "day": 1,
+        "periods": [
+          7,
+          8
+        ]
+      }
+    ],
+    "location": "靜安306",
+    "dept": "應化",
+    "year": null,
+    "sections": [],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "共同課程",
+    "precautions": []
+  },
+  {
+    "id": "0888",
+    "name": "書報討論(一)(合授課程)",
+    "type": "必修",
+    "credits": 2,
+    "instructor": "陳香惠",
+    "times": [
+      {
+        "day": 1,
+        "periods": [
+          7,
+          8
+        ]
+      }
+    ],
+    "location": "靜安206",
+    "dept": "應化",
+    "year": null,
+    "sections": [],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "共同課程",
+    "precautions": []
+  },
+  {
     "id": "0822",
     "name": "英文(一) (A班)",
     "type": "必修",
@@ -6842,102 +6956,6 @@
     "precautions": []
   },
   {
-    "id": "0887",
-    "name": "書報討論(一)",
-    "type": "必修",
-    "credits": 2,
-    "instructor": "鄧名傑",
-    "times": [
-      {
-        "day": 1,
-        "periods": [
-          7,
-          8
-        ]
-      }
-    ],
-    "location": "靜安306",
-    "dept": "應化四書報討論分析組",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
-    "id": "0885",
-    "name": "書報討論(一)",
-    "type": "必修",
-    "credits": 2,
-    "instructor": "關凱元",
-    "times": [
-      {
-        "day": 1,
-        "periods": [
-          5,
-          6
-        ]
-      }
-    ],
-    "location": "靜安306",
-    "dept": "應化四書報討論有機組",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
-    "id": "0886",
-    "name": "書報討論(一)",
-    "type": "必修",
-    "credits": 2,
-    "instructor": "周憲辛",
-    "times": [
-      {
-        "day": 1,
-        "periods": [
-          5,
-          6
-        ]
-      }
-    ],
-    "location": "靜安206",
-    "dept": "應化四書報討論無機組",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
-    "id": "0888",
-    "name": "書報討論(一)(合授課程)",
-    "type": "必修",
-    "credits": 2,
-    "instructor": "陳香惠",
-    "times": [
-      {
-        "day": 1,
-        "periods": [
-          7,
-          8
-        ]
-      }
-    ],
-    "location": "靜安206",
-    "dept": "應化四書報討論物化組",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
     "id": "0098",
     "name": "初級日語(一) (一A)",
     "type": "必修",
@@ -6997,6 +7015,172 @@
     "year": 1,
     "sections": [
       "B"
+    ],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "",
+    "precautions": []
+  },
+  {
+    "id": "0105",
+    "name": "初級日語會話(一)",
+    "type": "必修",
+    "credits": 4,
+    "instructor": "桂田愛",
+    "times": [
+      {
+        "day": 2,
+        "periods": [
+          7,
+          8
+        ]
+      },
+      {
+        "day": 5,
+        "periods": [
+          3,
+          4
+        ]
+      }
+    ],
+    "location": "伯鐸332, 伯鐸416",
+    "dept": "日",
+    "year": 1,
+    "sections": [
+      "Ac",
+      "Bc"
+    ],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "",
+    "precautions": []
+  },
+  {
+    "id": "0103",
+    "name": "初級日語會話(一) (Aa)",
+    "type": "必修",
+    "credits": 4,
+    "instructor": "楊惠菁",
+    "times": [
+      {
+        "day": 3,
+        "periods": [
+          1,
+          2
+        ]
+      },
+      {
+        "day": 5,
+        "periods": [
+          3,
+          4
+        ]
+      }
+    ],
+    "location": "伯鐸320",
+    "dept": "日",
+    "year": 1,
+    "sections": [
+      "Aa"
+    ],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "",
+    "precautions": []
+  },
+  {
+    "id": "0104",
+    "name": "初級日語會話(一) (Ab)",
+    "type": "必修",
+    "credits": 4,
+    "instructor": "陳嬿如",
+    "times": [
+      {
+        "day": 2,
+        "periods": [
+          7,
+          8
+        ]
+      },
+      {
+        "day": 5,
+        "periods": [
+          3,
+          4
+        ]
+      }
+    ],
+    "location": "伯鐸423, 伯鐸334",
+    "dept": "日",
+    "year": 1,
+    "sections": [
+      "Ab"
+    ],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "",
+    "precautions": []
+  },
+  {
+    "id": "0110",
+    "name": "初級日語會話(一) (Ba)",
+    "type": "必修",
+    "credits": 4,
+    "instructor": "封靜宜",
+    "times": [
+      {
+        "day": 2,
+        "periods": [
+          1,
+          2
+        ]
+      },
+      {
+        "day": 5,
+        "periods": [
+          3,
+          4
+        ]
+      }
+    ],
+    "location": "伯鐸334, 伯鐸115",
+    "dept": "日",
+    "year": 1,
+    "sections": [
+      "Ba"
+    ],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "",
+    "precautions": []
+  },
+  {
+    "id": "0111",
+    "name": "初級日語會話(一) (Bb)",
+    "type": "必修",
+    "credits": 4,
+    "instructor": "溫雅珺",
+    "times": [
+      {
+        "day": 2,
+        "periods": [
+          3,
+          4
+        ]
+      },
+      {
+        "day": 5,
+        "periods": [
+          3,
+          4
+        ]
+      }
+    ],
+    "location": "伯鐸332",
+    "dept": "日",
+    "year": 1,
+    "sections": [
+      "Bb"
     ],
     "gen_ed_group": null,
     "dimension": null,
@@ -7187,6 +7371,466 @@
     "precautions": []
   },
   {
+    "id": "0120",
+    "name": "中級日語(一) (Aa)",
+    "type": "必修",
+    "credits": 3,
+    "instructor": "溫雅珺",
+    "times": [
+      {
+        "day": 3,
+        "periods": [
+          7,
+          8
+        ]
+      },
+      {
+        "day": 5,
+        "periods": [
+          2
+        ]
+      }
+    ],
+    "location": "伯鐸332",
+    "dept": "日",
+    "year": 2,
+    "sections": [
+      "Aa"
+    ],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "",
+    "precautions": []
+  },
+  {
+    "id": "0136",
+    "name": "中級日語(一) (Ba)",
+    "type": "必修",
+    "credits": 3,
+    "instructor": "陳嬿如",
+    "times": [
+      {
+        "day": 3,
+        "periods": [
+          3,
+          4
+        ]
+      },
+      {
+        "day": 5,
+        "periods": [
+          2
+        ]
+      }
+    ],
+    "location": "伯鐸336",
+    "dept": "日",
+    "year": 2,
+    "sections": [
+      "Ba"
+    ],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "",
+    "precautions": []
+  },
+  {
+    "id": "0125",
+    "name": "中級日語(一)(合授課程)",
+    "type": "必修",
+    "credits": 3,
+    "instructor": "陳羿秀",
+    "times": [
+      {
+        "day": 1,
+        "periods": [
+          5,
+          6
+        ]
+      },
+      {
+        "day": 5,
+        "periods": [
+          2
+        ]
+      }
+    ],
+    "location": "伯鐸417",
+    "dept": "日",
+    "year": 2,
+    "sections": [
+      "Ab",
+      "Bb"
+    ],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "",
+    "precautions": []
+  },
+  {
+    "id": "0124",
+    "name": "中級日語會話(一) (Ab)",
+    "type": "必修",
+    "credits": 3,
+    "instructor": "林恆立",
+    "times": [
+      {
+        "day": 1,
+        "periods": [
+          2
+        ]
+      },
+      {
+        "day": 2,
+        "periods": [
+          3,
+          4
+        ]
+      }
+    ],
+    "location": "伯鐸422, 伯鐸432",
+    "dept": "日",
+    "year": 2,
+    "sections": [
+      "Ab"
+    ],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "",
+    "precautions": []
+  },
+  {
+    "id": "0128",
+    "name": "中級日語會話(一) (Ac)",
+    "type": "必修",
+    "credits": 3,
+    "instructor": "日未定一",
+    "times": [
+      {
+        "day": 2,
+        "periods": [
+          3,
+          4
+        ]
+      },
+      {
+        "day": 4,
+        "periods": [
+          2
+        ]
+      }
+    ],
+    "location": "伯鐸423",
+    "dept": "日",
+    "year": 2,
+    "sections": [
+      "Ac"
+    ],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "",
+    "precautions": []
+  },
+  {
+    "id": "0135",
+    "name": "中級日語會話(一) (Ba)",
+    "type": "必修",
+    "credits": 3,
+    "instructor": "横川彰",
+    "times": [
+      {
+        "day": 1,
+        "periods": [
+          1,
+          2
+        ]
+      },
+      {
+        "day": 5,
+        "periods": [
+          3
+        ]
+      }
+    ],
+    "location": "伯鐸320, 伯鐸436",
+    "dept": "日",
+    "year": 2,
+    "sections": [
+      "Ba"
+    ],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "",
+    "precautions": []
+  },
+  {
+    "id": "0140",
+    "name": "中級日語會話(一) (Bb)",
+    "type": "必修",
+    "credits": 3,
+    "instructor": "横川彰",
+    "times": [
+      {
+        "day": 4,
+        "periods": [
+          1,
+          2
+        ]
+      },
+      {
+        "day": 5,
+        "periods": [
+          4
+        ]
+      }
+    ],
+    "location": "伯鐸336, 伯鐸436",
+    "dept": "日",
+    "year": 2,
+    "sections": [
+      "Bb"
+    ],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "",
+    "precautions": []
+  },
+  {
+    "id": "0121",
+    "name": "中級日語聽力練習(一) (Aa)",
+    "type": "必修",
+    "credits": 1,
+    "instructor": "賴衍宏",
+    "times": [
+      {
+        "day": 1,
+        "periods": [
+          3,
+          4
+        ]
+      }
+    ],
+    "location": "任垣143",
+    "dept": "日",
+    "year": 2,
+    "sections": [
+      "Aa"
+    ],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "",
+    "precautions": []
+  },
+  {
+    "id": "0137",
+    "name": "中級日語聽力練習(一) (Ba)",
+    "type": "必修",
+    "credits": 1,
+    "instructor": "蔡雅芸",
+    "times": [
+      {
+        "day": 5,
+        "periods": [
+          5,
+          6
+        ]
+      }
+    ],
+    "location": "任垣141",
+    "dept": "日",
+    "year": 2,
+    "sections": [
+      "Ba"
+    ],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "",
+    "precautions": []
+  },
+  {
+    "id": "0122",
+    "name": "基礎日文習作(一) (Aa)",
+    "type": "必修",
+    "credits": 2,
+    "instructor": "桂田愛",
+    "times": [
+      {
+        "day": 4,
+        "periods": [
+          3,
+          4
+        ]
+      }
+    ],
+    "location": "伯鐸334",
+    "dept": "日",
+    "year": 2,
+    "sections": [
+      "Aa"
+    ],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "",
+    "precautions": []
+  },
+  {
+    "id": "0127",
+    "name": "基礎日文習作(一) (Ab)",
+    "type": "必修",
+    "credits": 2,
+    "instructor": "桂田愛",
+    "times": [
+      {
+        "day": 4,
+        "periods": [
+          5,
+          6
+        ]
+      }
+    ],
+    "location": "伯鐸334",
+    "dept": "日",
+    "year": 2,
+    "sections": [
+      "Ab"
+    ],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "",
+    "precautions": []
+  },
+  {
+    "id": "0143",
+    "name": "基礎日文習作(一) (Bb)",
+    "type": "必修",
+    "credits": 2,
+    "instructor": "王湘榕",
+    "times": [
+      {
+        "day": 4,
+        "periods": [
+          3,
+          4
+        ]
+      }
+    ],
+    "location": "伯鐸332",
+    "dept": "日",
+    "year": 2,
+    "sections": [
+      "Bb"
+    ],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "",
+    "precautions": []
+  },
+  {
+    "id": "0145",
+    "name": "基礎日文習作(一) (Bc)",
+    "type": "必修",
+    "credits": 2,
+    "instructor": "横川彰",
+    "times": [
+      {
+        "day": 1,
+        "periods": [
+          3,
+          4
+        ]
+      }
+    ],
+    "location": "伯鐸320",
+    "dept": "日",
+    "year": 2,
+    "sections": [
+      "Bc"
+    ],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "",
+    "precautions": []
+  },
+  {
+    "id": "0123",
+    "name": "日語語法(二)",
+    "type": "必修",
+    "credits": 2,
+    "instructor": "林恆立",
+    "times": [
+      {
+        "day": 5,
+        "periods": [
+          7,
+          8
+        ]
+      }
+    ],
+    "location": "伯鐸316",
+    "dept": "日",
+    "year": 2,
+    "sections": [
+      "Ab",
+      "Bb"
+    ],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "",
+    "precautions": []
+  },
+  {
+    "id": "0118",
+    "name": "日語語法(二) (Aa)",
+    "type": "必修",
+    "credits": 2,
+    "instructor": "王湘榕",
+    "times": [
+      {
+        "day": 1,
+        "periods": [
+          5,
+          6
+        ]
+      }
+    ],
+    "location": "伯鐸336",
+    "dept": "日",
+    "year": 2,
+    "sections": [
+      "Aa"
+    ],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "",
+    "precautions": []
+  },
+  {
+    "id": "0134",
+    "name": "日語語法(二) (Ba)",
+    "type": "必修",
+    "credits": 2,
+    "instructor": "王湘榕",
+    "times": [
+      {
+        "day": 5,
+        "periods": [
+          7,
+          8
+        ]
+      }
+    ],
+    "location": "伯鐸332",
+    "dept": "日",
+    "year": 2,
+    "sections": [
+      "Ba"
+    ],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "",
+    "precautions": []
+  },
+  {
     "id": "0115",
     "name": "日本文化概論(一) (AB班共同)",
     "type": "選修",
@@ -7261,6 +7905,347 @@
     "sections": [
       "A",
       "B"
+    ],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "",
+    "precautions": []
+  },
+  {
+    "id": "0183",
+    "name": "日文翻譯(日譯中)(一) (Ba)",
+    "type": "必修",
+    "credits": 2,
+    "instructor": "李偉煌",
+    "times": [
+      {
+        "day": 1,
+        "periods": [
+          5,
+          6
+        ]
+      }
+    ],
+    "location": "伯鐸332",
+    "dept": "日",
+    "year": 3,
+    "sections": [
+      "Ba"
+    ],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "",
+    "precautions": []
+  },
+  {
+    "id": "0168",
+    "name": "日本近代文學史(一)",
+    "type": "必修",
+    "credits": 2,
+    "instructor": "陳羿秀",
+    "times": [
+      {
+        "day": 5,
+        "periods": [
+          5,
+          6
+        ]
+      }
+    ],
+    "location": "伯鐸417",
+    "dept": "日",
+    "year": 3,
+    "sections": [
+      "Ab",
+      "Bb"
+    ],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "",
+    "precautions": []
+  },
+  {
+    "id": "0184",
+    "name": "日本近代文學史(一) (Ba)",
+    "type": "必修",
+    "credits": 2,
+    "instructor": "賴衍宏",
+    "times": [
+      {
+        "day": 4,
+        "periods": [
+          5,
+          6
+        ]
+      }
+    ],
+    "location": "伯鐸417",
+    "dept": "日",
+    "year": 3,
+    "sections": [
+      "Ba"
+    ],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "",
+    "precautions": []
+  },
+  {
+    "id": "0160",
+    "name": "進階日文習作(一) (Aa)",
+    "type": "必修",
+    "credits": 2,
+    "instructor": "田和亞輝",
+    "times": [
+      {
+        "day": 1,
+        "periods": [
+          5,
+          6
+        ]
+      }
+    ],
+    "location": "伯鐸320",
+    "dept": "日",
+    "year": 3,
+    "sections": [
+      "Aa"
+    ],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "",
+    "precautions": []
+  },
+  {
+    "id": "0166",
+    "name": "進階日文習作(一) (Ab)",
+    "type": "必修",
+    "credits": 2,
+    "instructor": "雪松美智子",
+    "times": [
+      {
+        "day": 4,
+        "periods": [
+          1,
+          2
+        ]
+      }
+    ],
+    "location": "伯鐸417",
+    "dept": "日",
+    "year": 3,
+    "sections": [
+      "Ab"
+    ],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "",
+    "precautions": []
+  },
+  {
+    "id": "0182",
+    "name": "進階日文習作(一) (Ba)",
+    "type": "必修",
+    "credits": 2,
+    "instructor": "田和亞輝",
+    "times": [
+      {
+        "day": 1,
+        "periods": [
+          7,
+          8
+        ]
+      }
+    ],
+    "location": "伯鐸320",
+    "dept": "日",
+    "year": 3,
+    "sections": [
+      "Ba"
+    ],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "",
+    "precautions": []
+  },
+  {
+    "id": "0188",
+    "name": "進階日文習作(一) (Bb)",
+    "type": "必修",
+    "credits": 2,
+    "instructor": "日未定一",
+    "times": [
+      {
+        "day": 1,
+        "periods": [
+          7,
+          8
+        ]
+      }
+    ],
+    "location": "伯鐸334",
+    "dept": "日",
+    "year": 3,
+    "sections": [
+      "Bb"
+    ],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "",
+    "precautions": []
+  },
+  {
+    "id": "0164",
+    "name": "高級日語(一)",
+    "type": "必修",
+    "credits": 2,
+    "instructor": "日未定一",
+    "times": [
+      {
+        "day": 4,
+        "periods": [
+          5,
+          6
+        ]
+      }
+    ],
+    "location": "伯鐸423",
+    "dept": "日",
+    "year": 3,
+    "sections": [
+      "Ab",
+      "Bb"
+    ],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "",
+    "precautions": []
+  },
+  {
+    "id": "0158",
+    "name": "高級日語(一) (Aa)",
+    "type": "必修",
+    "credits": 2,
+    "instructor": "陳羿秀",
+    "times": [
+      {
+        "day": 5,
+        "periods": [
+          3,
+          4
+        ]
+      }
+    ],
+    "location": "伯鐸417",
+    "dept": "日",
+    "year": 3,
+    "sections": [
+      "Aa"
+    ],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "",
+    "precautions": []
+  },
+  {
+    "id": "0185",
+    "name": "高級日語會話(一) (Bb)",
+    "type": "必修",
+    "credits": 2,
+    "instructor": "横川彰",
+    "times": [
+      {
+        "day": 1,
+        "periods": [
+          5,
+          6
+        ]
+      }
+    ],
+    "location": "伯鐸334",
+    "dept": "日",
+    "year": 3,
+    "sections": [
+      "Bb"
+    ],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "",
+    "precautions": []
+  },
+  {
+    "id": "0165",
+    "name": "高級日語聽力練習(一)",
+    "type": "必修",
+    "credits": 1,
+    "instructor": "陳文敏",
+    "times": [
+      {
+        "day": 5,
+        "periods": [
+          3,
+          4
+        ]
+      }
+    ],
+    "location": "伯鐸336",
+    "dept": "日",
+    "year": 3,
+    "sections": [
+      "Ab",
+      "Bb"
+    ],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "",
+    "precautions": []
+  },
+  {
+    "id": "0159",
+    "name": "高級日語聽力練習(一) (Aa)",
+    "type": "必修",
+    "credits": 1,
+    "instructor": "劉逸強",
+    "times": [
+      {
+        "day": 5,
+        "periods": [
+          7,
+          8
+        ]
+      }
+    ],
+    "location": "伯鐸423",
+    "dept": "日",
+    "year": 3,
+    "sections": [
+      "Aa"
+    ],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "",
+    "precautions": []
+  },
+  {
+    "id": "0181",
+    "name": "高級日語聽力練習(一) (Ba)",
+    "type": "必修",
+    "credits": 1,
+    "instructor": "林恆立",
+    "times": [
+      {
+        "day": 5,
+        "periods": [
+          5,
+          6
+        ]
+      }
+    ],
+    "location": "伯鐸332",
+    "dept": "日",
+    "year": 3,
+    "sections": [
+      "Ba"
     ],
     "gen_ed_group": null,
     "dimension": null,
@@ -7538,899 +8523,6 @@
     "precautions": []
   },
   {
-    "id": "0103",
-    "name": "初級日語會話(一)",
-    "type": "必修",
-    "credits": 4,
-    "instructor": "楊惠菁",
-    "times": [
-      {
-        "day": 3,
-        "periods": [
-          1,
-          2
-        ]
-      },
-      {
-        "day": 5,
-        "periods": [
-          3,
-          4
-        ]
-      }
-    ],
-    "location": "伯鐸320",
-    "dept": "日一Aa",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
-    "id": "0104",
-    "name": "初級日語會話(一)",
-    "type": "必修",
-    "credits": 4,
-    "instructor": "陳嬿如",
-    "times": [
-      {
-        "day": 2,
-        "periods": [
-          7,
-          8
-        ]
-      },
-      {
-        "day": 5,
-        "periods": [
-          3,
-          4
-        ]
-      }
-    ],
-    "location": "伯鐸423, 伯鐸334",
-    "dept": "日一Ab",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
-    "id": "0105",
-    "name": "初級日語會話(一)",
-    "type": "必修",
-    "credits": 4,
-    "instructor": "桂田愛",
-    "times": [
-      {
-        "day": 2,
-        "periods": [
-          7,
-          8
-        ]
-      },
-      {
-        "day": 5,
-        "periods": [
-          3,
-          4
-        ]
-      }
-    ],
-    "location": "伯鐸332, 伯鐸416",
-    "dept": "日一Ac",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
-    "id": "0110",
-    "name": "初級日語會話(一)",
-    "type": "必修",
-    "credits": 4,
-    "instructor": "封靜宜",
-    "times": [
-      {
-        "day": 2,
-        "periods": [
-          1,
-          2
-        ]
-      },
-      {
-        "day": 5,
-        "periods": [
-          3,
-          4
-        ]
-      }
-    ],
-    "location": "伯鐸334, 伯鐸115",
-    "dept": "日一Ba",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
-    "id": "0111",
-    "name": "初級日語會話(一)",
-    "type": "必修",
-    "credits": 4,
-    "instructor": "溫雅珺",
-    "times": [
-      {
-        "day": 2,
-        "periods": [
-          3,
-          4
-        ]
-      },
-      {
-        "day": 5,
-        "periods": [
-          3,
-          4
-        ]
-      }
-    ],
-    "location": "伯鐸332",
-    "dept": "日一Bb",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
-    "id": "0160",
-    "name": "進階日文習作(一)",
-    "type": "必修",
-    "credits": 2,
-    "instructor": "田和亞輝",
-    "times": [
-      {
-        "day": 1,
-        "periods": [
-          5,
-          6
-        ]
-      }
-    ],
-    "location": "伯鐸320",
-    "dept": "日三Aa",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
-    "id": "0158",
-    "name": "高級日語(一)",
-    "type": "必修",
-    "credits": 2,
-    "instructor": "陳羿秀",
-    "times": [
-      {
-        "day": 5,
-        "periods": [
-          3,
-          4
-        ]
-      }
-    ],
-    "location": "伯鐸417",
-    "dept": "日三Aa",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
-    "id": "0159",
-    "name": "高級日語聽力練習(一)",
-    "type": "必修",
-    "credits": 1,
-    "instructor": "劉逸強",
-    "times": [
-      {
-        "day": 5,
-        "periods": [
-          7,
-          8
-        ]
-      }
-    ],
-    "location": "伯鐸423",
-    "dept": "日三Aa",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
-    "id": "0168",
-    "name": "日本近代文學史(一)",
-    "type": "必修",
-    "credits": 2,
-    "instructor": "陳羿秀",
-    "times": [
-      {
-        "day": 5,
-        "periods": [
-          5,
-          6
-        ]
-      }
-    ],
-    "location": "伯鐸417",
-    "dept": "日三Ab",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
-    "id": "0166",
-    "name": "進階日文習作(一)",
-    "type": "必修",
-    "credits": 2,
-    "instructor": "雪松美智子",
-    "times": [
-      {
-        "day": 4,
-        "periods": [
-          1,
-          2
-        ]
-      }
-    ],
-    "location": "伯鐸417",
-    "dept": "日三Ab",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
-    "id": "0164",
-    "name": "高級日語(一)",
-    "type": "必修",
-    "credits": 2,
-    "instructor": "日未定一",
-    "times": [
-      {
-        "day": 4,
-        "periods": [
-          5,
-          6
-        ]
-      }
-    ],
-    "location": "伯鐸423",
-    "dept": "日三Ab",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
-    "id": "0165",
-    "name": "高級日語聽力練習(一)",
-    "type": "必修",
-    "credits": 1,
-    "instructor": "陳文敏",
-    "times": [
-      {
-        "day": 5,
-        "periods": [
-          3,
-          4
-        ]
-      }
-    ],
-    "location": "伯鐸336",
-    "dept": "日三Ab",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
-    "id": "0183",
-    "name": "日文翻譯(日譯中)(一)",
-    "type": "必修",
-    "credits": 2,
-    "instructor": "李偉煌",
-    "times": [
-      {
-        "day": 1,
-        "periods": [
-          5,
-          6
-        ]
-      }
-    ],
-    "location": "伯鐸332",
-    "dept": "日三Ba",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
-    "id": "0184",
-    "name": "日本近代文學史(一)",
-    "type": "必修",
-    "credits": 2,
-    "instructor": "賴衍宏",
-    "times": [
-      {
-        "day": 4,
-        "periods": [
-          5,
-          6
-        ]
-      }
-    ],
-    "location": "伯鐸417",
-    "dept": "日三Ba",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
-    "id": "0182",
-    "name": "進階日文習作(一)",
-    "type": "必修",
-    "credits": 2,
-    "instructor": "田和亞輝",
-    "times": [
-      {
-        "day": 1,
-        "periods": [
-          7,
-          8
-        ]
-      }
-    ],
-    "location": "伯鐸320",
-    "dept": "日三Ba",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
-    "id": "0181",
-    "name": "高級日語聽力練習(一)",
-    "type": "必修",
-    "credits": 1,
-    "instructor": "林恆立",
-    "times": [
-      {
-        "day": 5,
-        "periods": [
-          5,
-          6
-        ]
-      }
-    ],
-    "location": "伯鐸332",
-    "dept": "日三Ba",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
-    "id": "0188",
-    "name": "進階日文習作(一)",
-    "type": "必修",
-    "credits": 2,
-    "instructor": "日未定一",
-    "times": [
-      {
-        "day": 1,
-        "periods": [
-          7,
-          8
-        ]
-      }
-    ],
-    "location": "伯鐸334",
-    "dept": "日三Bb",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
-    "id": "0185",
-    "name": "高級日語會話(一)",
-    "type": "必修",
-    "credits": 2,
-    "instructor": "横川彰",
-    "times": [
-      {
-        "day": 1,
-        "periods": [
-          5,
-          6
-        ]
-      }
-    ],
-    "location": "伯鐸334",
-    "dept": "日三Bb",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
-    "id": "0120",
-    "name": "中級日語(一)",
-    "type": "必修",
-    "credits": 3,
-    "instructor": "溫雅珺",
-    "times": [
-      {
-        "day": 3,
-        "periods": [
-          7,
-          8
-        ]
-      },
-      {
-        "day": 5,
-        "periods": [
-          2
-        ]
-      }
-    ],
-    "location": "伯鐸332",
-    "dept": "日二Aa",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
-    "id": "0121",
-    "name": "中級日語聽力練習(一)",
-    "type": "必修",
-    "credits": 1,
-    "instructor": "賴衍宏",
-    "times": [
-      {
-        "day": 1,
-        "periods": [
-          3,
-          4
-        ]
-      }
-    ],
-    "location": "任垣143",
-    "dept": "日二Aa",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
-    "id": "0122",
-    "name": "基礎日文習作(一)",
-    "type": "必修",
-    "credits": 2,
-    "instructor": "桂田愛",
-    "times": [
-      {
-        "day": 4,
-        "periods": [
-          3,
-          4
-        ]
-      }
-    ],
-    "location": "伯鐸334",
-    "dept": "日二Aa",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
-    "id": "0118",
-    "name": "日語語法(二)",
-    "type": "必修",
-    "credits": 2,
-    "instructor": "王湘榕",
-    "times": [
-      {
-        "day": 1,
-        "periods": [
-          5,
-          6
-        ]
-      }
-    ],
-    "location": "伯鐸336",
-    "dept": "日二Aa",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
-    "id": "0125",
-    "name": "中級日語(一)(合授課程)",
-    "type": "必修",
-    "credits": 3,
-    "instructor": "陳羿秀",
-    "times": [
-      {
-        "day": 1,
-        "periods": [
-          5,
-          6
-        ]
-      },
-      {
-        "day": 5,
-        "periods": [
-          2
-        ]
-      }
-    ],
-    "location": "伯鐸417",
-    "dept": "日二Ab",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
-    "id": "0124",
-    "name": "中級日語會話(一)",
-    "type": "必修",
-    "credits": 3,
-    "instructor": "林恆立",
-    "times": [
-      {
-        "day": 1,
-        "periods": [
-          2
-        ]
-      },
-      {
-        "day": 2,
-        "periods": [
-          3,
-          4
-        ]
-      }
-    ],
-    "location": "伯鐸422, 伯鐸432",
-    "dept": "日二Ab",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
-    "id": "0127",
-    "name": "基礎日文習作(一)",
-    "type": "必修",
-    "credits": 2,
-    "instructor": "桂田愛",
-    "times": [
-      {
-        "day": 4,
-        "periods": [
-          5,
-          6
-        ]
-      }
-    ],
-    "location": "伯鐸334",
-    "dept": "日二Ab",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
-    "id": "0123",
-    "name": "日語語法(二)",
-    "type": "必修",
-    "credits": 2,
-    "instructor": "林恆立",
-    "times": [
-      {
-        "day": 5,
-        "periods": [
-          7,
-          8
-        ]
-      }
-    ],
-    "location": "伯鐸316",
-    "dept": "日二Ab",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
-    "id": "0128",
-    "name": "中級日語會話(一)",
-    "type": "必修",
-    "credits": 3,
-    "instructor": "日未定一",
-    "times": [
-      {
-        "day": 2,
-        "periods": [
-          3,
-          4
-        ]
-      },
-      {
-        "day": 4,
-        "periods": [
-          2
-        ]
-      }
-    ],
-    "location": "伯鐸423",
-    "dept": "日二Ac",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
-    "id": "0136",
-    "name": "中級日語(一)",
-    "type": "必修",
-    "credits": 3,
-    "instructor": "陳嬿如",
-    "times": [
-      {
-        "day": 3,
-        "periods": [
-          3,
-          4
-        ]
-      },
-      {
-        "day": 5,
-        "periods": [
-          2
-        ]
-      }
-    ],
-    "location": "伯鐸336",
-    "dept": "日二Ba",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
-    "id": "0135",
-    "name": "中級日語會話(一)",
-    "type": "必修",
-    "credits": 3,
-    "instructor": "横川彰",
-    "times": [
-      {
-        "day": 1,
-        "periods": [
-          1,
-          2
-        ]
-      },
-      {
-        "day": 5,
-        "periods": [
-          3
-        ]
-      }
-    ],
-    "location": "伯鐸320, 伯鐸436",
-    "dept": "日二Ba",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
-    "id": "0137",
-    "name": "中級日語聽力練習(一)",
-    "type": "必修",
-    "credits": 1,
-    "instructor": "蔡雅芸",
-    "times": [
-      {
-        "day": 5,
-        "periods": [
-          5,
-          6
-        ]
-      }
-    ],
-    "location": "任垣141",
-    "dept": "日二Ba",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
-    "id": "0134",
-    "name": "日語語法(二)",
-    "type": "必修",
-    "credits": 2,
-    "instructor": "王湘榕",
-    "times": [
-      {
-        "day": 5,
-        "periods": [
-          7,
-          8
-        ]
-      }
-    ],
-    "location": "伯鐸332",
-    "dept": "日二Ba",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
-    "id": "0140",
-    "name": "中級日語會話(一)",
-    "type": "必修",
-    "credits": 3,
-    "instructor": "横川彰",
-    "times": [
-      {
-        "day": 4,
-        "periods": [
-          1,
-          2
-        ]
-      },
-      {
-        "day": 5,
-        "periods": [
-          4
-        ]
-      }
-    ],
-    "location": "伯鐸336, 伯鐸436",
-    "dept": "日二Bb",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
-    "id": "0143",
-    "name": "基礎日文習作(一)",
-    "type": "必修",
-    "credits": 2,
-    "instructor": "王湘榕",
-    "times": [
-      {
-        "day": 4,
-        "periods": [
-          3,
-          4
-        ]
-      }
-    ],
-    "location": "伯鐸332",
-    "dept": "日二Bb",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
-    "id": "0145",
-    "name": "基礎日文習作(一)",
-    "type": "必修",
-    "credits": 2,
-    "instructor": "横川彰",
-    "times": [
-      {
-        "day": 1,
-        "periods": [
-          3,
-          4
-        ]
-      }
-    ],
-    "location": "伯鐸320",
-    "dept": "日二Bc",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
     "id": "0096",
     "name": "英文(一) (A班)",
     "type": "必修",
@@ -8446,7 +8538,7 @@
       }
     ],
     "location": "伯鐸413",
-    "dept": "日文",
+    "dept": "日",
     "year": null,
     "sections": [
       "A"
@@ -8472,7 +8564,7 @@
       }
     ],
     "location": "伯鐸436",
-    "dept": "日文",
+    "dept": "日",
     "year": null,
     "sections": [
       "B"
@@ -11101,32 +11193,6 @@
     "precautions": []
   },
   {
-    "id": "0770",
-    "name": "綠色產業概論 (A班)",
-    "type": "選修",
-    "credits": 2,
-    "instructor": "蔡素珍",
-    "times": [
-      {
-        "day": 4,
-        "periods": [
-          5,
-          6
-        ]
-      }
-    ],
-    "location": "靜安206",
-    "dept": "理學院",
-    "year": null,
-    "sections": [
-      "A"
-    ],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
     "id": "0772",
     "name": "環境、新聞與生活 (二A)",
     "type": "選修",
@@ -11142,7 +11208,7 @@
       }
     ],
     "location": "靜安127",
-    "dept": "理院",
+    "dept": "理學院",
     "year": 2,
     "sections": [
       "A"
@@ -11168,7 +11234,7 @@
       }
     ],
     "location": "靜安121",
-    "dept": "理院",
+    "dept": "理學院",
     "year": 2,
     "sections": [
       "A"
@@ -11176,6 +11242,32 @@
     "gen_ed_group": null,
     "dimension": null,
     "note": "",
+    "precautions": []
+  },
+  {
+    "id": "0770",
+    "name": "綠色產業概論 (A班)",
+    "type": "選修",
+    "credits": 2,
+    "instructor": "蔡素珍",
+    "times": [
+      {
+        "day": 4,
+        "periods": [
+          5,
+          6
+        ]
+      }
+    ],
+    "location": "靜安206",
+    "dept": "理學院",
+    "year": null,
+    "sections": [
+      "A"
+    ],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "共同課程",
     "precautions": []
   },
   {
@@ -13223,6 +13315,112 @@
     "precautions": []
   },
   {
+    "id": "0010",
+    "name": "基礎英文作文(一) (Aa組)",
+    "type": "必修",
+    "credits": 2,
+    "instructor": "周松濬",
+    "times": [
+      {
+        "day": 4,
+        "periods": [
+          3,
+          4
+        ]
+      }
+    ],
+    "location": "伯鐸232",
+    "dept": "英",
+    "year": 1,
+    "sections": [
+      "Aa組"
+    ],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "",
+    "precautions": []
+  },
+  {
+    "id": "0014",
+    "name": "實用英語口語訓練(一) (Ab組)",
+    "type": "必修",
+    "credits": 2,
+    "instructor": "安迪",
+    "times": [
+      {
+        "day": 4,
+        "periods": [
+          3,
+          4
+        ]
+      }
+    ],
+    "location": "伯鐸114",
+    "dept": "英",
+    "year": 1,
+    "sections": [
+      "Ab組"
+    ],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "",
+    "precautions": []
+  },
+  {
+    "id": "0009",
+    "name": "英文(一) (Aa組)",
+    "type": "必修",
+    "credits": 3,
+    "instructor": "吳黛敏",
+    "times": [
+      {
+        "day": 5,
+        "periods": [
+          2,
+          3,
+          4
+        ]
+      }
+    ],
+    "location": "伯鐸113",
+    "dept": "英",
+    "year": 1,
+    "sections": [
+      "Aa組"
+    ],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "",
+    "precautions": []
+  },
+  {
+    "id": "0012",
+    "name": "英文(一) (Ab組)",
+    "type": "必修",
+    "credits": 3,
+    "instructor": "陳永豪",
+    "times": [
+      {
+        "day": 5,
+        "periods": [
+          2,
+          3,
+          4
+        ]
+      }
+    ],
+    "location": "伯鐸114",
+    "dept": "英",
+    "year": 1,
+    "sections": [
+      "Ab組"
+    ],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "",
+    "precautions": []
+  },
+  {
     "id": "0008",
     "name": "運動健康與素養(基礎體育) (一A)",
     "type": "必修",
@@ -13268,6 +13466,32 @@
     "year": 1,
     "sections": [
       "A"
+    ],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "",
+    "precautions": []
+  },
+  {
+    "id": "0020",
+    "name": "中級英文作文(一) (Aa組)",
+    "type": "必修",
+    "credits": 2,
+    "instructor": "吳黛敏",
+    "times": [
+      {
+        "day": 4,
+        "periods": [
+          3,
+          4
+        ]
+      }
+    ],
+    "location": "伯鐸113",
+    "dept": "英",
+    "year": 2,
+    "sections": [
+      "Aa組"
     ],
     "gen_ed_group": null,
     "dimension": null,
@@ -13328,6 +13552,32 @@
     "precautions": []
   },
   {
+    "id": "0024",
+    "name": "英語演說訓練(一) (Ab組)",
+    "type": "必修",
+    "credits": 2,
+    "instructor": "巴布魯克",
+    "times": [
+      {
+        "day": 4,
+        "periods": [
+          3,
+          4
+        ]
+      }
+    ],
+    "location": "伯鐸115",
+    "dept": "英",
+    "year": 2,
+    "sections": [
+      "Ab組"
+    ],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "",
+    "precautions": []
+  },
+  {
     "id": "0017",
     "name": "語言與文化 (二A)",
     "type": "選修",
@@ -13347,6 +13597,58 @@
     "year": 2,
     "sections": [
       "A"
+    ],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "",
+    "precautions": []
+  },
+  {
+    "id": "0033",
+    "name": "中級英語會話(一) (Aa組)",
+    "type": "必修",
+    "credits": 2,
+    "instructor": "吳湘湄",
+    "times": [
+      {
+        "day": 4,
+        "periods": [
+          3,
+          4
+        ]
+      }
+    ],
+    "location": "伯鐸216",
+    "dept": "英",
+    "year": 3,
+    "sections": [
+      "Aa組"
+    ],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "",
+    "precautions": []
+  },
+  {
+    "id": "0034",
+    "name": "中級英語會話(一) (Ab組)",
+    "type": "必修",
+    "credits": 2,
+    "instructor": "柯儒伯",
+    "times": [
+      {
+        "day": 4,
+        "periods": [
+          3,
+          4
+        ]
+      }
+    ],
+    "location": "伯鐸217",
+    "dept": "英",
+    "year": 3,
+    "sections": [
+      "Ab組"
     ],
     "gen_ed_group": null,
     "dimension": null,
@@ -13558,200 +13860,6 @@
     "gen_ed_group": null,
     "dimension": null,
     "note": "",
-    "precautions": []
-  },
-  {
-    "id": "0010",
-    "name": "基礎英文作文(一)",
-    "type": "必修",
-    "credits": 2,
-    "instructor": "周松濬",
-    "times": [
-      {
-        "day": 4,
-        "periods": [
-          3,
-          4
-        ]
-      }
-    ],
-    "location": "伯鐸232",
-    "dept": "英一Aa組",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
-    "id": "0009",
-    "name": "英文(一)",
-    "type": "必修",
-    "credits": 3,
-    "instructor": "吳黛敏",
-    "times": [
-      {
-        "day": 5,
-        "periods": [
-          2,
-          3,
-          4
-        ]
-      }
-    ],
-    "location": "伯鐸113",
-    "dept": "英一Aa組",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
-    "id": "0014",
-    "name": "實用英語口語訓練(一)",
-    "type": "必修",
-    "credits": 2,
-    "instructor": "安迪",
-    "times": [
-      {
-        "day": 4,
-        "periods": [
-          3,
-          4
-        ]
-      }
-    ],
-    "location": "伯鐸114",
-    "dept": "英一Ab組",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
-    "id": "0012",
-    "name": "英文(一)",
-    "type": "必修",
-    "credits": 3,
-    "instructor": "陳永豪",
-    "times": [
-      {
-        "day": 5,
-        "periods": [
-          2,
-          3,
-          4
-        ]
-      }
-    ],
-    "location": "伯鐸114",
-    "dept": "英一Ab組",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
-    "id": "0033",
-    "name": "中級英語會話(一)",
-    "type": "必修",
-    "credits": 2,
-    "instructor": "吳湘湄",
-    "times": [
-      {
-        "day": 4,
-        "periods": [
-          3,
-          4
-        ]
-      }
-    ],
-    "location": "伯鐸216",
-    "dept": "英三Aa組",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
-    "id": "0034",
-    "name": "中級英語會話(一)",
-    "type": "必修",
-    "credits": 2,
-    "instructor": "柯儒伯",
-    "times": [
-      {
-        "day": 4,
-        "periods": [
-          3,
-          4
-        ]
-      }
-    ],
-    "location": "伯鐸217",
-    "dept": "英三Ab組",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
-    "id": "0020",
-    "name": "中級英文作文(一)",
-    "type": "必修",
-    "credits": 2,
-    "instructor": "吳黛敏",
-    "times": [
-      {
-        "day": 4,
-        "periods": [
-          3,
-          4
-        ]
-      }
-    ],
-    "location": "伯鐸113",
-    "dept": "英二Aa組",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
-    "id": "0024",
-    "name": "英語演說訓練(一)",
-    "type": "必修",
-    "credits": 2,
-    "instructor": "巴布魯克",
-    "times": [
-      {
-        "day": 4,
-        "periods": [
-          3,
-          4
-        ]
-      }
-    ],
-    "location": "伯鐸115",
-    "dept": "英二Ab組",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
     "precautions": []
   },
   {
@@ -14430,6 +14538,70 @@
     "precautions": []
   },
   {
+    "id": "0056",
+    "name": "初級西班牙文口語訓練(一) (Aa組)",
+    "type": "必修",
+    "credits": 3,
+    "instructor": "林姿如",
+    "times": [
+      {
+        "day": 2,
+        "periods": [
+          3,
+          4
+        ]
+      },
+      {
+        "day": 4,
+        "periods": [
+          6
+        ]
+      }
+    ],
+    "location": "伯鐸313",
+    "dept": "西",
+    "year": 1,
+    "sections": [
+      "Aa組"
+    ],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "",
+    "precautions": []
+  },
+  {
+    "id": "0057",
+    "name": "初級西班牙文口語訓練(一) (Ab組)",
+    "type": "必修",
+    "credits": 3,
+    "instructor": "林玉葉",
+    "times": [
+      {
+        "day": 2,
+        "periods": [
+          3,
+          4
+        ]
+      },
+      {
+        "day": 5,
+        "periods": [
+          2
+        ]
+      }
+    ],
+    "location": "伯鐸314",
+    "dept": "西",
+    "year": 1,
+    "sections": [
+      "Ab組"
+    ],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "",
+    "precautions": []
+  },
+  {
     "id": "0053",
     "name": "西語國家概論(一) (一A)",
     "type": "必修",
@@ -14540,6 +14712,38 @@
     "precautions": []
   },
   {
+    "id": "0063",
+    "name": "中級西班牙文口語訓練(一) (Aa組)",
+    "type": "必修",
+    "credits": 3,
+    "instructor": "蕭耀松",
+    "times": [
+      {
+        "day": 2,
+        "periods": [
+          5,
+          6
+        ]
+      },
+      {
+        "day": 5,
+        "periods": [
+          2
+        ]
+      }
+    ],
+    "location": "伯鐸313",
+    "dept": "西",
+    "year": 2,
+    "sections": [
+      "Aa組"
+    ],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "",
+    "precautions": []
+  },
+  {
     "id": "0060",
     "name": "中級西班牙語句型(一) (二A)",
     "type": "選修",
@@ -14618,6 +14822,32 @@
     "precautions": []
   },
   {
+    "id": "0074",
+    "name": "專業西班牙文閱讀與寫作(一) (Ab組)",
+    "type": "必修",
+    "credits": 2,
+    "instructor": "黃韵庭",
+    "times": [
+      {
+        "day": 5,
+        "periods": [
+          3,
+          4
+        ]
+      }
+    ],
+    "location": "伯鐸313",
+    "dept": "西",
+    "year": 3,
+    "sections": [
+      "Ab組"
+    ],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "",
+    "precautions": []
+  },
+  {
     "id": "0066",
     "name": "翻譯(西→中)(一) (三A)",
     "type": "必修",
@@ -14637,6 +14867,32 @@
     "year": 3,
     "sections": [
       "A"
+    ],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "",
+    "precautions": []
+  },
+  {
+    "id": "0071",
+    "name": "高級西班牙文口語訓練(一) (Aa組)",
+    "type": "必修",
+    "credits": 2,
+    "instructor": "蒙崇儒",
+    "times": [
+      {
+        "day": 1,
+        "periods": [
+          3,
+          4
+        ]
+      }
+    ],
+    "location": "伯鐸313",
+    "dept": "西",
+    "year": 3,
+    "sections": [
+      "Aa組"
     ],
     "gen_ed_group": null,
     "dimension": null,
@@ -14722,6 +14978,38 @@
     "precautions": []
   },
   {
+    "id": "0083",
+    "name": "進階西班牙語會話(一) (Aa組)",
+    "type": "必修",
+    "credits": 3,
+    "instructor": "胡安",
+    "times": [
+      {
+        "day": 3,
+        "periods": [
+          2
+        ]
+      },
+      {
+        "day": 4,
+        "periods": [
+          3,
+          4
+        ]
+      }
+    ],
+    "location": "伯鐸313",
+    "dept": "西",
+    "year": 4,
+    "sections": [
+      "Aa組"
+    ],
+    "gen_ed_group": null,
+    "dimension": null,
+    "note": "",
+    "precautions": []
+  },
+  {
     "id": "0079",
     "name": "西語全方位能力訓練 (四A)",
     "type": "選修",
@@ -14748,174 +15036,6 @@
     "precautions": []
   },
   {
-    "id": "0056",
-    "name": "初級西班牙文口語訓練(一)",
-    "type": "必修",
-    "credits": 3,
-    "instructor": "林姿如",
-    "times": [
-      {
-        "day": 2,
-        "periods": [
-          3,
-          4
-        ]
-      },
-      {
-        "day": 4,
-        "periods": [
-          6
-        ]
-      }
-    ],
-    "location": "伯鐸313",
-    "dept": "西一Aa組",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
-    "id": "0057",
-    "name": "初級西班牙文口語訓練(一)",
-    "type": "必修",
-    "credits": 3,
-    "instructor": "林玉葉",
-    "times": [
-      {
-        "day": 2,
-        "periods": [
-          3,
-          4
-        ]
-      },
-      {
-        "day": 5,
-        "periods": [
-          2
-        ]
-      }
-    ],
-    "location": "伯鐸314",
-    "dept": "西一Ab組",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
-    "id": "0071",
-    "name": "高級西班牙文口語訓練(一)",
-    "type": "必修",
-    "credits": 2,
-    "instructor": "蒙崇儒",
-    "times": [
-      {
-        "day": 1,
-        "periods": [
-          3,
-          4
-        ]
-      }
-    ],
-    "location": "伯鐸313",
-    "dept": "西三Aa組",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
-    "id": "0074",
-    "name": "專業西班牙文閱讀與寫作(一)",
-    "type": "必修",
-    "credits": 2,
-    "instructor": "黃韵庭",
-    "times": [
-      {
-        "day": 5,
-        "periods": [
-          3,
-          4
-        ]
-      }
-    ],
-    "location": "伯鐸313",
-    "dept": "西三Ab組",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
-    "id": "0063",
-    "name": "中級西班牙文口語訓練(一)",
-    "type": "必修",
-    "credits": 3,
-    "instructor": "蕭耀松",
-    "times": [
-      {
-        "day": 2,
-        "periods": [
-          5,
-          6
-        ]
-      },
-      {
-        "day": 5,
-        "periods": [
-          2
-        ]
-      }
-    ],
-    "location": "伯鐸313",
-    "dept": "西二Aa組",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
-    "id": "0083",
-    "name": "進階西班牙語會話(一)",
-    "type": "必修",
-    "credits": 3,
-    "instructor": "胡安",
-    "times": [
-      {
-        "day": 3,
-        "periods": [
-          2
-        ]
-      },
-      {
-        "day": 4,
-        "periods": [
-          3,
-          4
-        ]
-      }
-    ],
-    "location": "伯鐸313",
-    "dept": "西四Aa組",
-    "year": null,
-    "sections": [],
-    "gen_ed_group": null,
-    "dimension": null,
-    "note": "共同課程",
-    "precautions": []
-  },
-  {
     "id": "0049",
     "name": "英文(一) (A班)",
     "type": "必修",
@@ -14931,7 +15051,7 @@
       }
     ],
     "location": "伯鐸415",
-    "dept": "西文",
+    "dept": "西",
     "year": null,
     "sections": [
       "A"
@@ -14957,7 +15077,7 @@
       }
     ],
     "location": "伯鐸432",
-    "dept": "西文",
+    "dept": "西",
     "year": null,
     "sections": [
       "B"
@@ -21925,7 +22045,7 @@
   },
   {
     "id": "2374",
-    "name": "閱讀與書寫(一)",
+    "name": "閱讀與書寫(一) (Aa)",
     "type": "必修",
     "credits": 2,
     "instructor": "譚立忠",
@@ -21939,17 +22059,19 @@
       }
     ],
     "location": "思源325",
-    "dept": "閱讀與書寫一Aa",
-    "year": null,
-    "sections": [],
+    "dept": "閱讀與書寫",
+    "year": 1,
+    "sections": [
+      "Aa"
+    ],
     "gen_ed_group": null,
     "dimension": null,
-    "note": "共同課程",
+    "note": "",
     "precautions": []
   },
   {
     "id": "2375",
-    "name": "閱讀與書寫(一)",
+    "name": "閱讀與書寫(一) (Ab)",
     "type": "必修",
     "credits": 2,
     "instructor": "温珮琪",
@@ -21963,17 +22085,19 @@
       }
     ],
     "location": "思源327",
-    "dept": "閱讀與書寫一Ab",
-    "year": null,
-    "sections": [],
+    "dept": "閱讀與書寫",
+    "year": 1,
+    "sections": [
+      "Ab"
+    ],
     "gen_ed_group": null,
     "dimension": null,
-    "note": "共同課程",
+    "note": "",
     "precautions": []
   },
   {
     "id": "2376",
-    "name": "閱讀與書寫(一)",
+    "name": "閱讀與書寫(一) (Ac)",
     "type": "必修",
     "credits": 2,
     "instructor": "謝政修",
@@ -21987,17 +22111,19 @@
       }
     ],
     "location": "思源429",
-    "dept": "閱讀與書寫一Ac",
-    "year": null,
-    "sections": [],
+    "dept": "閱讀與書寫",
+    "year": 1,
+    "sections": [
+      "Ac"
+    ],
     "gen_ed_group": null,
     "dimension": null,
-    "note": "共同課程",
+    "note": "",
     "precautions": []
   },
   {
     "id": "2377",
-    "name": "閱讀與書寫(一)",
+    "name": "閱讀與書寫(一) (Ad)",
     "type": "必修",
     "credits": 2,
     "instructor": "呂政冠",
@@ -22011,17 +22137,19 @@
       }
     ],
     "location": "任垣403",
-    "dept": "閱讀與書寫一Ad",
-    "year": null,
-    "sections": [],
+    "dept": "閱讀與書寫",
+    "year": 1,
+    "sections": [
+      "Ad"
+    ],
     "gen_ed_group": null,
     "dimension": null,
-    "note": "共同課程",
+    "note": "",
     "precautions": []
   },
   {
     "id": "2378",
-    "name": "閱讀與書寫(一)",
+    "name": "閱讀與書寫(一) (Ae)",
     "type": "必修",
     "credits": 2,
     "instructor": "呂素端",
@@ -22035,17 +22163,19 @@
       }
     ],
     "location": "伯鐸423",
-    "dept": "閱讀與書寫一Ae",
-    "year": null,
-    "sections": [],
+    "dept": "閱讀與書寫",
+    "year": 1,
+    "sections": [
+      "Ae"
+    ],
     "gen_ed_group": null,
     "dimension": null,
-    "note": "共同課程",
+    "note": "",
     "precautions": []
   },
   {
     "id": "2379",
-    "name": "閱讀與書寫(一)",
+    "name": "閱讀與書寫(一) (Af)",
     "type": "必修",
     "credits": 2,
     "instructor": "黃國超",
@@ -22059,17 +22189,19 @@
       }
     ],
     "location": "思源213",
-    "dept": "閱讀與書寫一Af",
-    "year": null,
-    "sections": [],
+    "dept": "閱讀與書寫",
+    "year": 1,
+    "sections": [
+      "Af"
+    ],
     "gen_ed_group": null,
     "dimension": null,
-    "note": "共同課程",
+    "note": "",
     "precautions": []
   },
   {
     "id": "2380",
-    "name": "閱讀與書寫(一)",
+    "name": "閱讀與書寫(一) (Ag)",
     "type": "必修",
     "credits": 2,
     "instructor": "邱各容",
@@ -22083,17 +22215,19 @@
       }
     ],
     "location": "思源426",
-    "dept": "閱讀與書寫一Ag",
-    "year": null,
-    "sections": [],
+    "dept": "閱讀與書寫",
+    "year": 1,
+    "sections": [
+      "Ag"
+    ],
     "gen_ed_group": null,
     "dimension": null,
-    "note": "共同課程",
+    "note": "",
     "precautions": []
   },
   {
     "id": "2381",
-    "name": "閱讀與書寫(一)",
+    "name": "閱讀與書寫(一) (Ba)",
     "type": "必修",
     "credits": 2,
     "instructor": "譚立忠",
@@ -22107,17 +22241,19 @@
       }
     ],
     "location": "思源325",
-    "dept": "閱讀與書寫一Ba",
-    "year": null,
-    "sections": [],
+    "dept": "閱讀與書寫",
+    "year": 1,
+    "sections": [
+      "Ba"
+    ],
     "gen_ed_group": null,
     "dimension": null,
-    "note": "共同課程",
+    "note": "",
     "precautions": []
   },
   {
     "id": "2382",
-    "name": "閱讀與書寫(一)",
+    "name": "閱讀與書寫(一) (Bb)",
     "type": "必修",
     "credits": 2,
     "instructor": "温珮琪",
@@ -22131,17 +22267,19 @@
       }
     ],
     "location": "思源327",
-    "dept": "閱讀與書寫一Bb",
-    "year": null,
-    "sections": [],
+    "dept": "閱讀與書寫",
+    "year": 1,
+    "sections": [
+      "Bb"
+    ],
     "gen_ed_group": null,
     "dimension": null,
-    "note": "共同課程",
+    "note": "",
     "precautions": []
   },
   {
     "id": "2383",
-    "name": "閱讀與書寫(一)",
+    "name": "閱讀與書寫(一) (Bc)",
     "type": "必修",
     "credits": 2,
     "instructor": "謝政修",
@@ -22155,17 +22293,19 @@
       }
     ],
     "location": "思源429",
-    "dept": "閱讀與書寫一Bc",
-    "year": null,
-    "sections": [],
+    "dept": "閱讀與書寫",
+    "year": 1,
+    "sections": [
+      "Bc"
+    ],
     "gen_ed_group": null,
     "dimension": null,
-    "note": "共同課程",
+    "note": "",
     "precautions": []
   },
   {
     "id": "2384",
-    "name": "閱讀與書寫(一)",
+    "name": "閱讀與書寫(一) (Bd)",
     "type": "必修",
     "credits": 2,
     "instructor": "呂政冠",
@@ -22179,17 +22319,19 @@
       }
     ],
     "location": "任垣403",
-    "dept": "閱讀與書寫一Bd",
-    "year": null,
-    "sections": [],
+    "dept": "閱讀與書寫",
+    "year": 1,
+    "sections": [
+      "Bd"
+    ],
     "gen_ed_group": null,
     "dimension": null,
-    "note": "共同課程",
+    "note": "",
     "precautions": []
   },
   {
     "id": "2385",
-    "name": "閱讀與書寫(一)",
+    "name": "閱讀與書寫(一) (Be)",
     "type": "必修",
     "credits": 2,
     "instructor": "林宗毅",
@@ -22203,17 +22345,19 @@
       }
     ],
     "location": "思源213",
-    "dept": "閱讀與書寫一Be",
-    "year": null,
-    "sections": [],
+    "dept": "閱讀與書寫",
+    "year": 1,
+    "sections": [
+      "Be"
+    ],
     "gen_ed_group": null,
     "dimension": null,
-    "note": "共同課程",
+    "note": "",
     "precautions": []
   },
   {
     "id": "2386",
-    "name": "閱讀與書寫(一)",
+    "name": "閱讀與書寫(一) (Bf)",
     "type": "必修",
     "credits": 2,
     "instructor": "劉庭彰",
@@ -22227,17 +22371,19 @@
       }
     ],
     "location": "思源425",
-    "dept": "閱讀與書寫一Bf",
-    "year": null,
-    "sections": [],
+    "dept": "閱讀與書寫",
+    "year": 1,
+    "sections": [
+      "Bf"
+    ],
     "gen_ed_group": null,
     "dimension": null,
-    "note": "共同課程",
+    "note": "",
     "precautions": []
   },
   {
     "id": "2387",
-    "name": "閱讀與書寫(一)",
+    "name": "閱讀與書寫(一) (Bg)",
     "type": "必修",
     "credits": 2,
     "instructor": "邱各容",
@@ -22251,17 +22397,19 @@
       }
     ],
     "location": "思源426",
-    "dept": "閱讀與書寫一Bg",
-    "year": null,
-    "sections": [],
+    "dept": "閱讀與書寫",
+    "year": 1,
+    "sections": [
+      "Bg"
+    ],
     "gen_ed_group": null,
     "dimension": null,
-    "note": "共同課程",
+    "note": "",
     "precautions": []
   },
   {
     "id": "2388",
-    "name": "閱讀與書寫(一)",
+    "name": "閱讀與書寫(一) (Bh)",
     "type": "必修",
     "credits": 2,
     "instructor": "洪麗玫",
@@ -22275,17 +22423,19 @@
       }
     ],
     "location": "伯鐸134",
-    "dept": "閱讀與書寫一Bh",
-    "year": null,
-    "sections": [],
+    "dept": "閱讀與書寫",
+    "year": 1,
+    "sections": [
+      "Bh"
+    ],
     "gen_ed_group": null,
     "dimension": null,
-    "note": "共同課程",
+    "note": "",
     "precautions": []
   },
   {
     "id": "2418",
-    "name": "閱讀與書寫(一)",
+    "name": "閱讀與書寫(一) (Ga)",
     "type": "必修",
     "credits": 2,
     "instructor": "洪然升",
@@ -22299,17 +22449,19 @@
       }
     ],
     "location": "主顧109",
-    "dept": "閱讀與書寫一Ga",
-    "year": null,
-    "sections": [],
+    "dept": "閱讀與書寫",
+    "year": 1,
+    "sections": [
+      "Ga"
+    ],
     "gen_ed_group": null,
     "dimension": null,
-    "note": "共同課程",
+    "note": "",
     "precautions": []
   },
   {
     "id": "2419",
-    "name": "閱讀與書寫(一)",
+    "name": "閱讀與書寫(一) (Gb)",
     "type": "必修",
     "credits": 2,
     "instructor": "卓素絹",
@@ -22323,17 +22475,19 @@
       }
     ],
     "location": "主顧104",
-    "dept": "閱讀與書寫一Gb",
-    "year": null,
-    "sections": [],
+    "dept": "閱讀與書寫",
+    "year": 1,
+    "sections": [
+      "Gb"
+    ],
     "gen_ed_group": null,
     "dimension": null,
-    "note": "共同課程",
+    "note": "",
     "precautions": []
   },
   {
     "id": "2420",
-    "name": "閱讀與書寫(一)",
+    "name": "閱讀與書寫(一) (Gc)",
     "type": "必修",
     "credits": 2,
     "instructor": "蕭崇聖",
@@ -22347,17 +22501,19 @@
       }
     ],
     "location": "主顧209",
-    "dept": "閱讀與書寫一Gc",
-    "year": null,
-    "sections": [],
+    "dept": "閱讀與書寫",
+    "year": 1,
+    "sections": [
+      "Gc"
+    ],
     "gen_ed_group": null,
     "dimension": null,
-    "note": "共同課程",
+    "note": "",
     "precautions": []
   },
   {
     "id": "2421",
-    "name": "閱讀與書寫(一)",
+    "name": "閱讀與書寫(一) (Gd)",
     "type": "必修",
     "credits": 2,
     "instructor": "傅素春",
@@ -22371,17 +22527,19 @@
       }
     ],
     "location": "主顧211",
-    "dept": "閱讀與書寫一Gd",
-    "year": null,
-    "sections": [],
+    "dept": "閱讀與書寫",
+    "year": 1,
+    "sections": [
+      "Gd"
+    ],
     "gen_ed_group": null,
     "dimension": null,
-    "note": "共同課程",
+    "note": "",
     "precautions": []
   },
   {
     "id": "2422",
-    "name": "閱讀與書寫(一)",
+    "name": "閱讀與書寫(一) (Ge)",
     "type": "必修",
     "credits": 2,
     "instructor": "朱錦雄",
@@ -22395,17 +22553,19 @@
       }
     ],
     "location": "主顧219",
-    "dept": "閱讀與書寫一Ge",
-    "year": null,
-    "sections": [],
+    "dept": "閱讀與書寫",
+    "year": 1,
+    "sections": [
+      "Ge"
+    ],
     "gen_ed_group": null,
     "dimension": null,
-    "note": "共同課程",
+    "note": "",
     "precautions": []
   },
   {
     "id": "2423",
-    "name": "閱讀與書寫(一)",
+    "name": "閱讀與書寫(一) (Gf)",
     "type": "必修",
     "credits": 2,
     "instructor": "閱寫未定二",
@@ -22419,17 +22579,19 @@
       }
     ],
     "location": "靜安204",
-    "dept": "閱讀與書寫一Gf",
-    "year": null,
-    "sections": [],
+    "dept": "閱讀與書寫",
+    "year": 1,
+    "sections": [
+      "Gf"
+    ],
     "gen_ed_group": null,
     "dimension": null,
-    "note": "共同課程",
+    "note": "",
     "precautions": []
   },
   {
     "id": "2424",
-    "name": "閱讀與書寫(一)",
+    "name": "閱讀與書寫(一) (Gg)",
     "type": "必修",
     "credits": 2,
     "instructor": "閱寫未定三",
@@ -22443,17 +22605,19 @@
       }
     ],
     "location": "靜安406",
-    "dept": "閱讀與書寫一Gg",
-    "year": null,
-    "sections": [],
+    "dept": "閱讀與書寫",
+    "year": 1,
+    "sections": [
+      "Gg"
+    ],
     "gen_ed_group": null,
     "dimension": null,
-    "note": "共同課程",
+    "note": "",
     "precautions": []
   },
   {
     "id": "2425",
-    "name": "閱讀與書寫(一)",
+    "name": "閱讀與書寫(一) (Ha)",
     "type": "必修",
     "credits": 2,
     "instructor": "洪然升",
@@ -22467,17 +22631,19 @@
       }
     ],
     "location": "主顧109",
-    "dept": "閱讀與書寫一Ha",
-    "year": null,
-    "sections": [],
+    "dept": "閱讀與書寫",
+    "year": 1,
+    "sections": [
+      "Ha"
+    ],
     "gen_ed_group": null,
     "dimension": null,
-    "note": "共同課程",
+    "note": "",
     "precautions": []
   },
   {
     "id": "2426",
-    "name": "閱讀與書寫(一)",
+    "name": "閱讀與書寫(一) (Hb)",
     "type": "必修",
     "credits": 2,
     "instructor": "卓素絹",
@@ -22491,17 +22657,19 @@
       }
     ],
     "location": "主顧301",
-    "dept": "閱讀與書寫一Hb",
-    "year": null,
-    "sections": [],
+    "dept": "閱讀與書寫",
+    "year": 1,
+    "sections": [
+      "Hb"
+    ],
     "gen_ed_group": null,
     "dimension": null,
-    "note": "共同課程",
+    "note": "",
     "precautions": []
   },
   {
     "id": "2427",
-    "name": "閱讀與書寫(一)",
+    "name": "閱讀與書寫(一) (Hc)",
     "type": "必修",
     "credits": 2,
     "instructor": "蕭崇聖",
@@ -22515,17 +22683,19 @@
       }
     ],
     "location": "主顧209",
-    "dept": "閱讀與書寫一Hc",
-    "year": null,
-    "sections": [],
+    "dept": "閱讀與書寫",
+    "year": 1,
+    "sections": [
+      "Hc"
+    ],
     "gen_ed_group": null,
     "dimension": null,
-    "note": "共同課程",
+    "note": "",
     "precautions": []
   },
   {
     "id": "2428",
-    "name": "閱讀與書寫(一)",
+    "name": "閱讀與書寫(一) (Hd)",
     "type": "必修",
     "credits": 2,
     "instructor": "傅素春",
@@ -22539,17 +22709,19 @@
       }
     ],
     "location": "主顧211",
-    "dept": "閱讀與書寫一Hd",
-    "year": null,
-    "sections": [],
+    "dept": "閱讀與書寫",
+    "year": 1,
+    "sections": [
+      "Hd"
+    ],
     "gen_ed_group": null,
     "dimension": null,
-    "note": "共同課程",
+    "note": "",
     "precautions": []
   },
   {
     "id": "2429",
-    "name": "閱讀與書寫(一)",
+    "name": "閱讀與書寫(一) (He)",
     "type": "必修",
     "credits": 2,
     "instructor": "朱錦雄",
@@ -22563,17 +22735,19 @@
       }
     ],
     "location": "主顧219",
-    "dept": "閱讀與書寫一He",
-    "year": null,
-    "sections": [],
+    "dept": "閱讀與書寫",
+    "year": 1,
+    "sections": [
+      "He"
+    ],
     "gen_ed_group": null,
     "dimension": null,
-    "note": "共同課程",
+    "note": "",
     "precautions": []
   },
   {
     "id": "2430",
-    "name": "閱讀與書寫(一)",
+    "name": "閱讀與書寫(一) (Hf)",
     "type": "必修",
     "credits": 2,
     "instructor": "閱寫未定二",
@@ -22587,17 +22761,19 @@
       }
     ],
     "location": "主顧111",
-    "dept": "閱讀與書寫一Hf",
-    "year": null,
-    "sections": [],
+    "dept": "閱讀與書寫",
+    "year": 1,
+    "sections": [
+      "Hf"
+    ],
     "gen_ed_group": null,
     "dimension": null,
-    "note": "共同課程",
+    "note": "",
     "precautions": []
   },
   {
     "id": "2431",
-    "name": "閱讀與書寫(一)",
+    "name": "閱讀與書寫(一) (Hg)",
     "type": "必修",
     "credits": 2,
     "instructor": "閱寫未定三",
@@ -22611,12 +22787,14 @@
       }
     ],
     "location": "主顧224",
-    "dept": "閱讀與書寫一Hg",
-    "year": null,
-    "sections": [],
+    "dept": "閱讀與書寫",
+    "year": 1,
+    "sections": [
+      "Hg"
+    ],
     "gen_ed_group": null,
     "dimension": null,
-    "note": "共同課程",
+    "note": "",
     "precautions": []
   },
   {

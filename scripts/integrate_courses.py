@@ -46,6 +46,20 @@ DAY_MAP = {"一": 1, "二": 2, "三": 3, "四": 4, "五": 5, "六": 6, "日": 7}
 YEAR_MAP = {"一": 1, "二": 2, "三": 3, "四": 4}
 YEAR_MAP_REV = {1: "一", 2: "二", 3: "三", 4: "四"}
 
+# 系所代碼正規化：合併同一系所的不同寫法 / 修正資料來源的拼字錯誤。
+# 僅在「確定為同一系所」時加入，避免誤併不同單位。
+DEPT_NORMALIZE = {
+    "日文": "日",                  # 日本語文學系
+    "中文": "中",                  # 中國文學系
+    "西文": "西",                  # 西班牙語文學系
+    "寰語外語教育": "寰宇外語教育",   # 來源拼字錯誤（寰語→寰宇）
+    "理院": "理學院",
+    "應化四書報討論分析組": "應化",
+    "應化四書報討論有機組": "應化",
+    "應化四書報討論無機組": "應化",
+    "應化四書報討論物化組": "應化",
+}
+
 # 通識 8 大向度（新制 4 + 舊制 4）
 # ⚠ 排序很重要：長名稱放前面，避免「永續與在地」被「永續」短前綴誤匹配
 DIMENSIONS = [
@@ -253,6 +267,17 @@ def extract_class_info(class_name: str) -> Dict:
         result["section"] = m.group(3)
         return result
 
+    # ── 5b. 系名+年級+多字母/小寫/「組」班別 ──────────────────
+    #    修正資料碎片：把同系不同班別歸到同一 dept，避免下拉選單破碎。
+    #    e.g. 日二Aa→日 / 英三Aa組→英 / 大傳三Ab→大傳 / 閱讀與書寫一Aa→閱讀與書寫
+    #    （section 限 [A-Za-z]+ 可帶「組」，避免誤吃如「應化四書報討論有機組」的課程內容）
+    m = re.match(r"^(.+?)(一|二|三|四)([A-Za-z]+組?)$", clean)
+    if m:
+        result["dept"] = m.group(1)
+        result["year"] = YEAR_MAP[m.group(2)]
+        result["section"] = m.group(3)
+        return result
+
     # ── 6. 體選/共同選/師培 ──────────────────────────────────
     m = re.match(r"^(體選|共同選|初教|中教)([A-Z])$", clean)
     if m:
@@ -361,7 +386,7 @@ def merge_courses(courses: List[Dict]) -> List[Dict]:
 
         # 主要 dept / year  ── 優先取非 "通識必修" 的
         primary = next((i for i in infos if i["dept"] != "通識必修"), infos[0])
-        dept = primary["dept"]
+        dept = DEPT_NORMALIZE.get(primary["dept"], primary["dept"])
         year = primary["year"]
 
         # 名稱標註
