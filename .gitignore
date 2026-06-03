@@ -6,3 +6,7 @@ data/undergrad_classes.json
 # OS files
 .DS_Store
 Thumbs.db
+
+
+.claude/
+
