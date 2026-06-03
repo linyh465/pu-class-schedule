@@ -122,6 +122,17 @@ const ALL_COURSES = [
   { id: '2337', name: '劇場與身體敘事(五)(跨域與設計)', type: '通識', note: '跨系二階', credits: 2, instructor: '郎亞玲', times: [{ day: 5, periods: [5, 6] }], location: '至善舞蹈教室' },
   { id: '2525', name: '回收循環經濟與環境(科技與服務)', type: '通識', note: '跨系二階', credits: 2, instructor: '林哲寬', times: [{ day: 5, periods: [5, 6] }], location: '任垣407' },
   { id: '2532', name: '多媒材地景創作與療癒(跨域與設計)', type: '通識', note: '跨系二階', credits: 2, instructor: '蔡佳吟', times: [{ day: 5, periods: [5, 6] }], location: '思源421' },
+
+  // 通識課程 (週一 1、2 節) - 跨班時段(人社院) ── 2026-06-03 新增
+  { id: '2299', name: '人與當代社會的建構(永續與在地)', type: '通識', note: '跨系二階', credits: 2, instructor: '曾馨婷', times: [{ day: 1, periods: [1, 2] }], location: '主顧222' },
+  { id: '2300', name: '社會學思考與在地議題分析(永續與在地)', type: '通識', note: '跨系二階', credits: 2, instructor: '陳迪暉', times: [{ day: 1, periods: [1, 2] }], location: '思源423' },
+  { id: '2303', name: '哲學的傳統與現在(宗教與思維)', type: '通識', note: '跨系二階', credits: 2, instructor: '劉希文', times: [{ day: 1, periods: [1, 2] }], location: '思源427' },
+  { id: '2304', name: '宗教情操的社會關懷(宗教與思維)', type: '通識', note: '跨系二階', credits: 2, instructor: '方純強', times: [{ day: 1, periods: [1, 2] }], location: '主顧301' },
+  { id: '2305', name: '無人機生態影像解析(科技與服務)', type: '通識', note: '跨系二階', credits: 2, instructor: '蔡嘉陽', times: [{ day: 1, periods: [1, 2] }], location: '任垣403' },
+  { id: '2306', name: '自說自話——編輯有意思(跨域與設計)', type: '通識', note: '跨系二階', credits: 2, instructor: '林美蘭', times: [{ day: 1, periods: [1, 2] }], location: '思源429' },
+  { id: '2307', name: '音像詮釋so easy(跨域與設計)', type: '通識', note: '跨系二階', credits: 2, instructor: '呂威儀', times: [{ day: 1, periods: [1, 2] }], location: '主顧104' },
+  { id: '2308', name: '書畫與創意設計的美感探索(跨域與設計)', type: '通識', note: '跨系二階', credits: 2, instructor: '陳韻翎', times: [{ day: 1, periods: [1, 2] }], location: '任垣305' },
+  { id: '2524', name: '臺灣原住民文化與創意設計(永續與在地)', type: '通識', note: '跨系二階', credits: 2, instructor: '官志隆', times: [{ day: 1, periods: [1, 2] }], location: '主顧102' },
 ];
 
 const TABS = ['全部', '必修', '備用必修', '選修', '大一重補修', '通識', '兵役'];
@@ -311,7 +322,8 @@ export default function App() {
   const [toast, setToast] = useState(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
-  const [guideModalOpen, setGuideModalOpen] = useState(true);
+  const [updateModalOpen, setUpdateModalOpen] = useState(true);
+  const [guideModalOpen, setGuideModalOpen] = useState(false);
   const [disclaimerModalOpen, setDisclaimerModalOpen] = useState(false);
 
   const dropdownRef = useRef(null);
@@ -962,6 +974,67 @@ export default function App() {
           </div>
         </div>
       )}
+      {/* 課表更新通知彈窗（第一個彈出，每次有新推送即更新內容） */}
+      {updateModalOpen && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-[110] flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl shadow-2xl max-w-lg w-full max-h-[90dvh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-300">
+            <div className="bg-gradient-to-r from-sky-500 to-blue-600 p-6 flex flex-col items-center text-white shrink-0 relative">
+              <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mb-3 shadow-lg -rotate-3">
+                <Sparkles className="w-8 h-8 text-white" />
+              </div>
+              <h2 className="text-2xl font-black tracking-tight">課表更新通知 🎉</h2>
+              <p className="text-sky-100 text-sm mt-1">2026-06-03 更新</p>
+            </div>
+
+            <div className="p-6 md:p-8 overflow-y-auto flex-1 bg-white">
+              <div className="flex items-start gap-3 mb-5">
+                <div className="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center shrink-0">
+                  <CheckCircle2 className="w-5 h-5 text-orange-500" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-slate-800 text-base">新增通識課程跨班時段</h4>
+                  <p className="text-slate-500 text-sm mt-0.5">
+                    人社院 <span className="font-bold text-orange-600">週一 第 1、2 節</span> 共 9 門通識課程，已可加入課表。
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                {[
+                  { id: '2299', name: '人與當代社會的建構', cat: '永續與在地', loc: '主顧222' },
+                  { id: '2300', name: '社會學思考與在地議題分析', cat: '永續與在地', loc: '思源423' },
+                  { id: '2524', name: '臺灣原住民文化與創意設計', cat: '永續與在地', loc: '主顧102' },
+                  { id: '2303', name: '哲學的傳統與現在', cat: '宗教與思維', loc: '思源427' },
+                  { id: '2304', name: '宗教情操的社會關懷', cat: '宗教與思維', loc: '主顧301' },
+                  { id: '2305', name: '無人機生態影像解析', cat: '科技與服務', loc: '任垣403' },
+                  { id: '2306', name: '自說自話——編輯有意思', cat: '跨域與設計', loc: '思源429' },
+                  { id: '2307', name: '音像詮釋so easy', cat: '跨域與設計', loc: '主顧104' },
+                  { id: '2308', name: '書畫與創意設計的美感探索', cat: '跨域與設計', loc: '任垣305' },
+                ].map(c => (
+                  <div key={c.id} className="flex items-center gap-2 p-2 rounded-lg bg-slate-50 border border-slate-100">
+                    <span className="text-[11px] font-bold font-mono px-1.5 py-0.5 rounded bg-gray-100 text-gray-600 border border-gray-200 shrink-0">{c.id}</span>
+                    <span className="text-sm font-bold text-slate-800 leading-tight flex-1">{c.name}</span>
+                    <span className="text-[11px] text-slate-400 whitespace-nowrap shrink-0">{c.loc}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="p-6 bg-slate-50 border-t border-slate-100">
+              <button
+                onClick={() => {
+                  setUpdateModalOpen(false);
+                  setGuideModalOpen(true);
+                }}
+                className="w-full py-4 bg-sky-600 hover:bg-sky-700 text-white rounded-2xl font-black text-lg transition-all shadow-md active:scale-95 flex items-center justify-center gap-2"
+              >
+                下一步 🚀
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* 使用說明彈窗 */}
       {guideModalOpen && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-[100] flex items-center justify-center p-4">

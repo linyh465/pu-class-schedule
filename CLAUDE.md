@@ -152,6 +152,43 @@ print('Done!')
 2. `git add data/ && git commit -m "Update courses for XXX semester"`
 3. `git push` → Railway 自動重新部署
 
+## 前端應用程式（實際運作的程式）
+
+> ⚠️ 本文件最上方的 `index.html` 為早期單頁版本，**目前實際部署的是 `frontend/` 的 React (Vite) 應用程式**。
+> Railway 透過 `Dockerfile` 執行 `npm run build` 打包，因此修改 `frontend/src/App.jsx` 後 push 即會重新部署。
+
+- **課程資料**：直接寫死在 [frontend/src/App.jsx](frontend/src/App.jsx) 開頭的 `ALL_COURSES` 陣列（非從 JSON 讀取）。
+- **本機驗證**：`cd frontend && npm ci && npm run build`（build 成功即代表 JSX 無語法錯誤）。
+
+### 如何新增課程
+
+在 `ALL_COURSES` 陣列加入物件，欄位格式如下：
+
+```js
+// id=選課代號, day: 1=一 … 5=五, periods: 節次, note 可省略
+{ id: '2299', name: '人與當代社會的建構(永續與在地)', type: '通識', note: '跨系二階', credits: 2, instructor: '曾馨婷', times: [{ day: 1, periods: [1, 2] }], location: '主顧222' },
+```
+
+- `type`：`必修` / `備用必修` / `選修` / `通識` / `兵役` / `大一重補修`（對應左側頁籤與卡片顏色）。
+- `note`：`'本系時段'`（藍色徽章）或 `'跨系二階'`（顯示為橘色「跨班時段」徽章）；通識跨班時段一律用 `'跨系二階'`。
+- 多節數連續會自動合併成一個課表方塊；同名同時段同教室的不同班級會自動合併成卡片頁籤。
+
+## 課表更新通知彈窗（每次有新推送即更新）
+
+每次新增/推送課程後，需同步更新「課表更新通知」彈窗，讓使用者一進站就看到本次異動。
+
+- **位置**：[frontend/src/App.jsx](frontend/src/App.jsx)，標記 `{/* 課表更新通知彈窗（第一個彈出…）*/}` 的區塊。
+- **彈窗順序**：`updateModalOpen`（第一個，預設 `true`）→「下一步」→ `guideModalOpen`（使用說明）→ `disclaimerModalOpen`（免責聲明）。
+  - 對應 state 在 `App()` 開頭：`updateModalOpen=true`、`guideModalOpen=false`、`disclaimerModalOpen=false`。
+  - 按鈕 `onClick` 為 `setUpdateModalOpen(false); setGuideModalOpen(true);`，承接舊有的說明流程。
+
+### 每次推送要改的兩個地方
+
+1. **標題下的日期**：`<p ...>2026-06-03 更新</p>` 改成本次推送日期。
+2. **課程清單與標題文案**：更新彈窗內 `.map()` 的陣列（`{ id, name, cat, loc }`）與「新增…週一 第 1、2 節 共 N 門」說明文字，列出本次新增的課程。
+
+> 慣例：彈窗只列「本次新增」的課程，不累積歷史；標題用一句話描述本次主題（例：`通識課程跨班時段（人社院 週一 1、2 節）`）。
+
 ## 畢業學分說明
 
 系統預設畢業需求為 **128 學分**（靜宜大學大學部通用值）。不同系所實際要求可能略有差異，請依各系課程規劃為準。
