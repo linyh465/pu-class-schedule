@@ -189,33 +189,50 @@ print('Done! Run integrate_courses.py next.')
 2. Railway 偵測 `Dockerfile` 自動 build（Stage 1: React build，Stage 2: Node server）。
 3. 自訂網域 `schedule.piyou.me`（DNS CNAME 指向 Railway）。
 
-## 畢業學分說明
+## 畢業學分追蹤（Phase 2，已實作核心）
 
-系統目前顯示**總學分數**。各系畢業規定不同，請以各系課程規劃書為準。
+右側工具列「畢業學分」按鈕開啟 **畢業學分追蹤 Modal**（`graduationModalOpen`），顯示：
+- 畢業總學分進度條（`totalCredits` / 該系 `totalCredits`）。
+- 各學分類別進度條（由 `graduation_requirements.json` 的 `categories` 驅動，達標顯示綠色 ✓）。
+- 已選課程的各 `type` 學分明細（資訊用，永遠顯示）。
+- 通識本系/跨系時段分布（僅當該系 `ownDeptTimeSlot` 已建檔）。
 
-## 下一步（Phase 2 & Phase 3）
-
-### Phase 2：畢業學分追蹤
-
-新建 `data/graduation_requirements.json`，儲存各系畢業條件（從各系課程規劃書整理）：
+**資料檔**：`data/graduation_requirements.json`（Dockerfile 已 COPY 到 `public/data/`；本機開發另需 `frontend/public/data/` 副本）。
 
 ```json
 {
   "人工智慧": {
+    "displayName": "人工智慧應用學系",
     "totalCredits": 128,
     "categories": {
-      "required":  { "label": "專業必修", "minCredits": 42, "types": ["必修"] },
-      "elective":  { "label": "專業選修", "minCredits": 43, "types": ["選修", "教選"] },
-      "general":   { "label": "通識",     "minCredits": 20, "types": ["通識", "通必"] }
+      "required": { "label": "校訂＋專業必修", "minCredits": 85,
+                    "types": ["必修","備用必修","通識","通必","教必","兵役","其他"] },
+      "elective": { "label": "專業選修", "minCredits": 43, "types": ["選修","教選"] }
     },
-    "ownDeptTimeSlot": { "day": 3, "periods": [5, 6] }
+    "ownDeptTimeSlot": null,
+    "source": "..."
   }
 }
 ```
 
-`ownDeptTimeSlot` 讓系統自動判斷通識課是「本系時段」或「跨系時段」（以時間匹配，不需手動標記）。
+**設計重點 / 維護規則**：
+- **學分數須從各系『課程規劃書』人工整理，切勿臆測填寫**——此資料關乎學生畢業。目前僅 `人工智慧` 已建檔（數字與免責彈窗一致：校訂＋專業必修 85、專業選修 43、總 128）。
+- 未建檔的系所，Modal 自動退回「僅顯示總學分 + 尚未建檔提示」（graceful degradation）。
+- `categories[].types` 對應課程 `type` 欄位；建議每個 type 只歸一類，使各類 `minCredits` 加總 = `totalCredits`（AI 系已驗證：85+43=128，type 無重複/遺漏）。
+- 計算邏輯吃 **`selectedCourses`**（學生實際排入的課），與課程由哪個 `dept` 開設無關——所以學生加的通識（dept=`通識`）也會正確計入。
+- `ownDeptTimeSlot`（`{day,periods}`，1=週一）讓系統以**時間匹配**自動判斷通識課屬「本系時段」或「跨系時段」（helper：`isDeptOwnSlot`）；`null` = 未建檔、前端不顯示。AI 系此欄待補（無權威資料，未臆測）。
+- `_README` / `_template` 鍵（底線開頭）為文件用，前端會略過（`selectedDept.startsWith('_')`）。
 
-UI：新增 `GraduationPanel` 元件（右側工具列），顯示各類別學分進度條。
+> 注意：`courses_output.json` 的 `note` 欄位**目前不含** `本系時段`/`跨系二階`（實際值為 `共同課程`/`共同選修`/`師培課程`/`體育選修`/空）。`CourseCard` 內針對 `本系時段`/`跨系二階` 的 badge 是舊資料遺留的 dead code，本系/跨系判斷已改由 `ownDeptTimeSlot` 時間匹配負責。
+
+## 下一步
+
+### Phase 2 剩餘工作
+
+- **雙主修／輔系模式**（使用者需求第 5 點，尚未實作）：規劃用 `secondaryProfile`（`{type:'雙主修'|'輔系', dept}`）+ `courseRoleMap`（`{courseId: 'primary'|'secondary'}`）+ localStorage 持久化；Modal 分兩欄顯示主修與第二系所進度。
+- **補各系畢業條件**：逐系從課程規劃書填入 `graduation_requirements.json`（依 `_template`）。
+- **canonical 系所對照表**：`dept` 目前 119 個原始值含班級片段（如 `日二Aa`、`閱讀與書寫一Aa`）。可用 `units.json`（76 系所）的 `offerUnitName` 建半自動對照，清理系所下拉選單。
+- 補各系 `ownDeptTimeSlot` 本系通識時段。
 
 ### Phase 3：老師評分論壇
 

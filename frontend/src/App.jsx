@@ -5,6 +5,7 @@ import {
   GripVertical,
   Trash2,
   BookOpen,
+  GraduationCap,
   Plus,
   CheckCircle2,
   Sparkles,
@@ -42,6 +43,12 @@ const getContinuousChunks = (periodsArray) => {
 
 const formatTimes = (times) => {
   return times.map(t => `${dayNames[t.day - 1]} ${t.periods.join(', ')}`).join(' / ');
+};
+
+// 本系時段判斷：以時間匹配，不需逐課手動標記。slot 為 null（未建檔）時一律回傳 false。
+const isDeptOwnSlot = (course, slot) => {
+  if (!slot) return false;
+  return course.times.some(t => t.day === slot.day && t.periods.some(p => slot.periods.includes(p)));
 };
 
 const loadStoredTab = () => {
@@ -207,6 +214,9 @@ export default function App() {
   const [aiLoading, setAiLoading] = useState(false);
   const [aiResult, setAiResult] = useState('');
 
+  const [gradReqs, setGradReqs] = useState({});
+  const [graduationModalOpen, setGraduationModalOpen] = useState(false);
+
   // Fetch courses data on mount
   useEffect(() => {
     fetch('/data/courses_output.json')
@@ -218,6 +228,14 @@ export default function App() {
       .catch(() => {
         setCoursesLoading(false);
       });
+  }, []);
+
+  // Fetch graduation requirements (graceful: 缺檔時退回僅顯示總學分模式)
+  useEffect(() => {
+    fetch('/data/graduation_requirements.json')
+      .then(r => r.json())
+      .then(setGradReqs)
+      .catch(() => { /* ignore — total-only mode */ });
   }, []);
 
   // Restore selectedCourses from localStorage after allCourses is loaded
@@ -312,6 +330,42 @@ export default function App() {
   }, [groupedCoursesList, activeTab]);
 
   const totalCredits = selectedCourses.reduce((sum, c) => sum + c.credits, 0);
+
+  // --- 畢業學分追蹤 (Phase 2) ---
+
+  const deptReqs = useMemo(() => {
+    const r = gradReqs[selectedDept];
+    if (!r || selectedDept.startsWith('_')) return null;
+    return r;
+  }, [gradReqs, selectedDept]);
+
+  const earnedByType = useMemo(() => {
+    const m = {};
+    selectedCourses.forEach(c => { m[c.type] = (m[c.type] || 0) + (c.credits || 0); });
+    return m;
+  }, [selectedCourses]);
+
+  const categoryProgress = useMemo(() => {
+    if (!deptReqs?.categories) return [];
+    return Object.entries(deptReqs.categories).map(([key, cat]) => {
+      const earned = cat.types.reduce((s, t) => s + (earnedByType[t] || 0), 0);
+      return { key, ...cat, earned, met: earned >= cat.minCredits };
+    });
+  }, [deptReqs, earnedByType]);
+
+  // 通識本系/跨系時段學分分布；ownDeptTimeSlot 未建檔 (null) 時回傳 null，前端不顯示
+  const ownSlotCredits = useMemo(() => {
+    const slot = deptReqs?.ownDeptTimeSlot;
+    if (!slot) return null;
+    let own = 0, cross = 0;
+    selectedCourses.forEach(c => {
+      if (c.type === '通識' || c.type === '通必') {
+        if (isDeptOwnSlot(c, slot)) own += c.credits || 0;
+        else cross += c.credits || 0;
+      }
+    });
+    return { own, cross };
+  }, [deptReqs, selectedCourses]);
 
   const scheduleBlocks = [];
   selectedCourses.forEach(course => {
@@ -627,6 +681,16 @@ export default function App() {
                 <Sparkles className="w-3.5 h-3.5 md:w-4 md:h-4" /> AI 健檢
               </button>
 
+              {/* 畢業學分追蹤 */}
+              {selectedDept && (
+                <button
+                  onClick={() => setGraduationModalOpen(true)}
+                  className="flex-1 lg:flex-none flex items-center justify-center gap-1 md:gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-2 md:px-4 py-2 rounded-lg font-bold text-xs md:text-sm transition-all shadow-sm transform hover:scale-105 whitespace-nowrap"
+                >
+                  <GraduationCap className="w-3.5 h-3.5 md:w-4 md:h-4" /> 畢業學分
+                </button>
+              )}
+
               {/* 一鍵必修 */}
               {hasDeptRequired && (
                 <button
@@ -933,6 +997,134 @@ export default function App() {
                 className="w-full py-2.5 md:py-3 bg-slate-800 hover:bg-slate-900 text-white rounded-xl font-bold transition-colors shadow-sm active:scale-95 text-sm md:text-base"
               >
                 收到！我準備好了 🚀
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 畢業學分追蹤 Modal */}
+      {graduationModalOpen && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[70] flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl shadow-2xl max-w-lg w-full max-h-[88dvh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-5 flex justify-between items-center text-white shrink-0">
+              <div className="flex items-center gap-3 font-bold text-lg">
+                <GraduationCap className="w-6 h-6 shrink-0" />
+                <div>
+                  <div>畢業學分追蹤</div>
+                  <div className="text-blue-100 text-xs font-medium">
+                    {deptReqs?.displayName || selectedDept || '未選擇系所'}
+                  </div>
+                </div>
+              </div>
+              <button
+                onClick={() => setGraduationModalOpen(false)}
+                className="p-1.5 rounded-full hover:bg-white/20 transition-colors shrink-0"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="p-5 md:p-6 overflow-y-auto flex-1 bg-slate-50/50 space-y-4">
+              {/* 畢業總學分 / 未建檔總學分 */}
+              {deptReqs ? (
+                <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
+                  <div className="flex justify-between items-baseline mb-2">
+                    <span className="font-bold text-slate-700 text-sm">畢業總學分</span>
+                    <span className="text-sm font-bold">
+                      <span className={totalCredits >= deptReqs.totalCredits ? 'text-emerald-600' : 'text-blue-600'}>{totalCredits}</span>
+                      <span className="text-slate-400"> / {deptReqs.totalCredits}</span>
+                    </span>
+                  </div>
+                  <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
+                    <div
+                      className={`h-full rounded-full transition-all ${totalCredits >= deptReqs.totalCredits ? 'bg-emerald-500' : 'bg-blue-500'}`}
+                      style={{ width: `${deptReqs.totalCredits ? Math.min(100, (totalCredits / deptReqs.totalCredits) * 100) : 0}%` }}
+                    />
+                  </div>
+                  {totalCredits < deptReqs.totalCredits && (
+                    <p className="text-xs text-slate-500 mt-2">距畢業最低總學分還差 {deptReqs.totalCredits - totalCredits} 學分</p>
+                  )}
+                </div>
+              ) : (
+                <div className="text-center">
+                  <div className="text-4xl font-black text-slate-800">{totalCredits}</div>
+                  <div className="text-sm text-slate-500 mt-1">目前總學分</div>
+                  <div className="mt-4 bg-amber-50 border border-amber-100 rounded-xl p-3 text-xs text-amber-700 text-left leading-relaxed">
+                    <span className="font-bold">此系所畢業條件尚未建檔</span>，僅顯示總學分。各系畢業規定（必修／選修／通識學分數）請以系上課程規劃書為準。
+                  </div>
+                </div>
+              )}
+
+              {/* 各類別進度條 */}
+              {categoryProgress.length > 0 && (
+                <div className="space-y-3">
+                  {categoryProgress.map(cat => {
+                    const pct = cat.minCredits ? Math.min(100, (cat.earned / cat.minCredits) * 100) : 100;
+                    return (
+                      <div key={cat.key} className="bg-white rounded-xl border border-slate-200 p-3">
+                        <div className="flex justify-between items-baseline mb-1.5">
+                          <span className="font-bold text-slate-700 text-sm flex items-center gap-1.5">
+                            {cat.met && <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />}
+                            {cat.label}
+                          </span>
+                          <span className="text-xs font-bold">
+                            <span className={cat.met ? 'text-emerald-600' : 'text-indigo-600'}>{cat.earned}</span>
+                            <span className="text-slate-400"> / {cat.minCredits}</span>
+                          </span>
+                        </div>
+                        <div className="h-2.5 bg-slate-100 rounded-full overflow-hidden">
+                          <div
+                            className={`h-full rounded-full transition-all ${cat.met ? 'bg-emerald-500' : 'bg-indigo-500'}`}
+                            style={{ width: `${pct}%` }}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* 通識本系/跨系時段分布（僅當 ownDeptTimeSlot 已建檔） */}
+              {ownSlotCredits && (
+                <div className="bg-blue-50 border border-blue-100 rounded-xl p-3 text-xs text-slate-600">
+                  <div className="font-bold text-blue-700 mb-1">通識時段分布</div>
+                  本系時段 <span className="font-bold">{ownSlotCredits.own}</span> 學分 · 跨系時段 <span className="font-bold">{ownSlotCredits.cross}</span> 學分
+                </div>
+              )}
+
+              {/* 各類別學分明細（資訊用） */}
+              {selectedCourses.length > 0 ? (
+                <div className="bg-white rounded-xl border border-slate-200 p-3">
+                  <div className="font-bold text-slate-700 text-sm mb-2">已選課程學分明細</div>
+                  <div className="space-y-1.5">
+                    {Object.entries(earnedByType).sort((a, b) => b[1] - a[1]).map(([type, cr]) => (
+                      <div key={type} className="flex justify-between text-xs">
+                        <span className="text-slate-600">{type}</span>
+                        <span className="font-bold text-slate-700">{cr} 學分</span>
+                      </div>
+                    ))}
+                    <div className="flex justify-between text-xs pt-1.5 border-t border-slate-100">
+                      <span className="text-slate-500 font-bold">合計</span>
+                      <span className="font-bold text-slate-800">{totalCredits} 學分</span>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <p className="text-center text-slate-400 text-sm py-2">尚未加入任何課程</p>
+              )}
+
+              {deptReqs?.source && (
+                <p className="text-[11px] text-slate-400 leading-relaxed">資料來源：{deptReqs.source}</p>
+              )}
+            </div>
+
+            <div className="p-4 bg-white border-t border-slate-100 shrink-0">
+              <button
+                onClick={() => setGraduationModalOpen(false)}
+                className="w-full py-3 bg-slate-800 hover:bg-slate-900 text-white rounded-xl font-bold transition-colors active:scale-95"
+              >
+                關閉
               </button>
             </div>
           </div>

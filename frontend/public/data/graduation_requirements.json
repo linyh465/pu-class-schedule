@@ -1,0 +1,42 @@
+{
+  "_README": {
+    "說明": "各系畢業學分需求。資料須從各系『課程規劃書』人工整理，切勿臆測填寫——此資料關乎學生畢業，錯誤會誤導使用者。未建檔的系所，前端會自動退回『僅顯示總學分』模式。",
+    "欄位": {
+      "displayName": "系所全名（顯示用）",
+      "totalCredits": "畢業最低總學分",
+      "categories": "學分類別物件 { key: { label, minCredits, types[] } }。types 對應課程的 type 欄位（必修/選修/通識/通必/教必/教選/兵役/其他/備用必修）。每個 type 建議只歸屬到一個類別，使各類別加總等於 totalCredits。",
+      "ownDeptTimeSlot": "本系通識時段 { day（1=週一）, periods[] }。填入後系統會自動把落在此時段的通識課標示為『本系時段』、其餘為『跨系時段』，不需逐課手動標記。null = 未建檔，前端不顯示本系/跨系標籤。",
+      "source": "資料來源與整理日期（供稽核）"
+    },
+    "對照鍵": "本物件的鍵需對應 courses_output.json 的 dept 值（例如『人工智慧』）。dept 目前有 119 個原始值，部分為班級片段（如『日二Aa』），canonical 系所對照表為後續工作。"
+  },
+  "_template": {
+    "displayName": "範例系所全名",
+    "totalCredits": 128,
+    "categories": {
+      "required": { "label": "專業必修", "minCredits": 0, "types": ["必修", "備用必修"] },
+      "general": { "label": "通識（校訂）", "minCredits": 0, "types": ["通識", "通必", "教必", "兵役", "其他"] },
+      "elective": { "label": "專業選修", "minCredits": 0, "types": ["選修", "教選"] }
+    },
+    "ownDeptTimeSlot": null,
+    "source": "（填寫課程規劃書出處與整理日期）"
+  },
+  "人工智慧": {
+    "displayName": "人工智慧應用學系",
+    "totalCredits": 128,
+    "categories": {
+      "required": {
+        "label": "校訂＋專業必修",
+        "minCredits": 85,
+        "types": ["必修", "備用必修", "通識", "通必", "教必", "兵役", "其他"]
+      },
+      "elective": {
+        "label": "專業選修",
+        "minCredits": 43,
+        "types": ["選修", "教選"]
+      }
+    },
+    "ownDeptTimeSlot": null,
+    "source": "靜宜大學人工智慧應用學系 115 學年度畢業規定：校訂＋專業必修 85 學分、專業選修至少 43 學分、畢業總學分 128（與系統免責彈窗一致）。校訂與專業必修之細項拆分待補課程規劃書；ownDeptTimeSlot 本系通識時段待補。"
+  }
+}
