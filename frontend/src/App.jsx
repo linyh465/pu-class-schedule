@@ -45,8 +45,8 @@ const ALL_COURSES = [
   { id: '1777', name: '搜尋方法與推論邏輯 (二A)', type: '備用必修', credits: 3, instructor: '吳賦哲', times: [{ day: 5, periods: [2, 3, 4] }], location: '主顧322' },
 
   // 人工智慧二A/二B 選修 (AB 班)
-  { id: '1778', name: '配樂與影像氛圍 (二A)', type: '選修', credits: 3, instructor: '彭宇薰', times: [{ day: 4, periods: [5, 6, 9] }], location: '任垣107' },
-  { id: '1789', name: '配樂與影像氛圍 (二B)', type: '選修', credits: 3, instructor: '彭宇薰', times: [{ day: 4, periods: [5, 6, 9] }], location: '任垣107' },
+  { id: '1778', name: '配樂與影像氛圍 (二A)', type: '選修', credits: 3, instructor: '彭宇薰', times: [{ day: 4, periods: [5, 6, 7] }], location: '任垣107' },
+  { id: '1789', name: '配樂與影像氛圍 (二B)', type: '選修', credits: 3, instructor: '彭宇薰', times: [{ day: 4, periods: [5, 6, 7] }], location: '任垣107' },
   { id: '1779', name: '基礎日文(一) (二A)', type: '選修', credits: 3, instructor: '卓美幸', times: [{ day: 1, periods: [8, 9, 10] }], location: '伯鐸332' },
   { id: '1790', name: '基礎日文(一) (二B)', type: '選修', credits: 3, instructor: '卓美幸', times: [{ day: 1, periods: [8, 9, 10] }], location: '伯鐸332' },
   { id: '1780', name: '2D基礎動畫設計 (二A)', type: '選修', credits: 3, instructor: '資院未定一', times: [{ day: 3, periods: [7, 8, 9] }], location: '主顧320' },
@@ -998,33 +998,26 @@ export default function App() {
                 <Sparkles className="w-8 h-8 text-white" />
               </div>
               <h2 className="text-2xl font-black tracking-tight">課表更新通知 🎉</h2>
-              <p className="text-sky-100 text-sm mt-1">2026-06-03 更新</p>
+              <p className="text-sky-100 text-sm mt-1">2026-06-08 更新</p>
             </div>
 
             <div className="p-6 md:p-8 overflow-y-auto flex-1 bg-white">
               <div className="flex items-start gap-3 mb-5">
-                <div className="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center shrink-0">
-                  <CheckCircle2 className="w-5 h-5 text-orange-500" />
+                <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center shrink-0">
+                  <CheckCircle2 className="w-5 h-5 text-emerald-500" />
                 </div>
                 <div>
-                  <h4 className="font-bold text-slate-800 text-base">新增通識課程跨班時段</h4>
+                  <h4 className="font-bold text-slate-800 text-base">修正人工智慧二年級選修課上課時間</h4>
                   <p className="text-slate-500 text-sm mt-0.5">
-                    人社院 <span className="font-bold text-orange-600">週一 第 1、2 節</span> 共 9 門通識課程，已可加入課表。
+                    「配樂與影像氛圍」上課時間由 <span className="font-bold text-red-500">週四 5、6、9 節</span> 更正為 <span className="font-bold text-emerald-600">週四 5、6、7 節</span>。
                   </p>
                 </div>
               </div>
 
               <div className="space-y-1.5">
                 {[
-                  { id: '2299', name: '人與當代社會的建構', cat: '永續與在地', loc: '主顧222' },
-                  { id: '2300', name: '社會學思考與在地議題分析', cat: '永續與在地', loc: '思源423' },
-                  { id: '2524', name: '臺灣原住民文化與創意設計', cat: '永續與在地', loc: '主顧102' },
-                  { id: '2303', name: '哲學的傳統與現在', cat: '宗教與思維', loc: '思源427' },
-                  { id: '2304', name: '宗教情操的社會關懷', cat: '宗教與思維', loc: '主顧301' },
-                  { id: '2305', name: '無人機生態影像解析', cat: '科技與服務', loc: '任垣403' },
-                  { id: '2306', name: '自說自話——編輯有意思', cat: '跨域與設計', loc: '思源429' },
-                  { id: '2307', name: '音像詮釋so easy', cat: '跨域與設計', loc: '主顧104' },
-                  { id: '2308', name: '書畫與創意設計的美感探索', cat: '跨域與設計', loc: '任垣305' },
+                  { id: '1778', name: '配樂與影像氛圍 (二A)', cat: '選修', loc: '任垣107' },
+                  { id: '1789', name: '配樂與影像氛圍 (二B)', cat: '選修', loc: '任垣107' },
                 ].map(c => (
                   <div key={c.id} className="flex items-center gap-2 p-2 rounded-lg bg-slate-50 border border-slate-100">
                     <span className="text-[11px] font-bold font-mono px-1.5 py-0.5 rounded bg-gray-100 text-gray-600 border border-gray-200 shrink-0">{c.id}</span>
