@@ -12,6 +12,8 @@ import {
   X,
   Pointer,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   Download,
   Info,
   AlertTriangle,
@@ -143,6 +145,7 @@ const ALL_COURSES = [
 ];
 
 const TABS = ['全部', '必修', '備用必修', '選修', '大一重補修', '通識', '兵役', '其他'];
+const CURRENT_SEMESTER = '115-1';
 
 const dayNames = ['星期一', '星期二', '星期三', '星期四', '星期五'];
 const periods = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
@@ -338,6 +341,17 @@ export default function App() {
 
   const dropdownRef = useRef(null);
   const pdfRef = useRef(null);
+  const tabsRef = useRef(null);
+
+  const scrollTabs = (direction) => {
+    if (tabsRef.current) {
+      const scrollAmount = 200;
+      tabsRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      });
+    }
+  };
 
   const [aiModalOpen, setAiModalOpen] = useState(false);
   const [aiLoading, setAiLoading] = useState(false);
@@ -605,16 +619,33 @@ export default function App() {
             </p>
           </div>
 
-          <div className="flex border-b border-slate-100 bg-slate-50 overflow-x-auto shrink-0 scrollbar-hide">
-            {TABS.map(tab => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`py-2.5 md:py-3 px-4 text-sm font-bold whitespace-nowrap border-b-2 transition-colors ${activeTab === tab ? 'border-blue-500 text-blue-600 bg-white' : 'border-transparent text-slate-500 hover:bg-slate-100'}`}
-              >
-                {tab}
-              </button>
-            ))}
+          <div className="relative group shrink-0">
+            <button 
+              onClick={() => scrollTabs('left')}
+              className="absolute left-0 top-0 bottom-0 z-10 bg-white/80 backdrop-blur-sm px-1 border-r border-slate-100 hidden md:group-hover:flex items-center hover:bg-white hover:text-blue-500 transition-colors"
+            >
+              <ChevronLeft className="w-5 h-5 text-slate-400" />
+            </button>
+            <div 
+              ref={tabsRef}
+              className="flex border-b border-slate-100 bg-slate-50 overflow-x-auto shrink-0 scrollbar-hide scroll-smooth"
+            >
+              {TABS.map(tab => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`py-2.5 md:py-3 px-4 text-sm font-bold whitespace-nowrap border-b-2 transition-colors ${activeTab === tab ? 'border-blue-500 text-blue-600 bg-white' : 'border-transparent text-slate-500 hover:bg-slate-100'}`}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
+            <button 
+              onClick={() => scrollTabs('right')}
+              className="absolute right-0 top-0 bottom-0 z-10 bg-white/80 backdrop-blur-sm px-1 border-l border-slate-100 hidden md:group-hover:flex items-center hover:bg-white hover:text-blue-500 transition-colors"
+            >
+              <ChevronRight className="w-5 h-5 text-slate-400" />
+            </button>
           </div>
 
           <div className="flex-1 overflow-y-auto p-3 space-y-2.5 bg-slate-50 pb-6">
@@ -817,7 +848,7 @@ export default function App() {
       >
         {/* 第 1 頁：課表 */}
         <div id="pdf-page-1" className="w-full pb-4 bg-white p-8">
-          <h1 className="text-3xl font-black text-center mb-6 text-slate-800 tracking-wider">我的專屬課表</h1>
+          <h1 className="text-3xl font-black text-center mb-6 text-slate-800 tracking-wider">(我的課表預覽) 學期別 {CURRENT_SEMESTER}</h1>
 
           <div
             className="grid border-2 border-slate-800"
@@ -904,6 +935,10 @@ export default function App() {
               );
             })}
           </div>
+
+          <div className="mt-8 text-center text-[13px] text-slate-500 font-bold border-t border-slate-200 pt-4">
+            此課表為預覽，並非最終課表，請至學校選課系統選課，選課規定請依靜宜大學公告為準
+          </div>
         </div>
 
         {/* 第 2 頁：詳細資訊清單 */}
@@ -940,8 +975,13 @@ export default function App() {
             </tbody>
           </table>
 
-          <div className="mt-8 text-right text-slate-500 font-medium">
-            總計學分：<span className="font-bold text-slate-800 text-lg">{totalCredits}</span> 學分
+          <div className="mt-8 flex justify-between items-start text-slate-500 font-medium border-t border-slate-200 pt-4">
+            <div className="text-left text-[13px] font-bold max-w-[70%]">
+              此課表為預覽，並非最終課表，請至學校選課系統選課，選課規定請依靜宜大學公告為準
+            </div>
+            <div className="text-right">
+              總計學分：<span className="font-bold text-slate-800 text-lg">{totalCredits}</span> 學分
+            </div>
           </div>
         </div>
       </div>
